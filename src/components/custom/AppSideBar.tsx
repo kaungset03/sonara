@@ -31,10 +31,10 @@ const AppSidebar = () => {
             </SidebarGroupLabel>
             {homeRoutes.map((route) => (
               <SidebarMenuItem key={route.name}>
-                <SidebarMenuButton className="rounded-sm w-full h-12 p-0">
+                <SidebarMenuButton className="w-full h-12 p-0">
                   <Link
                     to={route.href}
-                    className="rounded-sm w-full h-full text-xs px-6 flex items-center gap-3"
+                    className="w-full h-full text-xs px-6 flex items-center gap-3"
                     activeProps={{ className: "bg-secondary" }}
                   >
                     <route.icon />
