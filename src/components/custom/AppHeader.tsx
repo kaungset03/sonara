@@ -2,6 +2,7 @@ import { ChevronLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { open } from "@tauri-apps/plugin-dialog";
+import { invoke } from "@tauri-apps/api/core";
 
 const AppHeader = () => {
   const handleFolderSelection = async () => {
@@ -10,7 +11,12 @@ const AppHeader = () => {
       multiple: false,
       directory: true,
     });
-    console.log("Selected folder path:", path);
+    if (path) {
+      console.log("Selected folder:", path);
+      // Here you would typically send the selected path to your backend or state management
+      const result = await invoke("add_library_folder", { path });
+      console.log("Result:", result);
+    }
   };
 
   return (

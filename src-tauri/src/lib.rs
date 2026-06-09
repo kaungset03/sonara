@@ -13,14 +13,14 @@ fn greet(name: &str) -> String {
 
 // Save folder path to the database
 #[tauri::command]
-fn add_library_folder(db: tauri::State<DbState>, path: String) -> Result<(), String> {
+fn add_library_folder(db: tauri::State<DbState>, path: String) -> Result<String, String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
     conn.execute(
         "INSERT INTO library_folders (path, created_at) VALUES (?1, datetime('now'))",
         &[&path],
     )
     .map_err(|e| e.to_string())?;
-    Ok(())
+    Ok("Folder added successfully".to_string())
 }
 
 // Get saved library folders from the database
@@ -55,7 +55,11 @@ pub fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, add_library_folder, get_library_folders])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            add_library_folder,
+            get_library_folders
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
