@@ -35,6 +35,7 @@ pub fn extract_metadata(path: &Path) -> Result<Song, String> {
             album,
             duration,
             path: path.to_string_lossy().into_owned(),
+            id: 0,
             created_at: 0,
         })
     } else {
@@ -45,12 +46,13 @@ pub fn extract_metadata(path: &Path) -> Result<Song, String> {
             .unwrap_or("Unknown Track")
             .to_string();
         Ok(Song {
+            id: 0, // This will be set by the database
             title: file_name,
             artist: "Unknown Artist".into(),
             album: "Unknown Album".into(),
             duration,
             path: path.to_string_lossy().into_owned(),
-            created_at: 0,
+            created_at: 0, // This will be set by the database
         })
     }
 }

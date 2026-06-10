@@ -20,3 +20,22 @@ pub fn insert_song_metadata(
 }
 
 // get the song metadata from the database
+pub fn get_all_songs_query(
+    conn: &rusqlite::Connection,
+) -> rusqlite::Result<Vec<crate::models::song::Song>> {
+    let mut stmt =
+        conn.prepare("SELECT id, title, artist, album, duration, path, created_at FROM songs")?;
+    let song_iter = stmt.query_map([], |row| {
+        Ok(crate::models::song::Song {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            artist: row.get(2)?,
+            album: row.get(3)?,
+            duration: row.get(4)?,
+            path: row.get(5)?,
+            created_at: row.get(6)?,
+        })
+    })?;
+    let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
+    songs
+}

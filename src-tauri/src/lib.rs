@@ -31,7 +31,11 @@ pub fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, add_library_folder])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            add_library_folder,
+            get_all_songs
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
