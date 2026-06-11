@@ -3,10 +3,13 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AppSideBar from "@/components/custom/AppSideBar";
 import AppHeader from "@/components/custom/AppHeader";
-import AppFooter from "../components/custom/AppFooter";
+import AppFooter from "@/components/custom/AppFooter";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const RootLayout = () => (
-  <>
+  <QueryClientProvider client={queryClient}>
     <SidebarProvider>
       <AppSideBar />
       <SidebarInset>
@@ -19,7 +22,7 @@ const RootLayout = () => (
     </SidebarProvider>
 
     <TanStackRouterDevtools />
-  </>
+  </QueryClientProvider>
 );
 
 export const Route = createRootRoute({ component: RootLayout });
