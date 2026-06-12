@@ -9,21 +9,28 @@ import AppFooter from "@/components/custom/AppFooter";
 const queryClient = new QueryClient();
 
 const RootLayout = () => (
-  <QueryClientProvider client={queryClient}>
-    <HeadContent />
-    <SidebarProvider>
-      <AppSideBar />
-      <SidebarInset>
-        <AppHeader />
-        <main className="p-4 w-full">
-          <Outlet />
-        </main>
-        <AppFooter />
-      </SidebarInset>
-    </SidebarProvider>
-
-    <TanStackRouterDevtools />
-  </QueryClientProvider>
+  <html>
+    <head>
+      <HeadContent />
+    </head>
+    <body className="dark">
+      <QueryClientProvider client={queryClient}>
+        <SidebarProvider>
+          <AppSideBar />
+          <SidebarInset>
+            <div className="w-full h-screen relative">
+              <AppHeader />
+              <main className="p-4 w-full">
+                <Outlet />
+              </main>
+              <AppFooter />
+            </div>
+          </SidebarInset>
+        </SidebarProvider>
+        <TanStackRouterDevtools />
+      </QueryClientProvider>
+    </body>
+  </html>
 );
 
 export const Route = createRootRoute({

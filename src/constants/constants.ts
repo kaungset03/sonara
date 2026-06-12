@@ -27,14 +27,14 @@ const homeRoutes: HomeRoute[] = [
     icon: Music,
   },
   {
-    name: "Albums",
-    href: "/albums",
-    icon: BookImage,
-  },
-  {
     name: "Artists",
     href: "/artists",
     icon: User,
+  },
+  {
+    name: "Albums",
+    href: "/albums",
+    icon: BookImage,
   },
   {
     name: "Favorites",
@@ -42,6 +42,5 @@ const homeRoutes: HomeRoute[] = [
     icon: Heart,
   },
 ];
-
 
 export { homeRoutes };

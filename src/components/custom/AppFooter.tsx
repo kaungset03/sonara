@@ -81,14 +81,14 @@ const AppFooter = () => {
 
   return (
     <footer className="absolute bottom-0 left-0 right-0 w-full p-4 bg-muted">
-      <audio
-        ref={playerRef}
-        onEnded={handleEnded}
-        onTimeUpdate={handleTimeUpdate}
-        onPlay={playAudio}
-        onPause={pauseAudio}
-      />
       <section className="w-full h-full grid grid-cols-10 items-center">
+        <audio
+          ref={playerRef}
+          onEnded={handleEnded}
+          onTimeUpdate={handleTimeUpdate}
+          onPlay={playAudio}
+          onPause={pauseAudio}
+        />
         <div className="flex items-center justify-center col-span-2 gap-x-1">
           <Button
             variant="ghost"
@@ -132,7 +132,7 @@ const AppFooter = () => {
             <Repeat size={18} />
           </Button>
         </div>
-        <div className="col-span-5 w-full grid grid-cols-7 items-center justify-center">
+        <div className="col-span-5 w-full grid grid-cols-10 items-center justify-center">
           <span className="text-sm text-muted-foreground text-center">
             {getFormattedDuration(currentTime)}
           </span>
@@ -146,7 +146,7 @@ const AppFooter = () => {
                 playerRef.current.currentTime = newTime;
               }
             }}
-            className="col-span-5 w-full"
+            className="col-span-8 w-full"
           />
           <span className="text-sm text-muted-foreground text-center">
             {getFormattedDuration(currentSong.duration)}
@@ -160,7 +160,7 @@ const AppFooter = () => {
             <Volume2 size={18} />
           </Button>
         </div>
-        <div className="flex items-center justify-start gap-2 col-span-2">
+        <div className="flex items-center justify-start gap-2  col-span-2">
           <div className="size-12 rounded-sm bg-primary" />
           <div>
             <h3 className="font-medium text-sm font-heading">

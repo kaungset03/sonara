@@ -25,7 +25,7 @@ const AppSidebar = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
-          <SidebarGroup>
+          <SidebarGroup className="space-y-1 mt-4">
             <SidebarGroupLabel className="font-semibold font-heading">
               Your Library
             </SidebarGroupLabel>
@@ -44,18 +44,32 @@ const AppSidebar = () => {
               </SidebarMenuItem>
             ))}
           </SidebarGroup>
-          <SidebarGroup>
+          <SidebarGroup className="space-y-1 mt-4">
             <SidebarGroupLabel className="font-semibold font-heading">
               Playlists
             </SidebarGroupLabel>
             <SidebarMenuItem>
-              <SidebarMenuButton className="rounded-none w-full h-12 text-xs px-6">
-                Jazz Classics
+              <SidebarMenuButton className="w-full h-12 p-0">
+                <Link
+                  to={"/playlists/$id"}
+                  params={{ id: "jazz-classics" }}
+                  className="w-full h-full text-xs px-6 flex items-center gap-3"
+                  activeProps={{ className: "bg-secondary" }}
+                >
+                  Jazz Classics
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton className="rounded-none w-full h-12 text-xs px-6">
-                Nujabes Special
+              <SidebarMenuButton className="w-full h-12 p-0">
+                <Link
+                  to={"/playlists/$id"}
+                  params={{ id: "nujabes-special" }}
+                  className="w-full h-full text-xs px-6 flex items-center gap-3"
+                  activeProps={{ className: "bg-secondary" }}
+                >
+                  Nujabes Special
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarGroup>

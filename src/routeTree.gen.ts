@@ -11,10 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SongsIndexRouteImport } from './routes/songs/index'
-import { Route as PlaylistsIndexRouteImport } from './routes/playlists/index'
 import { Route as FavoritesIndexRouteImport } from './routes/favorites/index'
 import { Route as ArtistsIndexRouteImport } from './routes/artists/index'
 import { Route as AlbumsIndexRouteImport } from './routes/albums/index'
+import { Route as PlaylistsIdRouteImport } from './routes/playlists/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -24,11 +24,6 @@ const IndexRoute = IndexRouteImport.update({
 const SongsIndexRoute = SongsIndexRouteImport.update({
   id: '/songs/',
   path: '/songs/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PlaylistsIndexRoute = PlaylistsIndexRouteImport.update({
-  id: '/playlists/',
-  path: '/playlists/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FavoritesIndexRoute = FavoritesIndexRouteImport.update({
@@ -46,59 +41,64 @@ const AlbumsIndexRoute = AlbumsIndexRouteImport.update({
   path: '/albums/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlaylistsIdRoute = PlaylistsIdRouteImport.update({
+  id: '/playlists/$id',
+  path: '/playlists/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/playlists/$id': typeof PlaylistsIdRoute
   '/albums/': typeof AlbumsIndexRoute
   '/artists/': typeof ArtistsIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
-  '/playlists/': typeof PlaylistsIndexRoute
   '/songs/': typeof SongsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/playlists/$id': typeof PlaylistsIdRoute
   '/albums': typeof AlbumsIndexRoute
   '/artists': typeof ArtistsIndexRoute
   '/favorites': typeof FavoritesIndexRoute
-  '/playlists': typeof PlaylistsIndexRoute
   '/songs': typeof SongsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/playlists/$id': typeof PlaylistsIdRoute
   '/albums/': typeof AlbumsIndexRoute
   '/artists/': typeof ArtistsIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
-  '/playlists/': typeof PlaylistsIndexRoute
   '/songs/': typeof SongsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/playlists/$id'
     | '/albums/'
     | '/artists/'
     | '/favorites/'
-    | '/playlists/'
     | '/songs/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/albums' | '/artists' | '/favorites' | '/playlists' | '/songs'
+  to: '/' | '/playlists/$id' | '/albums' | '/artists' | '/favorites' | '/songs'
   id:
     | '__root__'
     | '/'
+    | '/playlists/$id'
     | '/albums/'
     | '/artists/'
     | '/favorites/'
-    | '/playlists/'
     | '/songs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PlaylistsIdRoute: typeof PlaylistsIdRoute
   AlbumsIndexRoute: typeof AlbumsIndexRoute
   ArtistsIndexRoute: typeof ArtistsIndexRoute
   FavoritesIndexRoute: typeof FavoritesIndexRoute
-  PlaylistsIndexRoute: typeof PlaylistsIndexRoute
   SongsIndexRoute: typeof SongsIndexRoute
 }
 
@@ -116,13 +116,6 @@ declare module '@tanstack/react-router' {
       path: '/songs'
       fullPath: '/songs/'
       preLoaderRoute: typeof SongsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/playlists/': {
-      id: '/playlists/'
-      path: '/playlists'
-      fullPath: '/playlists/'
-      preLoaderRoute: typeof PlaylistsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/favorites/': {
@@ -146,15 +139,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AlbumsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/playlists/$id': {
+      id: '/playlists/$id'
+      path: '/playlists/$id'
+      fullPath: '/playlists/$id'
+      preLoaderRoute: typeof PlaylistsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PlaylistsIdRoute: PlaylistsIdRoute,
   AlbumsIndexRoute: AlbumsIndexRoute,
   ArtistsIndexRoute: ArtistsIndexRoute,
   FavoritesIndexRoute: FavoritesIndexRoute,
-  PlaylistsIndexRoute: PlaylistsIndexRoute,
   SongsIndexRoute: SongsIndexRoute,
 }
 export const routeTree = rootRouteImport
