@@ -85,6 +85,8 @@ const AppFooter = () => {
         ref={playerRef}
         onEnded={handleEnded}
         onTimeUpdate={handleTimeUpdate}
+        onPlay={playAudio}
+        onPause={pauseAudio}
       />
       <section className="w-full h-full grid grid-cols-10 items-center">
         <div className="flex items-center justify-center col-span-2 gap-x-1">
