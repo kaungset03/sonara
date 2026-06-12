@@ -8,10 +8,12 @@ import {
   SkipForward,
   Volume2,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import usePlayerStore from "@/store/store";
-import { Button } from "../ui/button";
+import { Slider } from "../ui/slider";
+import { getFormattedDuration } from "../../lib/helpers";
 
 const AppFooter = () => {
   const playerRef = useRef<HTMLAudioElement | null>(null);
@@ -21,6 +23,8 @@ const AppFooter = () => {
   const queue = usePlayerStore((state) => state.queue);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
+
+  const [currentTime, setCurrentTime] = useState(0);
 
   const playAudio = () => {
     if (playerRef.current) {
@@ -56,6 +60,12 @@ const AppFooter = () => {
     handleNext();
   };
 
+  const handleTimeUpdate = () => {
+    if (playerRef.current) {
+      setCurrentTime(playerRef.current.currentTime);
+    }
+  };
+
   useEffect(() => {
     const player = playerRef.current;
     if (player && currentSong) {
@@ -71,7 +81,11 @@ const AppFooter = () => {
 
   return (
     <footer className="absolute bottom-0 left-0 right-0 w-full p-4 bg-muted">
-      <audio ref={playerRef} onEnded={handleEnded} />
+      <audio
+        ref={playerRef}
+        onEnded={handleEnded}
+        onTimeUpdate={handleTimeUpdate}
+      />
       <section className="w-full h-full grid grid-cols-10 items-center">
         <div className="flex items-center justify-center col-span-2 gap-x-1">
           <Button
@@ -118,11 +132,22 @@ const AppFooter = () => {
         </div>
         <div className="col-span-5 w-full grid grid-cols-7 items-center justify-center">
           <span className="text-sm text-muted-foreground text-center">
-            0:00
+            {getFormattedDuration(currentTime)}
           </span>
-          <div className="h-1 rounded-sm bg-muted-foreground col-span-5" />
+          <Slider
+            defaultValue={[0]}
+            max={currentSong.duration}
+            value={[currentTime]}
+            onValueChange={(value) => {
+              const newTime = value[0];
+              if (playerRef.current) {
+                playerRef.current.currentTime = newTime;
+              }
+            }}
+            className="col-span-5 w-full"
+          />
           <span className="text-sm text-muted-foreground text-center">
-            3:45
+            {getFormattedDuration(currentSong.duration)}
           </span>
         </div>
         <div className="flex items-center justify-center gap-x-1 col-span-1">
