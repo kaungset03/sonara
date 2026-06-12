@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getFormattedDuration } from "@/lib/helpers";
-import { Heart, Music } from "lucide-react";
+import { Heart, Music2 } from "lucide-react";
 import usePlayerStore from "@/store/store";
 
 type SongsTableProps = {
@@ -21,7 +21,7 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
     <Table>
       <TableHeader>
         <TableRow className="hover:bg-transparent">
-          <TableHead className="text-center">#</TableHead>
+          <TableHead className="w-10 text-center">#</TableHead>
           <TableHead>Title</TableHead>
           <TableHead>Artist</TableHead>
           <TableHead>Album</TableHead>
@@ -29,7 +29,7 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
           <TableHead className="text-center"> </TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody className="text-xs">
+      <TableBody className="text-sm">
         {songs.map((song, index) => {
           const isActive = currentSong?.id === song.id;
 
@@ -41,8 +41,8 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
               }`}
               onClick={() => handleSongClick(song)}
             >
-              <TableCell className="w-4 text-center">
-                {isActive ? <Music size={14} /> : index + 1}
+              <TableCell className="w-10 text-center flex items-center justify-center">
+                {isActive ? <Music2 size={14} /> : index + 1}
               </TableCell>
               <TableCell>{song.title}</TableCell>
               <TableCell>{song.artist}</TableCell>
