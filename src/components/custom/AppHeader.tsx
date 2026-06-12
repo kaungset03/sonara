@@ -29,7 +29,7 @@ const AppHeader = () => {
       </div>
       <Button variant="outline" onClick={handleFolderSelection}>
         <Plus />
-        <span className="text-xs">Scan Folder</span>
+        <span className="text-xs font-heading">Scan Folder</span>
       </Button>
     </header>
   );

@@ -19,7 +19,14 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": "default-src 'self' ipc: http://ipc.localhost; media-src 'self' asset: https://asset.localhost http://asset.localhost; img-src 'self' asset: https://asset.localhost http://asset.localhost",
+      "assetProtocol": {
+        "enable": true,
+        "scope": {
+          "requireLiteralLeadingDot": false,
+          "allow": ["$HOME/**"]
+        }
+      }
     }
   },
   "bundle": {

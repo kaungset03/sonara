@@ -1,15 +1,16 @@
-import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AppSideBar from "@/components/custom/AppSideBar";
 import AppHeader from "@/components/custom/AppHeader";
 import AppFooter from "@/components/custom/AppFooter";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 
 const RootLayout = () => (
   <QueryClientProvider client={queryClient}>
+    <HeadContent />
     <SidebarProvider>
       <AppSideBar />
       <SidebarInset>
@@ -25,4 +26,23 @@ const RootLayout = () => (
   </QueryClientProvider>
 );
 
-export const Route = createRootRoute({ component: RootLayout });
+export const Route = createRootRoute({
+  head: () => ({
+    meta: [
+      {
+        name: "Tauri Player",
+        content: "A Tauri-based music player built with React and TypeScript.",
+      },
+      {
+        title: "Tauri Player",
+      },
+    ],
+    links: [
+      {
+        rel: "icon",
+        href: "/tauri.svg",
+      },
+    ],
+  }),
+  component: RootLayout,
+});

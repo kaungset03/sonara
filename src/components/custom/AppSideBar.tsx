@@ -9,8 +9,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Music } from "lucide-react";
-import { homeRoutes } from "@/constants/constants";
 import { Link } from "@tanstack/react-router";
+import { homeRoutes } from "@/constants/constants";
 
 const AppSidebar = () => {
   return (
@@ -20,13 +20,13 @@ const AppSidebar = () => {
           <div className="flex h-8 w-8 justify-center items-center">
             <Music />
           </div>
-          <h2 className="text-lg font-semibold">Tauri Player</h2>
+          <h2 className="text-lg font-semibold font-heading">Tauri Player</h2>
         </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
           <SidebarGroup>
-            <SidebarGroupLabel className="font-semibold">
+            <SidebarGroupLabel className="font-semibold font-heading">
               Your Library
             </SidebarGroupLabel>
             {homeRoutes.map((route) => (
@@ -45,7 +45,7 @@ const AppSidebar = () => {
             ))}
           </SidebarGroup>
           <SidebarGroup>
-            <SidebarGroupLabel className="font-semibold">
+            <SidebarGroupLabel className="font-semibold font-heading">
               Playlists
             </SidebarGroupLabel>
             <SidebarMenuItem>

@@ -10,6 +10,6 @@ const useGetAllSongsQuery = () => {
     },
   });
 
-  return songs;
+  return { songs };
 };
 export default useGetAllSongsQuery;

@@ -6,6 +6,7 @@ type PlayerStore = {
 
   setCurrentSong: (song: Song) => void;
   setIsPlaying: (playing: boolean) => void;
+  setQueue: (songs: Song[]) => void;
 };
 
 const usePlayerStore = create<PlayerStore>()((set) => ({
@@ -15,6 +16,7 @@ const usePlayerStore = create<PlayerStore>()((set) => ({
 
   setCurrentSong: (song) => set({ currentSong: song }),
   setIsPlaying: (playing) => set({ isPlaying: playing }),
+  setQueue: (songs) => set({ queue: songs }),
 }));
 
 export default usePlayerStore;
