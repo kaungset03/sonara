@@ -13,7 +13,7 @@ const RootLayout = () => (
     <head>
       <HeadContent />
     </head>
-    <body className="dark">
+    <body>
       <QueryClientProvider client={queryClient}>
         <SidebarProvider>
           <AppSideBar />

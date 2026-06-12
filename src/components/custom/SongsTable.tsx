@@ -29,7 +29,7 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
           <TableHead className="text-center"> </TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody>
+      <TableBody className="text-xs">
         {songs.map((song, index) => {
           const isActive = currentSong?.id === song.id;
 
