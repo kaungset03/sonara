@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
 
-const useGetSongsByAlbumQuery = (album: string) => {
+const useGetFavoriteSongsQuery = () => {
   const { data } = useQuery({
-    queryKey: ["songs", "album", album],
+    queryKey: ["songs", "favorites"],
     queryFn: async () => {
-      const res = await invoke("get_songs_by_album", { album });
+      const res = await invoke("get_favorite_songs");
       return res as Song[];
     },
   });
 
   return { data };
 };
-export default useGetSongsByAlbumQuery;
+export default useGetFavoriteSongsQuery;

@@ -148,3 +148,27 @@ pub fn set_favorite_song_query(
     )?;
     Ok(())
 }
+
+// get favorite songs
+pub fn get_favorite_songs_query(
+    conn: &rusqlite::Connection,
+) -> rusqlite::Result<Vec<crate::models::song::Song>> {
+    let mut stmt = conn.prepare(
+        "SELECT id, title, artist, album, duration, path, is_favorite, favorite_added_at, created_at FROM songs WHERE is_favorite = 1 ORDER BY favorite_added_at DESC",
+    )?;
+    let song_iter = stmt.query_map([], |row| {
+        Ok(crate::models::song::Song {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            artist: row.get(2)?,
+            album: row.get(3)?,
+            duration: row.get(4)?,
+            path: row.get(5)?,
+            is_favorite: row.get::<_, i64>(6)? == 1,
+            favorite_added_at: row.get(7)?,
+            created_at: row.get(8)?,
+        })
+    })?;
+    let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
+    songs
+}

@@ -1,33 +1,53 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
+import { toast } from "sonner";
+import { updateSongInCache } from "@/lib/helpers";
 
 type ToggleFavoriteInput = {
   songId: number;
   isFavorite: boolean;
 };
 
-const useToggleFavoriteMutation = () => {
-  const mutation = useMutation<boolean, Error, ToggleFavoriteInput>({
-    mutationFn: ({ songId, isFavorite }) => {
-      const toggleFavorite = async () => {
-        try {
-          await invoke("set_favorite_song", {
-            song_id: songId,
-            is_favorite: isFavorite,
-          });
-          return true;
-        } catch (error) {
-          throw new Error("Failed to toggle favorite");
-        }
-      };
+type ToggleFavoriteContext = {
+  previousSongs: Song[] | undefined;
+};
 
-      return toggleFavorite();
+const useToggleFavoriteMutation = () => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation<
+    boolean,
+    Error,
+    ToggleFavoriteInput,
+    ToggleFavoriteContext
+  >({
+    mutationFn: async ({ songId, isFavorite }) => {
+      await invoke("set_favorite_song", {
+        songId,
+        isFavorite,
+      });
+      return isFavorite;
+    },
+    onMutate: async ({ songId, isFavorite }) => {
+      await queryClient.cancelQueries({ queryKey: ["songs"] });
+
+      const previousSongs = queryClient.getQueryData<Song[]>(["songs"]);
+
+      updateSongInCache(queryClient, songId, (song) => ({
+        ...song,
+        isFavorite,
+      }));
+
+      return { previousSongs };
     },
     onSuccess: () => {
-      console.log("Favorite toggled successfully");
+      toast.success("Favorite status updated");
+      queryClient.invalidateQueries({ queryKey: ["songs"] });
     },
-    onError: (error) => {
-      console.error("Error toggling favorite:", error);
+    onError: (_err, _vars, context) => {
+      if (context?.previousSongs) {
+        queryClient.setQueryData(["songs"], context.previousSongs);
+      }
     },
   });
 

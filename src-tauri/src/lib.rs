@@ -39,7 +39,8 @@ pub fn run() {
             get_all_albums,
             get_songs_by_artist,
             get_songs_by_album,
-            set_favorite_song
+            set_favorite_song,
+            get_favorite_songs
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

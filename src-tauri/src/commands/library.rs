@@ -70,3 +70,10 @@ pub fn set_favorite_song(
         services::song::set_favorite_song(&conn, song_id, is_favorite).map_err(|e| e.to_string());
     result
 }
+
+// get favorite songs
+#[tauri::command]
+pub fn get_favorite_songs(db: State<DbState>) -> Result<Vec<crate::models::song::Song>, String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::song::get_favorite_songs(&conn).map_err(|e| e.to_string())
+}

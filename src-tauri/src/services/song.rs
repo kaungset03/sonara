@@ -39,3 +39,9 @@ pub fn set_favorite_song(
 ) -> rusqlite::Result<()> {
     song_repository::set_favorite_song_query(conn, song_id, is_favorite)
 }
+
+pub fn get_favorite_songs(
+    conn: &rusqlite::Connection,
+) -> rusqlite::Result<Vec<crate::models::song::Song>> {
+    song_repository::get_favorite_songs_query(conn)
+}
