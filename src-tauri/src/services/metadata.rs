@@ -31,13 +31,13 @@ pub fn extract_metadata(path: &Path) -> Result<Song, String> {
                 .to_string()
         });
 
-    // Extract artist or use default
+    // Extract artist
     let artist = tag
         .and_then(|t| t.artist())
         .map(|s| s.to_string())
         .unwrap_or_else(|| "Unknown Artist".to_string());
 
-    // Extract album or use default
+    // Extract album
     let album = tag
         .and_then(|t| t.album())
         .map(|s| s.to_string())
@@ -52,5 +52,7 @@ pub fn extract_metadata(path: &Path) -> Result<Song, String> {
         duration,
         path: path.to_string_lossy().into_owned(),
         created_at: 0,
+        is_favorite: false,
+        favorite_added_at: None,
     })
 }

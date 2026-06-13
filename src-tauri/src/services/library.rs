@@ -21,6 +21,8 @@ pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<(
                 &metadata.artist,
                 &metadata.album,
                 &metadata.path,
+                if metadata.is_favorite { 1 } else { 0 },
+                metadata.favorite_added_at,
                 metadata.duration,
             );
         }

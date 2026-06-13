@@ -56,3 +56,17 @@ pub fn get_songs_by_album(
     let conn = db.0.lock().map_err(|e| e.to_string())?;
     services::song::get_songs_by_album(&conn, &album).map_err(|e| e.to_string())
 }
+
+// set favorite song
+#[tauri::command]
+pub fn set_favorite_song(
+    db: State<DbState>,
+    song_id: i32,
+    is_favorite: bool,
+) -> Result<(), String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+
+    let result =
+        services::song::set_favorite_song(&conn, song_id, is_favorite).map_err(|e| e.to_string());
+    result
+}

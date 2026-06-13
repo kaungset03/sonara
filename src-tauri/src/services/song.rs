@@ -31,3 +31,11 @@ pub fn get_songs_by_album(
 ) -> rusqlite::Result<Vec<crate::models::song::Song>> {
     song_repository::get_songs_by_album_query(conn, album)
 }
+
+pub fn set_favorite_song(
+    conn: &rusqlite::Connection,
+    song_id: i32,
+    is_favorite: bool,
+) -> rusqlite::Result<()> {
+    song_repository::set_favorite_song_query(conn, song_id, is_favorite)
+}

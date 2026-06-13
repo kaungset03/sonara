@@ -18,6 +18,8 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
             album TEXT,
             duration INTEGER,
             path TEXT UNIQUE NOT NULL,
+            is_favorite INTEGER NOT NULL DEFAULT 0 CHECK (is_favorite IN (0, 1)),
+            favorite_added_at INTEGER,
             created_at INTEGER NOT NULL
         )",
         [],

@@ -6,9 +6,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getFormattedDuration } from "@/lib/helpers";
+import { Button } from "@/components/ui/button";
 import { Heart, Music2 } from "lucide-react";
+import { getFormattedDuration } from "@/lib/helpers";
 import usePlayerStore from "@/store/store";
+import useToggleFavoriteMutation from "@/features/favorites/useToggleFavoriteMutation";
 
 type SongsTableProps = {
   songs: Song[];
@@ -17,6 +19,8 @@ type SongsTableProps = {
 
 const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
   const currentSong = usePlayerStore((state) => state.currentSong);
+  const { mutate } = useToggleFavoriteMutation();
+
   return (
     <Table>
       <TableHeader>
@@ -41,7 +45,7 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
               }`}
               onClick={() => handleSongClick(song)}
             >
-              <TableCell className="w-10 text-center flex items-center justify-center">
+              <TableCell className="w-10 text-center">
                 {isActive ? <Music2 size={14} /> : index + 1}
               </TableCell>
               <TableCell>{song.title}</TableCell>
@@ -51,7 +55,21 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
                 {getFormattedDuration(song.duration)}
               </TableCell>
               <TableCell className="text-center">
-                <Heart size={18} />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground border border-border"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    mutate({ songId: song.id, isFavorite: !song.is_favorite });
+                  }}
+                >
+                  {song.is_favorite ? (
+                    <Heart size={14} fill="currentColor" />
+                  ) : (
+                    <Heart size={14} />
+                  )}
+                </Button>
               </TableCell>
             </TableRow>
           );

@@ -5,6 +5,8 @@ pub fn insert_song_metadata(
     artist: &str,
     album: &str,
     path: &str,
+    is_favorite: i32,
+    favorite_added_at: Option<i64>,
     duration: i64,
 ) -> rusqlite::Result<()> {
     let created_at = std::time::SystemTime::now()
@@ -13,8 +15,8 @@ pub fn insert_song_metadata(
         .as_secs() as i64;
 
     conn.execute(
-        "INSERT INTO songs (title, artist, album, path, duration, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
-        rusqlite::params![title, artist, album, path, duration, created_at],
+        "INSERT INTO songs (title, artist, album, duration, path, is_favorite, favorite_added_at, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
+        rusqlite::params![title, artist, album, duration, path, is_favorite, favorite_added_at, created_at],
     )?;
     Ok(())
 }
@@ -24,7 +26,7 @@ pub fn get_all_songs_query(
     conn: &rusqlite::Connection,
 ) -> rusqlite::Result<Vec<crate::models::song::Song>> {
     let mut stmt =
-        conn.prepare("SELECT id, title, artist, album, duration, path, created_at FROM songs")?;
+        conn.prepare("SELECT id, title, artist, album, duration, path, is_favorite, favorite_added_at, created_at FROM songs")?;
     let song_iter = stmt.query_map([], |row| {
         Ok(crate::models::song::Song {
             id: row.get(0)?,
@@ -33,7 +35,9 @@ pub fn get_all_songs_query(
             album: row.get(3)?,
             duration: row.get(4)?,
             path: row.get(5)?,
-            created_at: row.get(6)?,
+            is_favorite: row.get::<_, i64>(6)? == 1,
+            favorite_added_at: row.get(7)?,
+            created_at: row.get(8)?,
         })
     })?;
     let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
@@ -77,7 +81,7 @@ pub fn get_songs_by_artist_query(
     artist: &str,
 ) -> rusqlite::Result<Vec<crate::models::song::Song>> {
     let mut stmt = conn.prepare(
-        "SELECT id, title, artist, album, duration, path, created_at FROM songs WHERE artist = ?1",
+        "SELECT id, title, artist, album, duration, path, is_favorite, favorite_added_at, created_at FROM songs WHERE artist = ?1",
     )?;
     let song_iter = stmt.query_map([artist], |row| {
         Ok(crate::models::song::Song {
@@ -87,7 +91,9 @@ pub fn get_songs_by_artist_query(
             album: row.get(3)?,
             duration: row.get(4)?,
             path: row.get(5)?,
-            created_at: row.get(6)?,
+            is_favorite: row.get::<_, i64>(6)? == 1,
+            favorite_added_at: row.get(7)?,
+            created_at: row.get(8)?,
         })
     })?;
     let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
@@ -100,7 +106,7 @@ pub fn get_songs_by_album_query(
     album: &str,
 ) -> rusqlite::Result<Vec<crate::models::song::Song>> {
     let mut stmt = conn.prepare(
-        "SELECT id, title, artist, album, duration, path, created_at FROM songs WHERE album = ?1",
+        "SELECT id, title, artist, album, duration, path, is_favorite, favorite_added_at, created_at FROM songs WHERE album = ?1",
     )?;
     let song_iter = stmt.query_map([album], |row| {
         Ok(crate::models::song::Song {
@@ -110,9 +116,35 @@ pub fn get_songs_by_album_query(
             album: row.get(3)?,
             duration: row.get(4)?,
             path: row.get(5)?,
-            created_at: row.get(6)?,
+            is_favorite: row.get::<_, i64>(6)? == 1,
+            favorite_added_at: row.get(7)?,
+            created_at: row.get(8)?,
         })
     })?;
     let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
     songs
+}
+
+// set favorite song
+pub fn set_favorite_song_query(
+    conn: &rusqlite::Connection,
+    song_id: i32,
+    is_favorite: bool,
+) -> rusqlite::Result<()> {
+    let favorite_added_at = if is_favorite {
+        Some(
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_secs() as i64,
+        )
+    } else {
+        None
+    };
+
+    conn.execute(
+        "UPDATE songs SET is_favorite = ?1, favorite_added_at = ?2 WHERE id = ?3",
+        rusqlite::params![is_favorite as i32, favorite_added_at, song_id],
+    )?;
+    Ok(())
 }

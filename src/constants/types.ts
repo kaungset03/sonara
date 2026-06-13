@@ -6,6 +6,9 @@ declare global {
     album: string;
     duration: number; // in seconds
     path: string; // file path to the song
+    is_favorite: boolean; // whether the song is marked as favorite
+    favorite_added_at: number | null; // timestamp when the song was marked as favorite
+    created_at: number; // timestamp when the song was added to the library
   };
 
   type Artist = {
