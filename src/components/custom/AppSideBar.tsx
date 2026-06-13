@@ -15,7 +15,7 @@ import { homeRoutes } from "@/constants/constants";
 
 const AppSidebar = () => {
   return (
-    <Sidebar>
+    <Sidebar variant="floating">
       <SidebarHeader className="h-16 flex justify-center items-center">
         <div className="flex items-center gap-3 text-primary">
           <div className="flex h-8 w-8 justify-center items-center">
