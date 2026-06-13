@@ -16,12 +16,18 @@ import { useEffect, useRef, useState } from "react";
 import { getFormattedDuration } from "@/lib/helpers";
 import SongTitle from "@/components/custom/SongTitle";
 import usePlayerStore from "@/store/store";
+import useToggleFavoriteMutation from "@/features/favorites/useToggleFavoriteMutation";
+import useGetAllSongsQuery from "@/features/songs/useGetAllSongsQuery";
 
 const AppFooter = () => {
+  const { data } = useGetAllSongsQuery();
+
   const playerRef = useRef<HTMLAudioElement | null>(null);
 
-  const currentSong = usePlayerStore((state) => state.currentSong);
-  const setCurrentSong = usePlayerStore((state) => state.setCurrentSong);
+  const currentSongId = usePlayerStore((state) => state.currentSongId);
+  const currentSong = data?.find((song) => song.id === currentSongId);
+
+  const setCurrentSongId = usePlayerStore((state) => state.setCurrentSongId);
   const queue = usePlayerStore((state) => state.queue);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
@@ -30,6 +36,14 @@ const AppFooter = () => {
   const setMuted = usePlayerStore((state) => state.setMuted);
 
   const [currentTime, setCurrentTime] = useState(0);
+
+  const { mutate } = useToggleFavoriteMutation();
+
+  const handleFavoriteToggle = () => {
+    if (currentSong) {
+      mutate({ songId: currentSong.id, isFavorite: !currentSong.is_favorite });
+    }
+  };
 
   const playAudio = () => {
     if (playerRef.current) {
@@ -50,7 +64,7 @@ const AppFooter = () => {
     const currentIndex = queue.findIndex((song) => song.id === currentSong.id);
     const nextIndex = (currentIndex + 1) % queue.length;
     const nextSong = queue[nextIndex];
-    setCurrentSong(nextSong);
+    setCurrentSongId(nextSong.id);
   };
 
   const handlePrevious = () => {
@@ -58,7 +72,7 @@ const AppFooter = () => {
     const currentIndex = queue.findIndex((song) => song.id === currentSong.id);
     const prevIndex = (currentIndex - 1 + queue.length) % queue.length;
     const prevSong = queue[prevIndex];
-    setCurrentSong(prevSong);
+    setCurrentSongId(prevSong.id);
   };
 
   const handleEnded = () => {
@@ -91,7 +105,7 @@ const AppFooter = () => {
       player.play();
       setIsPlaying(true);
     }
-  }, [currentSong, setIsPlaying, playerRef]);
+  }, [currentSongId, setIsPlaying, playerRef]);
 
   if (!currentSong) {
     return null;
@@ -168,8 +182,17 @@ const AppFooter = () => {
           </span>
         </div>
         <div className="flex items-center justify-center gap-x-1 col-span-1">
-          <Button variant="ghost" size="icon" className="border border-primary">
-            <Heart size={18} />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="border border-primary text-primary"
+            onClick={handleFavoriteToggle}
+          >
+            {currentSong.is_favorite ? (
+              <Heart size={18} fill="currentColor" />
+            ) : (
+              <Heart size={18} />
+            )}
           </Button>
           <Button
             variant="ghost"

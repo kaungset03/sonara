@@ -1,12 +1,12 @@
 import { create } from "zustand";
 type PlayerStore = {
-  currentSong: Song | null;
+  currentSongId: number | null;
   queue: Song[];
   isPlaying: boolean;
   musicVolume: number;
   muted: boolean;
 
-  setCurrentSong: (song: Song) => void;
+  setCurrentSongId: (id: number) => void;
   setMusicVolume: (volume: number) => void;
   setMuted: (muted: boolean) => void;
   setIsPlaying: (playing: boolean) => void;
@@ -14,13 +14,13 @@ type PlayerStore = {
 };
 
 const usePlayerStore = create<PlayerStore>()((set) => ({
-  currentSong: null,
+  currentSongId: null,
   queue: [],
   isPlaying: false,
   musicVolume: 1,
   muted: false,
 
-  setCurrentSong: (song) => set({ currentSong: song }),
+  setCurrentSongId: (id) => set({ currentSongId: id }),
   setIsPlaying: (playing) => set({ isPlaying: playing }),
   setQueue: (songs) => set({ queue: songs }),
   setMusicVolume: (volume) => set({ musicVolume: volume }),

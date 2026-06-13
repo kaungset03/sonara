@@ -12,11 +12,11 @@ export const Route = createFileRoute("/artists/$name")({
 function RouteComponent() {
   const { name } = Route.useParams();
   const { data: artistSongs } = useGetSongsByArtistQuery(name);
-  const { setCurrentSong, setIsPlaying, setQueue } = usePlayerStore();
+  const { setCurrentSongId, setIsPlaying, setQueue } = usePlayerStore();
 
   const handleSongClick = (song: Song) => {
     if (!artistSongs) return;
-    setCurrentSong(song);
+    setCurrentSongId(song.id);
     setQueue(artistSongs);
     setIsPlaying(true);
   };
@@ -24,7 +24,7 @@ function RouteComponent() {
   const handlePlayAll = () => {
     if (!artistSongs) return;
     if (artistSongs.length > 0) {
-      setCurrentSong(artistSongs[0]);
+      setCurrentSongId(artistSongs[0].id);
       setQueue(artistSongs);
       setIsPlaying(true);
     }
@@ -34,7 +34,7 @@ function RouteComponent() {
     if (!artistSongs) return;
     if (artistSongs.length > 0) {
       const shuffled = [...artistSongs].sort(() => Math.random() - 0.5);
-      setCurrentSong(shuffled[0]);
+      setCurrentSongId(shuffled[0].id);
       setQueue(shuffled);
       setIsPlaying(true);
     }

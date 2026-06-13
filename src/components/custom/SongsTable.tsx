@@ -18,7 +18,7 @@ type SongsTableProps = {
 };
 
 const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
-  const currentSong = usePlayerStore((state) => state.currentSong);
+  const currentSongId = usePlayerStore((state) => state.currentSongId);
   const { mutate } = useToggleFavoriteMutation();
 
   return (
@@ -33,9 +33,9 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
           <TableHead className="text-center"> </TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody className="text-sm">
+      <TableBody className="text-xs">
         {songs.map((song, index) => {
-          const isActive = currentSong?.id === song.id;
+          const isActive = currentSongId === song.id;
 
           return (
             <TableRow
@@ -58,14 +58,14 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-muted-foreground border border-border"
+                  className="size-7 hover:text-primary"
                   onClick={(e) => {
                     e.stopPropagation();
                     mutate({ songId: song.id, isFavorite: !song.is_favorite });
                   }}
                 >
                   {song.is_favorite ? (
-                    <Heart size={14} fill="currentColor" />
+                    <Heart fill="currentColor" size={14} />
                   ) : (
                     <Heart size={14} />
                   )}
