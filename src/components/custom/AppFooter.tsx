@@ -7,13 +7,15 @@ import {
   SkipBack,
   SkipForward,
   Volume2,
+  VolumeOff,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { useEffect, useRef, useState } from "react";
+import { getFormattedDuration } from "@/lib/helpers";
+import SongTitle from "@/components/custom/SongTitle";
 import usePlayerStore from "@/store/store";
-import { Slider } from "../ui/slider";
-import { getFormattedDuration } from "../../lib/helpers";
 
 const AppFooter = () => {
   const playerRef = useRef<HTMLAudioElement | null>(null);
@@ -23,6 +25,9 @@ const AppFooter = () => {
   const queue = usePlayerStore((state) => state.queue);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
+
+  const muted = usePlayerStore((state) => state.muted);
+  const setMuted = usePlayerStore((state) => state.setMuted);
 
   const [currentTime, setCurrentTime] = useState(0);
 
@@ -63,6 +68,19 @@ const AppFooter = () => {
   const handleTimeUpdate = () => {
     if (playerRef.current) {
       setCurrentTime(playerRef.current.currentTime);
+    }
+  };
+
+  const handleSeek = (value: number) => {
+    if (playerRef.current) {
+      playerRef.current.currentTime = value;
+    }
+  };
+
+  const handleMuteToggle = () => {
+    if (playerRef.current) {
+      playerRef.current.muted = !playerRef.current.muted;
+      setMuted(playerRef.current.muted);
     }
   };
 
@@ -141,10 +159,7 @@ const AppFooter = () => {
             max={currentSong.duration}
             value={[currentTime]}
             onValueChange={(value) => {
-              const newTime = value[0];
-              if (playerRef.current) {
-                playerRef.current.currentTime = newTime;
-              }
+              handleSeek(value[0]);
             }}
             className="col-span-8 w-full"
           />
@@ -156,16 +171,19 @@ const AppFooter = () => {
           <Button variant="ghost" size="icon" className="border border-primary">
             <Heart size={18} />
           </Button>
-          <Button variant="ghost" size="icon" className="border border-primary">
-            <Volume2 size={18} />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="border border-primary"
+            onClick={handleMuteToggle}
+          >
+            {muted ? <VolumeOff size={18} /> : <Volume2 size={18} />}
           </Button>
         </div>
-        <div className="flex items-center justify-start gap-2  col-span-2">
-          <div className="size-12 rounded-sm bg-primary" />
-          <div>
-            <h3 className="font-medium text-sm font-heading">
-              {currentSong.title}
-            </h3>
+        <div className="flex items-center gap-2 col-span-2 min-w-0">
+          <div className="size-12 rounded-sm bg-primary shrink-0" />
+          <div className="min-w-0 space-y-0.5">
+            <SongTitle text={currentSong.title} />
             <p className="text-xs text-muted-foreground">
               {currentSong.artist}
             </p>

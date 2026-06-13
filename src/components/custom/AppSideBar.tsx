@@ -8,14 +8,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Music } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Music, PlusCircle } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { homeRoutes } from "@/constants/constants";
 
 const AppSidebar = () => {
   return (
     <Sidebar>
-      <SidebarHeader className="border-b border-border h-16 flex justify-center items-center">
+      <SidebarHeader className="h-16 flex justify-center items-center">
         <div className="flex items-center gap-3 text-primary">
           <div className="flex h-8 w-8 justify-center items-center">
             <Music />
@@ -45,8 +46,11 @@ const AppSidebar = () => {
             ))}
           </SidebarGroup>
           <SidebarGroup className="space-y-1 mt-2">
-            <SidebarGroupLabel className="font-semibold font-heading">
+            <SidebarGroupLabel className="font-semibold font-heading flex items-center justify-between">
               Playlists
+              <Button variant="ghost" size="icon">
+                <PlusCircle size={18} />
+              </Button>
             </SidebarGroupLabel>
             <SidebarMenuItem>
               <SidebarMenuButton className="w-full h-12 p-0">

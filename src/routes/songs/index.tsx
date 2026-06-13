@@ -8,19 +8,19 @@ export const Route = createFileRoute("/songs/")({
 });
 
 function RouteComponent() {
-  const { songs } = useGetAllSongsQuery();
+  const { data } = useGetAllSongsQuery();
   const setCurrentSong = usePlayerStore((state) => state.setCurrentSong);
   const setQueue = usePlayerStore((state) => state.setQueue);
 
   const handleSongSelect = (song: Song) => {
-    if (!songs) return;
+    if (!data) return;
     setCurrentSong(song);
-    setQueue(songs);
+    setQueue(data);
   };
 
   return (
     <div>
-      {songs && <SongsTable songs={songs} handleSongClick={handleSongSelect} />}
+      {data && <SongsTable songs={data} handleSongClick={handleSongSelect} />}
     </div>
   );
 }

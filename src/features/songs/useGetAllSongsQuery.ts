@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
 
 const useGetAllSongsQuery = () => {
-  const { data: songs } = useQuery({
+  const { data } = useQuery({
     queryKey: ["songs"],
     queryFn: async () => {
       const res = await invoke("get_all_songs");
@@ -10,6 +10,6 @@ const useGetAllSongsQuery = () => {
     },
   });
 
-  return { songs };
+  return { data };
 };
 export default useGetAllSongsQuery;
