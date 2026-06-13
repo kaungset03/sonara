@@ -98,7 +98,7 @@ const AppFooter = () => {
   }
 
   return (
-    <footer className="absolute bottom-3 left-1 right-3 rounded-2xl p-4 bg-sidebar border border-secondary">
+    <footer className="absolute bottom-2 left-2 right-4 rounded-2xl p-4 bg-sidebar border border-secondary">
       <section className="w-full h-full grid grid-cols-10 items-center">
         <audio
           ref={playerRef}

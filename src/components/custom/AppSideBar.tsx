@@ -26,7 +26,7 @@ const AppSidebar = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
-          <SidebarGroup className="space-y-1 mt-2">
+          <SidebarGroup className="space-y-1 mt-1">
             <SidebarGroupLabel className="font-semibold font-heading">
               Your Library
             </SidebarGroupLabel>
@@ -45,7 +45,7 @@ const AppSidebar = () => {
               </SidebarMenuItem>
             ))}
           </SidebarGroup>
-          <SidebarGroup className="space-y-1 mt-2">
+          <SidebarGroup className="space-y-1 mt-1">
             <SidebarGroupLabel className="font-semibold font-heading flex items-center justify-between">
               Playlists
               <Button variant="ghost" size="icon">
