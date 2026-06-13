@@ -27,21 +27,3 @@ pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<(
     }
     Ok(())
 }
-
-pub fn get_all_songs(
-    conn: &rusqlite::Connection,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
-    song_repository::get_all_songs_query(conn)
-}
-
-pub fn get_all_artists(
-    conn: &rusqlite::Connection,
-) -> rusqlite::Result<Vec<crate::models::artist::Artist>> {
-    song_repository::get_all_artists_query(conn)
-}
-
-pub fn get_all_albums(
-    conn: &rusqlite::Connection,
-) -> rusqlite::Result<Vec<crate::models::album::Album>> {
-    song_repository::get_all_albums_query(conn)
-}

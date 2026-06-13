@@ -70,3 +70,49 @@ pub fn get_all_albums_query(
     let albums: Result<Vec<crate::models::album::Album>, rusqlite::Error> = album_iter.collect();
     albums
 }
+
+// get songs by artist
+pub fn get_songs_by_artist_query(
+    conn: &rusqlite::Connection,
+    artist: &str,
+) -> rusqlite::Result<Vec<crate::models::song::Song>> {
+    let mut stmt = conn.prepare(
+        "SELECT id, title, artist, album, duration, path, created_at FROM songs WHERE artist = ?1",
+    )?;
+    let song_iter = stmt.query_map([artist], |row| {
+        Ok(crate::models::song::Song {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            artist: row.get(2)?,
+            album: row.get(3)?,
+            duration: row.get(4)?,
+            path: row.get(5)?,
+            created_at: row.get(6)?,
+        })
+    })?;
+    let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
+    songs
+}
+
+// get songs by album
+pub fn get_songs_by_album_query(
+    conn: &rusqlite::Connection,
+    album: &str,
+) -> rusqlite::Result<Vec<crate::models::song::Song>> {
+    let mut stmt = conn.prepare(
+        "SELECT id, title, artist, album, duration, path, created_at FROM songs WHERE album = ?1",
+    )?;
+    let song_iter = stmt.query_map([album], |row| {
+        Ok(crate::models::song::Song {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            artist: row.get(2)?,
+            album: row.get(3)?,
+            duration: row.get(4)?,
+            path: row.get(5)?,
+            created_at: row.get(6)?,
+        })
+    })?;
+    let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
+    songs
+}

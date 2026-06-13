@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import useGetAllArtistsQuery from "@/features/artists/useGetAllArtistsQuery";
@@ -23,24 +23,30 @@ function RouteComponent() {
             .toUpperCase();
 
           return (
-            <Card key={artist.name} className="group cursor-pointer">
-              <CardContent className="flex flex-col items-center text-center">
-                <Avatar className="w-24 h-24 mb-3 shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all duration-300">
-                  <AvatarFallback className="text-2xl font-bold bg-muted border">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-                <h3
-                  className="font-semibold w-full truncate leading-tight"
-                  title={artist.name}
-                >
-                  {artist.name}
-                </h3>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {artist.count} {artist.count === 1 ? "song" : "songs"}
-                </p>
-              </CardContent>
-            </Card>
+            <Link
+              to={"/artists/$name"}
+              params={{ name: artist.name }}
+              key={artist.name}
+            >
+              <Card className="group cursor-pointer">
+                <CardContent className="flex flex-col items-center text-center">
+                  <Avatar className="w-24 h-24 mb-3 shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all duration-300">
+                    <AvatarFallback className="text-2xl font-bold bg-muted border">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <h3
+                    className="font-semibold w-full truncate leading-tight"
+                    title={artist.name}
+                  >
+                    {artist.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {artist.count} {artist.count === 1 ? "song" : "songs"}
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
           );
         })}
       </div>

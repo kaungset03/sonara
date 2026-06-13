@@ -36,7 +36,9 @@ pub fn run() {
             add_library_folder,
             get_all_songs,
             get_all_artists,
-            get_all_albums
+            get_all_albums,
+            get_songs_by_artist,
+            get_songs_by_album
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

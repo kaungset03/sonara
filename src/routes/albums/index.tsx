@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import useGetAllAlbumsQuery from "@/features/albums/useGetAllAlbumsQuery";
@@ -22,24 +22,30 @@ function RouteComponent() {
             .toUpperCase();
 
           return (
-            <Card key={album.name} className="group cursor-pointer">
-              <CardContent className="flex flex-col items-center text-center">
-                <Avatar className="w-24 h-24 mb-3 shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all duration-300">
-                  <AvatarFallback className="text-2xl font-bold bg-muted border">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-                <h3
-                  className="font-semibold w-full truncate leading-tight"
-                  title={album.name}
-                >
-                  {album.name}
-                </h3>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {album.count} {album.count === 1 ? "song" : "songs"}
-                </p>
-              </CardContent>
-            </Card>
+            <Link
+              to={"/albums/$name"}
+              params={{ name: album.name }}
+              key={album.name}
+            >
+              <Card className="group cursor-pointer">
+                <CardContent className="flex flex-col items-center text-center">
+                  <Avatar className="w-24 h-24 mb-3 shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all duration-300">
+                    <AvatarFallback className="text-2xl font-bold bg-muted border">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <h3
+                    className="font-semibold w-full truncate leading-tight"
+                    title={album.name}
+                  >
+                    {album.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {album.count} {album.count === 1 ? "song" : "songs"}
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
           );
         })}
       </div>

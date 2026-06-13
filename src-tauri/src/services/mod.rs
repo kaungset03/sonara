@@ -1,3 +1,4 @@
 pub mod library;
-pub mod scanner;
 pub mod metadata;
+pub mod scanner;
+pub mod song;
