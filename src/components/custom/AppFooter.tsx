@@ -18,6 +18,7 @@ import SongTitle from "@/components/custom/SongTitle";
 import usePlayerStore from "@/store/store";
 import useToggleFavoriteMutation from "@/features/favorites/useToggleFavoriteMutation";
 import useCurrentSong from "@/hooks/useCurrentSong";
+import useMediaSession from "@/hooks/useMediaSession";
 
 const AppFooter = () => {
   const playerRef = useRef<HTMLAudioElement | null>(null);
@@ -96,6 +97,15 @@ const AppFooter = () => {
     }
   };
 
+  useMediaSession({
+    song: currentSong!,
+    isPlaying,
+    onPlay: playAudio,
+    onPause: pauseAudio,
+    onNext: handleNext,
+    onPrevious: handlePrevious,
+  });
+
   useEffect(() => {
     const player = playerRef.current;
     if (player && currentSong) {
@@ -110,7 +120,7 @@ const AppFooter = () => {
   }
 
   return (
-    <footer className="fixed bottom-2 left-4 right-2 rounded-2xl p-4 bg-sidebar/70 border border-secondary backdrop-blur-md z-10">
+    <footer className="fixed bottom-2 left-2 right-2 rounded-2xl p-4 bg-muted dark:bg-sidebar/50 border border-secondary backdrop-blur-lg z-10">
       <section className="w-full h-full grid grid-cols-10 items-center">
         <audio
           ref={playerRef}

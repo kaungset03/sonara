@@ -20,5 +20,10 @@ declare global {
     name: string;
     count: number; // number of songs in the album
   };
+
+  type Playlist = {
+    id: number;
+    name: string;
+  };
 }
 export {};

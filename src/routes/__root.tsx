@@ -16,7 +16,7 @@ const RootLayout = () => (
       <SidebarInset>
         <div className="w-full h-screen">
           <AppHeader />
-          <main className="p-2 pr-4 pb-28 w-full">
+          <main className="p-2 pr-4 pb-25 w-full">
             <Outlet />
           </main>
         </div>
