@@ -14,14 +14,14 @@ const RootLayout = () => (
     <SidebarProvider>
       <AppSideBar />
       <SidebarInset>
-        <div className="w-full h-screen relative">
+        <div className="w-full h-screen">
           <AppHeader />
-          <main className="p-2 pr-4 w-full">
+          <main className="p-2 pr-4 pb-28 w-full">
             <Outlet />
           </main>
-          <AppFooter />
         </div>
       </SidebarInset>
+      <AppFooter />
     </SidebarProvider>
     <Toaster
       position="top-right"

@@ -17,18 +17,16 @@ import { getFormattedDuration } from "@/lib/helpers";
 import SongTitle from "@/components/custom/SongTitle";
 import usePlayerStore from "@/store/store";
 import useToggleFavoriteMutation from "@/features/favorites/useToggleFavoriteMutation";
-import useGetAllSongsQuery from "@/features/songs/useGetAllSongsQuery";
+import useCurrentSong from "@/hooks/useCurrentSong";
 
 const AppFooter = () => {
-  const { data } = useGetAllSongsQuery();
-
   const playerRef = useRef<HTMLAudioElement | null>(null);
 
-  const currentSongId = usePlayerStore((state) => state.currentSongId);
-  const currentSong = data?.find((song) => song.id === currentSongId);
-
+  const currentSong = useCurrentSong();
   const setCurrentSongId = usePlayerStore((state) => state.setCurrentSongId);
+
   const queue = usePlayerStore((state) => state.queue);
+
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
 
@@ -105,14 +103,14 @@ const AppFooter = () => {
       player.play();
       setIsPlaying(true);
     }
-  }, [currentSongId, setIsPlaying, playerRef]);
+  }, [currentSong?.id, setIsPlaying, playerRef]);
 
   if (!currentSong) {
     return null;
   }
 
   return (
-    <footer className="absolute bottom-2 left-2 right-4 rounded-2xl p-4 bg-sidebar border border-secondary">
+    <footer className="fixed bottom-2 left-4 right-2 rounded-2xl p-4 bg-sidebar/70 border border-secondary backdrop-blur-md z-10">
       <section className="w-full h-full grid grid-cols-10 items-center">
         <audio
           ref={playerRef}
@@ -121,14 +119,14 @@ const AppFooter = () => {
           onPlay={playAudio}
           onPause={pauseAudio}
         />
-        <div className="flex items-center justify-center col-span-2 gap-x-1">
+        <div className="flex items-center justify-center col-span-2 gap-x-2 2xl:gap-x-4">
           <Button
             variant="ghost"
             size="icon"
             onClick={handlePrevious}
             className="border border-primary"
           >
-            <SkipBack size={18} />
+            <SkipBack size={16} />
           </Button>
           {isPlaying ? (
             <Button
@@ -137,7 +135,7 @@ const AppFooter = () => {
               onClick={pauseAudio}
               className="border border-primary"
             >
-              <Pause size={18} />
+              <Pause size={16} />
             </Button>
           ) : (
             <Button
@@ -146,7 +144,7 @@ const AppFooter = () => {
               onClick={playAudio}
               className="border border-primary"
             >
-              <Play size={18} />
+              <Play size={16} />
             </Button>
           )}
           <Button
@@ -155,17 +153,17 @@ const AppFooter = () => {
             onClick={handleNext}
             className="border border-primary"
           >
-            <SkipForward size={18} />
+            <SkipForward size={16} />
           </Button>
           <Button variant="ghost" size="icon" className="border border-primary">
-            <Shuffle size={18} />
+            <Shuffle size={16} />
           </Button>
           <Button variant="ghost" size="icon" className="border border-primary">
-            <Repeat size={18} />
+            <Repeat size={16} />
           </Button>
         </div>
         <div className="col-span-5 w-full grid grid-cols-10 items-center justify-center">
-          <span className="text-sm text-muted-foreground text-center">
+          <span className="text-sm font-heading font-medium text-muted-foreground text-center">
             {getFormattedDuration(currentTime)}
           </span>
           <Slider
@@ -177,11 +175,11 @@ const AppFooter = () => {
             }}
             className="col-span-8 w-full"
           />
-          <span className="text-sm text-muted-foreground text-center">
+          <span className="text-sm font-heading font-medium text-muted-foreground text-center">
             {getFormattedDuration(currentSong.duration)}
           </span>
         </div>
-        <div className="flex items-center justify-center gap-x-1 col-span-1">
+        <div className="flex items-center justify-center gap-x-2 2xl:gap-x-4 col-span-1">
           <Button
             variant="ghost"
             size="icon"
@@ -189,9 +187,9 @@ const AppFooter = () => {
             onClick={handleFavoriteToggle}
           >
             {currentSong.is_favorite ? (
-              <Heart size={18} fill="currentColor" />
+              <Heart size={16} fill="currentColor" />
             ) : (
-              <Heart size={18} />
+              <Heart size={16} />
             )}
           </Button>
           <Button
@@ -200,10 +198,10 @@ const AppFooter = () => {
             className="border border-primary"
             onClick={handleMuteToggle}
           >
-            {muted ? <VolumeOff size={18} /> : <Volume2 size={18} />}
+            {muted ? <VolumeOff size={16} /> : <Volume2 size={16} />}
           </Button>
         </div>
-        <div className="flex items-center gap-2 col-span-2 min-w-0">
+        <div className="flex items-center gap-2 2xl:gap-4 col-span-2 min-w-0">
           <div className="size-12 rounded-sm bg-primary shrink-0" />
           <div className="min-w-0 space-y-0.5">
             <SongTitle text={currentSong.title} />
