@@ -58,7 +58,7 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-7 hover:text-primary"
+                  className="size-5 hover:text-primary"
                   onClick={(e) => {
                     e.stopPropagation();
                     mutate({ songId: song.id, isFavorite: !song.is_favorite });

@@ -1,4 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Play, Shuffle } from "lucide-react";
+import usePlayerStore from "@/store/store";
+import SongsTable from "@/components/custom/SongsTable";
+import AddSongsDialog from "@/components/custom/AddSongsDialog";
+import useGetSongsByArtistQuery from "@/features/artists/useGetSongsByArtistQuery";
 
 export const Route = createFileRoute("/playlists/$id")({
   component: RouteComponent,
@@ -6,5 +12,72 @@ export const Route = createFileRoute("/playlists/$id")({
 
 function RouteComponent() {
   const { id } = Route.useParams();
-  return <div>Hello "/playlists/{id}"!</div>;
+  const name = "Liu Yuning";
+  const { data: artistSongs } = useGetSongsByArtistQuery(name);
+  const { setCurrentSongId, setIsPlaying, setQueue } = usePlayerStore();
+
+  const handleSongClick = (song: Song) => {
+    if (!artistSongs) return;
+    setCurrentSongId(song.id);
+    setQueue(artistSongs);
+    setIsPlaying(true);
+  };
+
+  const handlePlayAll = () => {
+    if (!artistSongs) return;
+    if (artistSongs.length > 0) {
+      setCurrentSongId(artistSongs[0].id);
+      setQueue(artistSongs);
+      setIsPlaying(true);
+    }
+  };
+
+  const handleShuffle = () => {
+    if (!artistSongs) return;
+    if (artistSongs.length > 0) {
+      const shuffled = [...artistSongs].sort(() => Math.random() - 0.5);
+      setCurrentSongId(shuffled[0].id);
+      setQueue(shuffled);
+      setIsPlaying(true);
+    }
+  };
+
+  if (!artistSongs) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div className="h-full overflow-y-auto">
+      <div className="flex flex-col gap-6 mb-8 border-b pb-8">
+        <div>
+          <h1 className="text-4xl font-bold font-heading tracking-tight mb-2">
+            {name} - {id}
+          </h1>
+          <p className="text-muted-foreground">
+            {artistSongs.length} {artistSongs.length === 1 ? "Song" : "Songs"}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <Button onClick={handlePlayAll} className="gap-2 text-xs">
+            <Play size={16} fill="currentColor" />
+            Play All
+          </Button>
+          <Button
+            onClick={handleShuffle}
+            variant="outline"
+            className="gap-2 text-xs"
+          >
+            <Shuffle size={16} />
+            Shuffle
+          </Button>
+          <AddSongsDialog />
+        </div>
+      </div>
+
+      <div>
+        <SongsTable songs={artistSongs} handleSongClick={handleSongClick} />
+      </div>
+    </div>
+  );
 }

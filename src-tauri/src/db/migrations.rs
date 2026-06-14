@@ -25,5 +25,9 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
         [],
     )?;
 
+    // Create the 'playlists' table
+
+    // Create the 'playlist_songs' table
+
     Ok(())
 }

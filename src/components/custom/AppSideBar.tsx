@@ -9,19 +9,17 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
-import { Music, PlusCircle } from "lucide-react";
+import { Music } from "lucide-react";
 import { homeRoutes, playlistRoutes } from "@/constants/constants";
 import { Link } from "@tanstack/react-router";
+import CreatePlaylistDialog from "./CreatePlaylistDialog";
 
 const AppSidebar = () => {
   return (
     <Sidebar variant="floating" className="pb-25">
       <SidebarHeader className="h-16 flex justify-center items-center">
         <div className="flex items-center gap-3 text-primary">
-          <div className="flex h-8 w-8 justify-center items-center">
-            <Music />
-          </div>
+          <Music />
           <h2 className="text-lg font-semibold font-heading">Tauri Player</h2>
         </div>
       </SidebarHeader>
@@ -50,11 +48,9 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup className="space-y-1">
-          <SidebarGroupLabel className="font-semibold font-heading">
+          <SidebarGroupLabel className="font-semibold font-heading flex items-center justify-between">
             Your Playlists
-            <Button size="icon" variant="ghost" className="ml-auto">
-              <PlusCircle size={14} />
-            </Button>
+            <CreatePlaylistDialog />
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -64,7 +60,7 @@ const AppSidebar = () => {
                     <Link
                       to={"/playlists/$id"}
                       params={{ id: route.id.toString() }}
-                      className="w-full h-full text-xs px-6 flex items-center gap-3"
+                      className="w-full h-full text-xs px-6 flex items-center"
                       activeProps={{ className: "bg-secondary" }}
                     >
                       {route.name}
