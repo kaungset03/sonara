@@ -2,20 +2,24 @@ import { useEffect } from "react";
 
 type useMediaSessionProps = {
   song: Song;
+  position: number;
   isPlaying: boolean;
   onPlay: () => void;
   onPause: () => void;
   onNext: () => void;
   onPrevious: () => void;
+  onSeek: (position: number) => void;
 };
 
 const useMediaSession = ({
   song,
+  position,
   isPlaying,
   onPlay,
   onPause,
   onNext,
   onPrevious,
+  onSeek,
 }: useMediaSessionProps) => {
   useEffect(() => {
     if ("mediaSession" in navigator && song) {
@@ -33,6 +37,21 @@ const useMediaSession = ({
     }
   }, [isPlaying]);
 
+  // Sync OS Progress Bar (Position and Duration)
+  useEffect(() => {
+    if ("mediaSession" in navigator && song.duration > 0) {
+      try {
+        navigator.mediaSession.setPositionState({
+          duration: song.duration,
+          playbackRate: 1,
+          position: position,
+        });
+      } catch (e) {
+        console.warn("Could not set OS position state:", e);
+      }
+    }
+  }, [song.duration, isPlaying]);
+
   useEffect(() => {
     if ("mediaSession" in navigator) {
       // Safely assign handlers only if the callback is provided
@@ -42,14 +61,24 @@ const useMediaSession = ({
       if (onPrevious)
         navigator.mediaSession.setActionHandler("previoustrack", onPrevious);
 
+      if (onSeek) {
+        navigator.mediaSession.setActionHandler("seekto", (details) => {
+          // details.seekTime is the exact second the user dragged the OS slider to
+          if (details.seekTime !== undefined) {
+            onSeek(details.seekTime);
+          }
+        });
+      }
+
       return () => {
         navigator.mediaSession.setActionHandler("play", null);
         navigator.mediaSession.setActionHandler("pause", null);
         navigator.mediaSession.setActionHandler("nexttrack", null);
         navigator.mediaSession.setActionHandler("previoustrack", null);
+        navigator.mediaSession.setActionHandler("seekto", null);
       };
     }
-  }, [onPlay, onPause, onNext, onPrevious]);
+  }, [onPlay, onPause, onNext, onPrevious, onSeek]);
 };
 
 export default useMediaSession;
