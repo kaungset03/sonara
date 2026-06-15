@@ -54,7 +54,9 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
               <TableCell className="w-10 text-center">
                 {isActive ? <Music2 size={14} /> : index + 1}
               </TableCell>
-              <TableCell>{song.title}</TableCell>
+              <TableCell className="min-w-65 max-w-sm overflow-hidden truncate">
+                {song.title}
+              </TableCell>
               <TableCell>{song.artist}</TableCell>
               <TableCell>{song.album}</TableCell>
               <TableCell className="text-center">

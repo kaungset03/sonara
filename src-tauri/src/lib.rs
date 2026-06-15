@@ -46,7 +46,7 @@ pub fn run() {
             edit_playlist,
             delete_playlist,
             get_songs_by_playlist,
-            add_song_to_playlist,
+            add_songs_to_playlist,
             remove_song_from_playlist
         ])
         .run(tauri::generate_context!())

@@ -117,7 +117,7 @@ pub fn add_songs_to_playlist_query(
     let tx = conn.transaction()?;
     for &song_id in song_ids {
         tx.execute(
-            "INSERT INTO playlist_songs (playlist_id, song_id, created_at) VALUES (?1, ?2, ?3)",
+            "INSERT OR IGNORE INTO playlist_songs (playlist_id, song_id, created_at) VALUES (?1, ?2, ?3)",
             rusqlite::params![playlist_id, song_id, created_at],
         )?;
     }

@@ -117,7 +117,7 @@ pub fn get_songs_by_playlist(
 
 // add new song to playlist
 #[tauri::command]
-pub fn add_song_to_playlist(
+pub fn add_songs_to_playlist(
     db: State<DbState>,
     playlist_id: i64,
     song_ids: Vec<i64>,

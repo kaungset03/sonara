@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Play, Shuffle } from "lucide-react";
+import { Play, Shuffle, Trash2 } from "lucide-react";
 import usePlayerStore from "@/store/store";
 import SongsTable from "@/components/custom/SongsTable";
 import AddSongsDialog from "@/components/custom/AddSongsDialog";
 import useGetSongsByPlaylistQuery from "@/features/playlists/useGetSongsByPlaylistQuery";
+import EditPlaylistDialog from "@/components/custom/EditPlaylistDialog";
 
 export const Route = createFileRoute("/playlists/$id")({
   component: RouteComponent,
@@ -55,9 +56,18 @@ function RouteComponent() {
     <div className="h-full overflow-y-auto">
       <div className="flex flex-col gap-6 mb-8 border-b pb-8">
         <div>
-          <h1 className="text-4xl font-bold font-heading tracking-tight mb-2">
-            {data?.playlist.name}
-          </h1>
+          <div className="flex items-center gap-x-12">
+            <h1 className="text-4xl font-bold font-heading tracking-tight mb-2">
+              {data?.playlist.name}
+            </h1>
+            <div className="flex items-center gap-2">
+              <EditPlaylistDialog playlist={data?.playlist} />
+              <Button variant="destructive">
+                <Trash2 size={16} />
+              </Button>
+            </div>
+          </div>
+
           <p className="text-muted-foreground">
             {songs.length} {songs.length === 1 ? "Song" : "Songs"}
           </p>

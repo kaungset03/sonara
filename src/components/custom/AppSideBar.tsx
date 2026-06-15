@@ -36,7 +36,7 @@ const AppSidebar = () => {
             <SidebarMenu>
               {homeRoutes.map((route) => (
                 <SidebarMenuItem key={route.name}>
-                  <SidebarMenuButton className="w-full h-12 p-0">
+                  <SidebarMenuButton className="w-full h-10 p-0">
                     <Link
                       to={route.href}
                       className="w-full h-full text-xs px-6 flex items-center gap-3"
@@ -60,7 +60,7 @@ const AppSidebar = () => {
             <SidebarMenu>
               {playlists?.map((playlist) => (
                 <SidebarMenuItem key={playlist.id}>
-                  <SidebarMenuButton className="w-full h-12 p-0">
+                  <SidebarMenuButton className="w-full h-10 p-0">
                     <Link
                       to={"/playlists/$id"}
                       params={{ id: playlist.id.toString() }}

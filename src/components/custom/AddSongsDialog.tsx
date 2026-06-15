@@ -14,7 +14,7 @@ import { Check, PlusCircle } from "lucide-react";
 import { SubmitEvent, useState } from "react";
 import { Input } from "@/components/ui/input";
 import useGetAllSongsQuery from "@/features/songs/useGetAllSongsQuery";
-import useAddSongToPlaylistMutation from "@/features/playlists/useAddSongToPlaylistMutation";
+import useAddSongsToPlaylistMutation from "@/features/playlists/useAddSongToPlaylistMutation";
 
 type AddSongsDialogProps = {
   playlistId: number;
@@ -30,7 +30,7 @@ const AddSongsDialog = ({ playlistId }: AddSongsDialogProps) => {
   };
 
   const { data: songs } = useGetAllSongsQuery();
-  const { mutate } = useAddSongToPlaylistMutation({ closeDialog });
+  const { mutate } = useAddSongsToPlaylistMutation({ closeDialog });
 
   const toggleSelection = (songId: number) => {
     setSelectedIds((prev) => {
@@ -93,7 +93,11 @@ const AddSongsDialog = ({ playlistId }: AddSongsDialogProps) => {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit" form="add-songs-form" disabled={selectedIds.length === 0}>
+            <Button
+              type="submit"
+              form="add-songs-form"
+              disabled={selectedIds.length === 0}
+            >
               <Check size={16} />
               Add {selectedIds.length}
             </Button>
