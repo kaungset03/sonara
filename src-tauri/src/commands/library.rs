@@ -106,12 +106,11 @@ pub fn delete_playlist(db: State<DbState>, playlist_id: i64) -> Result<(), Strin
 }
 
 // get songs by playlist
-// TODO: add playlist metadata like name, created_at, etc. and return it with the songs
 #[tauri::command]
 pub fn get_songs_by_playlist(
     db: State<DbState>,
     playlist_id: i64,
-) -> Result<Vec<crate::models::song::Song>, String> {
+) -> Result<crate::models::playlist::PlaylistDetails, String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
     services::playlist::get_songs_by_playlist(&conn, playlist_id).map_err(|e| e.to_string())
 }

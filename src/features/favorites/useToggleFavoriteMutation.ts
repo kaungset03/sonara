@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
 import { toast } from "sonner";
-import { updateSongInCache } from "@/lib/helpers";
+//import { updateSongInCache } from "@/lib/helpers";
 
 type ToggleFavoriteInput = {
   songId: number;
@@ -27,27 +27,31 @@ const useToggleFavoriteMutation = () => {
         isFavorite,
       });
     },
-    onMutate: async ({ songId, isFavorite }) => {
-      await queryClient.cancelQueries({ queryKey: ["songs"] });
+    // onMutate: async ({ songId, isFavorite }) => {
+    //   await queryClient.cancelQueries({ queryKey: ["songs"] });
 
-      const previousSongs = queryClient.getQueryData<Song[]>(["songs"]);
+    //   const previousSongs = queryClient.getQueryData<Song[]>(["songs"]);
 
-      updateSongInCache(queryClient, songId, (song) => ({
-        ...song,
-        isFavorite,
-      }));
+    //   updateSongInCache(queryClient, songId, (song) => ({
+    //     ...song,
+    //     isFavorite,
+    //   }));
 
-      return { previousSongs };
-    },
+    //   return { previousSongs };
+    // },
     onSuccess: () => {
       toast.success("Favorite status updated");
-      queryClient.invalidateQueries({ queryKey: ["songs"] });
+      queryClient.invalidateQueries({ queryKey: ["songs"], exact: false });
     },
-    onError: (_err, _vars, context) => {
-      if (context?.previousSongs) {
-        queryClient.setQueryData(["songs"], context.previousSongs);
-      }
+    onError: (err) => {
+      toast.error("Failed to update favorite status: ");
+      console.error(err);
     },
+    // onError: (_err, _vars, context) => {
+    //   if (context?.previousSongs) {
+    //     queryClient.setQueryData(["songs"], context.previousSongs);
+    //   }
+    // },
   });
 
   return mutation;

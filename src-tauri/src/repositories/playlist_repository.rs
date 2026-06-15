@@ -29,6 +29,26 @@ pub fn get_all_playlists_query(
     playlists
 }
 
+// get playlist by id
+pub fn get_playlist_by_id_query(
+    conn: &rusqlite::Connection,
+    playlist_id: i64,
+) -> rusqlite::Result<Option<crate::models::playlist::Playlist>> {
+    let mut stmt = conn.prepare("SELECT id, name, created_at FROM playlists WHERE id = ?1")?;
+    let mut playlist_iter = stmt.query_map([playlist_id], |row| {
+        Ok(crate::models::playlist::Playlist {
+            id: row.get(0)?,
+            name: row.get(1)?,
+            created_at: row.get(2)?,
+        })
+    })?;
+    if let Some(playlist) = playlist_iter.next() {
+        Ok(Some(playlist?))
+    } else {
+        Ok(None)
+    }
+}
+
 // edit playlist
 pub fn edit_playlist_query(
     conn: &rusqlite::Connection,
@@ -63,7 +83,9 @@ pub fn get_songs_by_playlist_query(
         "SELECT s.id, s.title, s.artist, s.album, s.duration, s.path, s.is_favorite, s.favorite_added_at, s.created_at
          FROM songs s
          INNER JOIN playlist_songs ps ON s.id = ps.song_id
-         WHERE ps.playlist_id = ?1",
+         WHERE ps.playlist_id = ?1
+         ORDER BY ps.created_at ASC
+         ",
     )?;
     let song_iter = stmt.query_map([playlist_id], |row| {
         Ok(crate::models::song::Song {

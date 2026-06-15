@@ -1,4 +1,4 @@
-use crate::repositories::playlist_repository;
+use crate::{models::playlist::PlaylistDetails, repositories::playlist_repository};
 
 // create new playlist
 pub fn create_playlist(conn: &rusqlite::Connection, name: &str) -> rusqlite::Result<i64> {
@@ -30,8 +30,16 @@ pub fn delete_playlist(conn: &rusqlite::Connection, playlist_id: i64) -> rusqlit
 pub fn get_songs_by_playlist(
     conn: &rusqlite::Connection,
     playlist_id: i64,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
-    playlist_repository::get_songs_by_playlist_query(conn, playlist_id)
+) -> rusqlite::Result<PlaylistDetails> {
+    let playlist = playlist_repository::get_playlist_by_id_query(conn, playlist_id)?;
+    if playlist.is_none() {
+        return Err(rusqlite::Error::QueryReturnedNoRows);
+    }
+    let songs = playlist_repository::get_songs_by_playlist_query(conn, playlist_id)?;
+    Ok(PlaylistDetails {
+        playlist: playlist.unwrap(),
+        songs,
+    })
 }
 
 // add songs to playlist

@@ -12,7 +12,9 @@ export const Route = createFileRoute("/playlists/$id")({
 
 function RouteComponent() {
   const { id } = Route.useParams();
-  const { data: songs } = useGetSongsByPlaylistQuery(Number(id));
+  const { data } = useGetSongsByPlaylistQuery(Number(id));
+  const songs = data?.songs;
+
   const { setCurrentSongId, setIsPlaying, setQueue } = usePlayerStore();
 
   const handleSongClick = (song: Song) => {
@@ -54,7 +56,7 @@ function RouteComponent() {
       <div className="flex flex-col gap-6 mb-8 border-b pb-8">
         <div>
           <h1 className="text-4xl font-bold font-heading tracking-tight mb-2">
-            {id}
+            {data?.playlist.name}
           </h1>
           <p className="text-muted-foreground">
             {songs.length} {songs.length === 1 ? "Song" : "Songs"}

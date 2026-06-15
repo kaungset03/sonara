@@ -21,6 +21,12 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
   const currentSongId = usePlayerStore((state) => state.currentSongId);
   const { mutate } = useToggleFavoriteMutation();
 
+  const toggleFavorite = (song: Song) => {
+    console.log("Toggling favorite for song:", song);
+    mutate({ songId: song.id, isFavorite: !song.is_favorite });
+    console.log("✅ invoke sent to Rust");
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -61,7 +67,7 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
                   className="size-5 hover:text-primary"
                   onClick={(e) => {
                     e.stopPropagation();
-                    mutate({ songId: song.id, isFavorite: !song.is_favorite });
+                    toggleFavorite(song);
                   }}
                 >
                   {song.is_favorite ? (
