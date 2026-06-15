@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Play, Shuffle, Trash2 } from "lucide-react";
+import { Play, Shuffle } from "lucide-react";
 import usePlayerStore from "@/store/store";
 import SongsTable from "@/components/custom/SongsTable";
 import AddSongsDialog from "@/components/custom/AddSongsDialog";
 import useGetSongsByPlaylistQuery from "@/features/playlists/useGetSongsByPlaylistQuery";
 import EditPlaylistDialog from "@/components/custom/EditPlaylistDialog";
+import DeletePlaylistAlert from "@/components/custom/DeletePlaylistAlert";
 
 export const Route = createFileRoute("/playlists/$id")({
   component: RouteComponent,
@@ -62,9 +63,7 @@ function RouteComponent() {
             </h1>
             <div className="flex items-center gap-2">
               <EditPlaylistDialog playlist={data?.playlist} />
-              <Button variant="destructive">
-                <Trash2 size={16} />
-              </Button>
+              <DeletePlaylistAlert playlistId={Number(id)} />
             </div>
           </div>
 

@@ -14,7 +14,7 @@ import { Trash2 } from "lucide-react";
 import useDeletePlaylistMutation from "@/features/playlists/useDeletePlaylistMutation";
 
 type DeletePlaylistAlertProps = {
-  playlistId: string;
+  playlistId: number;
 };
 
 const DeletePlaylistAlert = ({ playlistId }: DeletePlaylistAlertProps) => {
@@ -40,7 +40,7 @@ const DeletePlaylistAlert = ({ playlistId }: DeletePlaylistAlertProps) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete}>
+          <AlertDialogAction variant="destructive" onClick={handleDelete}>
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>

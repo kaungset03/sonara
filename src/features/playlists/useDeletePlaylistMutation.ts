@@ -11,7 +11,7 @@ const useDeletePlaylistMutation = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async (playlistId: string) => {
+    mutationFn: async (playlistId: number) => {
       await invoke("delete_playlist", { playlistId });
     },
     onSuccess: (_, playlistId) => {
