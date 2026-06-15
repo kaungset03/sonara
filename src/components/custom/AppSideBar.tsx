@@ -1,6 +1,7 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -9,10 +10,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Music } from "lucide-react";
-import { homeRoutes, playlistRoutes } from "@/constants/constants";
 import { Link } from "@tanstack/react-router";
-import CreatePlaylistDialog from "./CreatePlaylistDialog";
+import { Music, Settings } from "lucide-react";
+import { homeRoutes, playlistRoutes } from "@/constants/constants";
+import CreatePlaylistDialog from "@/components/custom/CreatePlaylistDialog";
 
 const AppSidebar = () => {
   return (
@@ -72,6 +73,22 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="border-t border-secondary">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton className="w-full p-0">
+              <Link
+                to={"/settings"}
+                className="w-full h-full text-xs px-6 flex items-center gap-3"
+                activeProps={{ className: "bg-secondary" }}
+              >
+                <Settings />
+                Settings
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 };

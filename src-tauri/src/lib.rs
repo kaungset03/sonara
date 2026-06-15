@@ -40,7 +40,14 @@ pub fn run() {
             get_songs_by_artist,
             get_songs_by_album,
             set_favorite_song,
-            get_favorite_songs
+            get_favorite_songs,
+            create_playlist,
+            get_all_playlists,
+            edit_playlist,
+            delete_playlist,
+            get_songs_by_playlist,
+            add_song_to_playlist,
+            remove_song_from_playlist
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -50,7 +50,7 @@ const CreatePlaylistDialog = () => {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit">Save</Button>
+            <Button type="submit">Create</Button>
           </DialogFooter>
         </DialogContent>
       </form>

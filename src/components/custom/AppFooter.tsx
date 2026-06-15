@@ -117,7 +117,7 @@ const AppFooter = () => {
 
   if (!currentSong) {
     return (
-      <footer className="fixed bottom-2 left-2 right-2 rounded-2xl p-4 bg-muted dark:bg-sidebar/50 border border-secondary backdrop-blur-lg z-10">
+      <footer className="fixed bottom-2 left-2 right-2 rounded-3xl p-4 shadow-lg border border-secondary bg-muted dark:bg-sidebar/50 backdrop-blur-lg z-10">
         <section className="w-full h-full grid grid-cols-10 items-center opacity-60">
           <div className="flex items-center justify-center col-span-2 gap-x-2">
             <Button variant="ghost" size="icon" disabled>
@@ -151,7 +151,7 @@ const AppFooter = () => {
   }
 
   return (
-    <footer className="fixed bottom-2 left-2 right-2 rounded-2xl p-4 bg-muted dark:bg-sidebar/50 border border-secondary backdrop-blur-lg z-10">
+    <footer className="fixed bottom-2 left-2 right-2 rounded-3xl p-4 shadow-lg border border-secondary bg-muted dark:bg-sidebar/50 backdrop-blur-lg z-10">
       <section className="w-full h-full grid grid-cols-10 items-center">
         <audio
           ref={playerRef}
