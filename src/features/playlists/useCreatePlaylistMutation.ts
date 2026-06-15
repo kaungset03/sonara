@@ -3,11 +3,11 @@ import { useNavigate } from "@tanstack/react-router";
 import { invoke } from "@tauri-apps/api/core";
 import { toast } from "sonner";
 
-type CreatePlaylistResponse = {
+type CreatePlaylistProps = {
   closeDialog: () => void;
 };
 
-const useCreatePlaylistMutation = ({ closeDialog }: CreatePlaylistResponse) => {
+const useCreatePlaylistMutation = ({ closeDialog }: CreatePlaylistProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 

@@ -21,10 +21,16 @@ type AddSongsDialogProps = {
 };
 
 const AddSongsDialog = ({ playlistId }: AddSongsDialogProps) => {
+  const [open, setOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
+  const closeDialog = () => {
+    setOpen(false);
+    setSelectedIds([]);
+  };
+
   const { data: songs } = useGetAllSongsQuery();
-  const { mutate } = useAddSongToPlaylistMutation();
+  const { mutate } = useAddSongToPlaylistMutation({ closeDialog });
 
   const toggleSelection = (songId: number) => {
     setSelectedIds((prev) => {
@@ -45,8 +51,8 @@ const AddSongsDialog = ({ playlistId }: AddSongsDialogProps) => {
   };
 
   return (
-    <Dialog>
-      <form onSubmit={handleSubmit}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <form onSubmit={handleSubmit} id="add-songs-form">
         <DialogTrigger asChild>
           <Button variant="secondary" className="text-xs">
             <PlusCircle size={16} />
@@ -87,7 +93,7 @@ const AddSongsDialog = ({ playlistId }: AddSongsDialogProps) => {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit">
+            <Button type="submit" form="add-songs-form" disabled={selectedIds.length === 0}>
               <Check size={16} />
               Add {selectedIds.length}
             </Button>

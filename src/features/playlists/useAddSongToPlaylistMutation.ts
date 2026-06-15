@@ -2,7 +2,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
 import { toast } from "sonner";
 
-const useAddSongToPlaylistMutation = () => {
+type AddSongToPlaylistProps = {
+  closeDialog: () => void;
+};
+
+const useAddSongToPlaylistMutation = ({
+  closeDialog,
+}: AddSongToPlaylistProps) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async ({
@@ -16,6 +22,7 @@ const useAddSongToPlaylistMutation = () => {
     },
     onSuccess: (_, variables) => {
       toast.success("Song added to playlist");
+      closeDialog();
       queryClient.invalidateQueries({
         queryKey: ["songs", "playlist", variables.playlistId],
       });
