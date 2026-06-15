@@ -25,7 +25,6 @@ const EditPlaylistDialog = ({ playlist }: EditPlaylistDialogProps) => {
 
   const closeDialog = () => {
     setOpen(false);
-    setName("");
   };
 
   const { mutate } = useEditPlaylistMutation({ closeDialog });
