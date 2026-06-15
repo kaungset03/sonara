@@ -3,6 +3,7 @@ import { useEffect } from "react";
 type useMediaSessionProps = {
   song: Song;
   position: number;
+  duration: number;
   isPlaying: boolean;
   onPlay: () => void;
   onPause: () => void;
@@ -14,6 +15,7 @@ type useMediaSessionProps = {
 const useMediaSession = ({
   song,
   position,
+  duration,
   isPlaying,
   onPlay,
   onPause,
@@ -39,10 +41,10 @@ const useMediaSession = ({
 
   // Sync OS Progress Bar (Position and Duration)
   useEffect(() => {
-    if ("mediaSession" in navigator && song.duration > 0) {
+    if ("mediaSession" in navigator && duration > 0) {
       try {
         navigator.mediaSession.setPositionState({
-          duration: song.duration,
+          duration: duration,
           playbackRate: 1,
           position: position,
         });
@@ -50,7 +52,7 @@ const useMediaSession = ({
         console.warn("Could not set OS position state:", e);
       }
     }
-  }, [song.duration, isPlaying]);
+  }, [duration, isPlaying]);
 
   useEffect(() => {
     if ("mediaSession" in navigator) {

@@ -37,6 +37,7 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   const setMuted = usePlayerStore((state) => state.setMuted);
 
   const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const { mutate } = useToggleFavoriteMutation();
 
@@ -89,6 +90,14 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   const handleSeek = (value: number) => {
     if (playerRef.current) {
       playerRef.current.currentTime = value;
+      setCurrentTime(value);
+    }
+  };
+
+  const handleOnLoadedMetadata = () => {
+    if (playerRef.current) {
+      setDuration(playerRef.current.duration);
+      setCurrentTime(playerRef.current.currentTime);
     }
   };
 
@@ -102,6 +111,7 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   useMediaSession({
     song: currentSong!,
     position: currentTime,
+    duration,
     isPlaying,
     onPlay: playAudio,
     onPause: pauseAudio,
@@ -126,6 +136,7 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
           ref={playerRef}
           onEnded={handleEnded}
           onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={handleOnLoadedMetadata}
           onPlay={playAudio}
           onPause={pauseAudio}
         />
