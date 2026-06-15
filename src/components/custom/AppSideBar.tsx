@@ -12,10 +12,13 @@ import {
 } from "@/components/ui/sidebar";
 import { Link } from "@tanstack/react-router";
 import { Music, Settings } from "lucide-react";
-import { homeRoutes, playlistRoutes } from "@/constants/constants";
+import { homeRoutes } from "@/constants/constants";
 import CreatePlaylistDialog from "@/components/custom/CreatePlaylistDialog";
+import useGetAllPlaylistsQuery from "@/features/playlists/useGetAllPlaylistsQuery";
 
 const AppSidebar = () => {
+  const { data: playlists } = useGetAllPlaylistsQuery();
+
   return (
     <Sidebar variant="floating" className="pb-25">
       <SidebarHeader className="h-16 flex justify-center items-center">
@@ -55,16 +58,16 @@ const AppSidebar = () => {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {playlistRoutes.map((route) => (
-                <SidebarMenuItem key={route.id}>
+              {playlists?.map((playlist) => (
+                <SidebarMenuItem key={playlist.id}>
                   <SidebarMenuButton className="w-full h-12 p-0">
                     <Link
                       to={"/playlists/$id"}
-                      params={{ id: route.id.toString() }}
+                      params={{ id: playlist.id.toString() }}
                       className="w-full h-full text-xs px-6 flex items-center"
                       activeProps={{ className: "bg-secondary" }}
                     >
-                      {route.name}
+                      {playlist.name}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

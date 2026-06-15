@@ -1,7 +1,7 @@
 use crate::repositories::playlist_repository;
 
 // create new playlist
-pub fn create_playlist(conn: &rusqlite::Connection, name: &str) -> rusqlite::Result<()> {
+pub fn create_playlist(conn: &rusqlite::Connection, name: &str) -> rusqlite::Result<i64> {
     playlist_repository::create_playlist_query(conn, name)
 }
 
@@ -34,13 +34,13 @@ pub fn get_songs_by_playlist(
     playlist_repository::get_songs_by_playlist_query(conn, playlist_id)
 }
 
-// add new song to playlist
-pub fn add_song_to_playlist(
-    conn: &rusqlite::Connection,
+// add songs to playlist
+pub fn add_songs_to_playlist(
+    conn: &mut rusqlite::Connection,
     playlist_id: i64,
-    song_id: i64,
+    song_ids: &[i64],
 ) -> rusqlite::Result<()> {
-    playlist_repository::add_song_to_playlist_query(conn, playlist_id, song_id)
+    playlist_repository::add_songs_to_playlist_query(conn, playlist_id, song_ids)
 }
 
 // remove song from playlist

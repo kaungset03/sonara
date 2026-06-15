@@ -13,19 +13,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PlusCircle } from "lucide-react";
 import { SubmitEvent, useState } from "react";
+import useCreatePlaylistMutation from "@/features/playlists/useCreatePlaylistMutation";
 
 const CreatePlaylistDialog = () => {
+  const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
+
+  const closeDialog = () => {
+    setOpen(false);
+    setName("");
+  };
+
+  const { mutate } = useCreatePlaylistMutation({ closeDialog });
 
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission logic here
-    // invoke command to create a new playlist with the provided name
+    mutate(name);
   };
 
   return (
-    <Dialog>
-      <form onSubmit={handleSubmit}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <form onSubmit={handleSubmit} id="create-playlist-form">
         <DialogTrigger asChild>
           <Button size="icon" variant="ghost" className="ml-auto">
             <PlusCircle size={14} />
@@ -50,7 +58,9 @@ const CreatePlaylistDialog = () => {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit">Create</Button>
+            <Button type="submit" form="create-playlist-form">
+              Create
+            </Button>
           </DialogFooter>
         </DialogContent>
       </form>

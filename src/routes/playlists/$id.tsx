@@ -4,7 +4,7 @@ import { Play, Shuffle } from "lucide-react";
 import usePlayerStore from "@/store/store";
 import SongsTable from "@/components/custom/SongsTable";
 import AddSongsDialog from "@/components/custom/AddSongsDialog";
-import useGetSongsByArtistQuery from "@/features/artists/useGetSongsByArtistQuery";
+import useGetSongsByPlaylistQuery from "@/features/playlists/useGetSongsByPlaylistQuery";
 
 export const Route = createFileRoute("/playlists/$id")({
   component: RouteComponent,
@@ -12,38 +12,41 @@ export const Route = createFileRoute("/playlists/$id")({
 
 function RouteComponent() {
   const { id } = Route.useParams();
-  const name = "Liu Yuning";
-  const { data: artistSongs } = useGetSongsByArtistQuery(name);
+  const { data: songs } = useGetSongsByPlaylistQuery(Number(id));
   const { setCurrentSongId, setIsPlaying, setQueue } = usePlayerStore();
 
   const handleSongClick = (song: Song) => {
-    if (!artistSongs) return;
+    if (!songs) return;
     setCurrentSongId(song.id);
-    setQueue(artistSongs);
+    setQueue(songs);
     setIsPlaying(true);
   };
 
   const handlePlayAll = () => {
-    if (!artistSongs) return;
-    if (artistSongs.length > 0) {
-      setCurrentSongId(artistSongs[0].id);
-      setQueue(artistSongs);
+    if (!songs) return;
+    if (songs.length > 0) {
+      setCurrentSongId(songs[0].id);
+      setQueue(songs);
       setIsPlaying(true);
     }
   };
 
   const handleShuffle = () => {
-    if (!artistSongs) return;
-    if (artistSongs.length > 0) {
-      const shuffled = [...artistSongs].sort(() => Math.random() - 0.5);
+    if (!songs) return;
+    if (songs.length > 0) {
+      const shuffled = [...songs].sort(() => Math.random() - 0.5);
       setCurrentSongId(shuffled[0].id);
       setQueue(shuffled);
       setIsPlaying(true);
     }
   };
 
-  if (!artistSongs) {
-    return <div>Loading...</div>;
+  if (!songs) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
   }
 
   return (
@@ -51,10 +54,10 @@ function RouteComponent() {
       <div className="flex flex-col gap-6 mb-8 border-b pb-8">
         <div>
           <h1 className="text-4xl font-bold font-heading tracking-tight mb-2">
-            {name} - {id}
+            {id}
           </h1>
           <p className="text-muted-foreground">
-            {artistSongs.length} {artistSongs.length === 1 ? "Song" : "Songs"}
+            {songs.length} {songs.length === 1 ? "Song" : "Songs"}
           </p>
         </div>
 
@@ -71,12 +74,21 @@ function RouteComponent() {
             <Shuffle size={16} />
             Shuffle
           </Button>
-          <AddSongsDialog />
+          <AddSongsDialog playlistId={Number(id)} />
         </div>
       </div>
 
       <div>
-        <SongsTable songs={artistSongs} handleSongClick={handleSongClick} />
+        {songs.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-4 h-full">
+            <p className="text-muted-foreground text-sm">
+              No songs in this playlist yet.
+            </p>
+            <AddSongsDialog playlistId={Number(id)} />
+          </div>
+        ) : (
+          <SongsTable songs={songs} handleSongClick={handleSongClick} />
+        )}
       </div>
     </div>
   );

@@ -43,7 +43,7 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
             created_at INTEGER NOT NULL,
             PRIMARY KEY (playlist_id, song_id),
             FOREIGN KEY (playlist_id) REFERENCES playlists(id) ON DELETE CASCADE,
-            FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE CASCADE,
+            FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE CASCADE
         )",
         [],
     )?;

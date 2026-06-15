@@ -1,5 +1,5 @@
 // create playlist
-pub fn create_playlist_query(conn: &rusqlite::Connection, name: &str) -> rusqlite::Result<()> {
+pub fn create_playlist_query(conn: &rusqlite::Connection, name: &str) -> rusqlite::Result<i64> {
     let created_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
@@ -8,7 +8,8 @@ pub fn create_playlist_query(conn: &rusqlite::Connection, name: &str) -> rusqlit
         "INSERT INTO playlists (name, created_at) VALUES (?1, ?2)",
         rusqlite::params![name, created_at],
     )?;
-    Ok(())
+    let playlist_id = conn.last_insert_rowid();
+    Ok(playlist_id)
 }
 
 // get all playlists
@@ -81,20 +82,24 @@ pub fn get_songs_by_playlist_query(
     songs
 }
 
-// add new song to playlist
-pub fn add_song_to_playlist_query(
-    conn: &rusqlite::Connection,
+// add songs to playlist
+pub fn add_songs_to_playlist_query(
+    conn: &mut rusqlite::Connection,
     playlist_id: i64,
-    song_id: i64,
+    song_ids: &[i64],
 ) -> rusqlite::Result<()> {
     let created_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
         .as_secs() as i64;
-    conn.execute(
-        "INSERT INTO playlist_songs (playlist_id, song_id, created_at) VALUES (?1, ?2, ?3)",
-        rusqlite::params![playlist_id, song_id, created_at],
-    )?;
+    let tx = conn.transaction()?;
+    for &song_id in song_ids {
+        tx.execute(
+            "INSERT INTO playlist_songs (playlist_id, song_id, created_at) VALUES (?1, ?2, ?3)",
+            rusqlite::params![playlist_id, song_id, created_at],
+        )?;
+    }
+    tx.commit()?;
     Ok(())
 }
 

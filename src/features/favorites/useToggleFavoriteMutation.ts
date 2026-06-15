@@ -16,7 +16,7 @@ const useToggleFavoriteMutation = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<
-    boolean,
+    void,
     Error,
     ToggleFavoriteInput,
     ToggleFavoriteContext
@@ -26,7 +26,6 @@ const useToggleFavoriteMutation = () => {
         songId,
         isFavorite,
       });
-      return isFavorite;
     },
     onMutate: async ({ songId, isFavorite }) => {
       await queryClient.cancelQueries({ queryKey: ["songs"] });

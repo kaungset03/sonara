@@ -11,115 +11,37 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Check, PlusCircle } from "lucide-react";
-import { SubmitEvent } from "react";
-import { Input } from "../ui/input";
+import { SubmitEvent, useState } from "react";
+import { Input } from "@/components/ui/input";
+import useGetAllSongsQuery from "@/features/songs/useGetAllSongsQuery";
+import useAddSongToPlaylistMutation from "@/features/playlists/useAddSongToPlaylistMutation";
 
-const songs: Song[] = [
-  {
-    id: 1,
-    title: "Song 1",
-    artist: "Artist 1",
-    album: "Album 1",
-    duration: 210,
-    is_favorite: true,
-    path: "/path/to/song1.mp3",
-    favorite_added_at: 1222,
-    created_at: 1222,
-  },
-  {
-    id: 2,
-    title: "Song 2",
-    artist: "Artist 2",
-    album: "Album 2",
-    duration: 180,
-    is_favorite: false,
-    path: "/path/to/song2.mp3",
-    favorite_added_at: null,
-    created_at: 1222,
-  },
-  {
-    id: 3,
-    title: "Song 3",
-    artist: "Artist 3",
-    album: "Album 3",
-    duration: 240,
-    is_favorite: true,
-    path: "/path/to/song3.mp3",
-    favorite_added_at: 1222,
-    created_at: 1222,
-  },
-  {
-    id: 4,
-    title: "Song 4",
-    artist: "Artist 4",
-    album: "Album 4",
-    duration: 200,
-    is_favorite: false,
-    path: "/path/to/song4.mp3",
-    favorite_added_at: null,
-    created_at: 1222,
-  },
-  {
-    id: 5,
-    title: "Song 5",
-    artist: "Artist 5",
-    album: "Album 5",
-    duration: 220,
-    is_favorite: true,
-    path: "/path/to/song5.mp3",
-    favorite_added_at: 1222,
-    created_at: 1222,
-  },
-  {
-    id: 6,
-    title: "Song 6",
-    artist: "Artist 6",
-    album: "Album 6",
-    duration: 190,
-    is_favorite: false,
-    path: "/path/to/song6.mp3",
-    favorite_added_at: null,
-    created_at: 1222,
-  },
-  {
-    id: 7,
-    title: "Song 7",
-    artist: "Artist 7",
-    album: "Album 7",
-    duration: 230,
-    is_favorite: true,
-    path: "/path/to/song7.mp3",
-    favorite_added_at: 1222,
-    created_at: 1222,
-  },
-  {
-    id: 8,
-    title: "Song 8",
-    artist: "Artist 8",
-    album: "Album 8",
-    duration: 210,
-    is_favorite: false,
-    path: "/path/to/song8.mp3",
-    favorite_added_at: null,
-    created_at: 1222,
-  },
-  {
-    id: 9,
-    title: "Song 9",
-    artist: "Artist 9",
-    album: "Album 9",
-    duration: 250,
-    is_favorite: true,
-    path: "/path/to/song9.mp3",
-    favorite_added_at: 1222,
-    created_at: 1222,
-  },
-];
+type AddSongsDialogProps = {
+  playlistId: number;
+};
 
-const AddSongsDialog = () => {
+const AddSongsDialog = ({ playlistId }: AddSongsDialogProps) => {
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+  const { data: songs } = useGetAllSongsQuery();
+  const { mutate } = useAddSongToPlaylistMutation();
+
+  const toggleSelection = (songId: number) => {
+    setSelectedIds((prev) => {
+      if (prev.includes(songId)) {
+        return prev.filter((id) => id !== songId);
+      } else {
+        return [...prev, songId];
+      }
+    });
+  };
+
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission
+    mutate({
+      playlistId,
+      songIds: selectedIds,
+    });
   };
 
   return (
@@ -140,14 +62,15 @@ const AddSongsDialog = () => {
           </DialogHeader>
           <Input placeholder="Search songs, artists, or albums..." />
           <div className="space-y-2 no-scrollbar max-h-[50vh] overflow-y-auto">
-            {songs.map((song) => (
+            {songs?.map((song) => (
               <Label
                 key={song.id}
                 className="w-full rounded-2xl flex items-center gap-3 p-3 border border-border cursor-pointer transition-colors hover:bg-muted/50"
               >
                 <Input
                   type="checkbox"
-                  checked={song.is_favorite}
+                  checked={selectedIds.includes(song.id)}
+                  onChange={() => toggleSelection(song.id)}
                   className="h-4 w-4 rounded-full border-border"
                 />
                 <div className="flex-1 min-w-0 space-y-1">
@@ -166,7 +89,7 @@ const AddSongsDialog = () => {
             </DialogClose>
             <Button type="submit">
               <Check size={16} />
-              Add
+              Add {selectedIds.length}
             </Button>
           </DialogFooter>
         </DialogContent>

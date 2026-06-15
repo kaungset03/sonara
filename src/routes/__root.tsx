@@ -7,7 +7,15 @@ import AppSideBar from "@/components/custom/AppSideBar";
 import AppHeader from "@/components/custom/AppHeader";
 import AppFooter from "@/components/custom/AppFooter";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: false,
+    },
+  },
+});
 
 const RootLayout = () => (
   <QueryClientProvider client={queryClient}>

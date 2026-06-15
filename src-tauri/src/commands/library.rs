@@ -77,7 +77,7 @@ pub fn get_favorite_songs(db: State<DbState>) -> Result<Vec<crate::models::song:
 
 // create new playlist
 #[tauri::command]
-pub fn create_playlist(db: State<DbState>, name: String) -> Result<(), String> {
+pub fn create_playlist(db: State<DbState>, name: String) -> Result<i64, String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
     services::playlist::create_playlist(&conn, &name).map_err(|e| e.to_string())
 }
@@ -106,6 +106,7 @@ pub fn delete_playlist(db: State<DbState>, playlist_id: i64) -> Result<(), Strin
 }
 
 // get songs by playlist
+// TODO: add playlist metadata like name, created_at, etc. and return it with the songs
 #[tauri::command]
 pub fn get_songs_by_playlist(
     db: State<DbState>,
@@ -120,10 +121,11 @@ pub fn get_songs_by_playlist(
 pub fn add_song_to_playlist(
     db: State<DbState>,
     playlist_id: i64,
-    song_id: i64,
+    song_ids: Vec<i64>,
 ) -> Result<(), String> {
-    let conn = db.0.lock().map_err(|e| e.to_string())?;
-    services::playlist::add_song_to_playlist(&conn, playlist_id, song_id).map_err(|e| e.to_string())
+    let mut conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::playlist::add_songs_to_playlist(&mut conn, playlist_id, &song_ids)
+        .map_err(|e| e.to_string())
 }
 
 // remove song from playlist
