@@ -61,18 +61,22 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
 
   const handleNext = () => {
     if (!currentSong || queue.length === 0) return;
-    const currentIndex = queue.findIndex((song) => song.id === currentSong.id);
+    const currentIndex = queue.findIndex(
+      (queueItem) => queueItem.song.id === currentSong.id,
+    );
     const nextIndex = (currentIndex + 1) % queue.length;
     const nextSong = queue[nextIndex];
-    setCurrentSongId(nextSong.id);
+    setCurrentSongId(nextSong.song.id);
   };
 
   const handlePrevious = () => {
     if (!currentSong || queue.length === 0) return;
-    const currentIndex = queue.findIndex((song) => song.id === currentSong.id);
+    const currentIndex = queue.findIndex(
+      (queueItem) => queueItem.song.id === currentSong.id,
+    );
     const prevIndex = (currentIndex - 1 + queue.length) % queue.length;
     const prevSong = queue[prevIndex];
-    setCurrentSongId(prevSong.id);
+    setCurrentSongId(prevSong.song.id);
   };
 
   const handleEnded = () => {

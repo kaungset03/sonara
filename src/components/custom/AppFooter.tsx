@@ -1,7 +1,7 @@
 import { Play, SkipBack, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useCurrentSong from "@/hooks/useCurrentSong";
-import AudioPlayer from "./AudioPlayer";
+import AudioPlayer from "@/components/custom/AudioPlayer";
 
 const AppFooter = () => {
   const currentSong = useCurrentSong();

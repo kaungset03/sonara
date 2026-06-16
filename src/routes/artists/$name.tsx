@@ -17,7 +17,7 @@ function RouteComponent() {
   const handleSongClick = (song: Song) => {
     if (!artistSongs) return;
     setCurrentSongId(song.id);
-    setQueue(artistSongs);
+    setQueue(artistSongs.map((song) => ({ id: crypto.randomUUID(), song })));
     setIsPlaying(true);
   };
 
@@ -25,7 +25,7 @@ function RouteComponent() {
     if (!artistSongs) return;
     if (artistSongs.length > 0) {
       setCurrentSongId(artistSongs[0].id);
-      setQueue(artistSongs);
+      setQueue(artistSongs.map((song) => ({ id: crypto.randomUUID(), song })));
       setIsPlaying(true);
     }
   };
@@ -35,7 +35,7 @@ function RouteComponent() {
     if (artistSongs.length > 0) {
       const shuffled = [...artistSongs].sort(() => Math.random() - 0.5);
       setCurrentSongId(shuffled[0].id);
-      setQueue(shuffled);
+      setQueue(shuffled.map((song) => ({ id: crypto.randomUUID(), song })));
       setIsPlaying(true);
     }
   };

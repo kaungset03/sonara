@@ -26,6 +26,11 @@ declare global {
     name: string;
   };
 
+  type QueueItem = {
+    id: string; // unique id for the queue item
+    song: Song;
+  };
+
   type SongColumn = "Title" | "Artist" | "Album" | "Duration";
 }
 export {};

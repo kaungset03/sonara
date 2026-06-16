@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Play, Shuffle } from "lucide-react";
 import usePlayerStore from "@/store/store";
@@ -8,7 +9,6 @@ import SongsTable from "@/components/custom/SongsTable";
 import AddSongsDialog from "@/components/custom/AddSongsDialog";
 import useGetSongsByPlaylistQuery from "@/features/playlists/useGetSongsByPlaylistQuery";
 import useRemoveSongFromPlaylistMutation from "@/features/playlists/useRemoveSongFromPlaylistMutation";
-import { DropdownMenuItem } from "../../components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/playlists/$id")({
   component: RouteComponent,
@@ -26,7 +26,7 @@ function RouteComponent() {
   const handleSongClick = (song: Song) => {
     if (!songs) return;
     setCurrentSongId(song.id);
-    setQueue(songs);
+    setQueue(songs.map((song) => ({ id: crypto.randomUUID(), song })));
     setIsPlaying(true);
   };
 
@@ -34,7 +34,7 @@ function RouteComponent() {
     if (!songs) return;
     if (songs.length > 0) {
       setCurrentSongId(songs[0].id);
-      setQueue(songs);
+      setQueue(songs.map((song) => ({ id: crypto.randomUUID(), song })));
       setIsPlaying(true);
     }
   };
@@ -44,7 +44,7 @@ function RouteComponent() {
     if (songs.length > 0) {
       const shuffled = [...songs].sort(() => Math.random() - 0.5);
       setCurrentSongId(shuffled[0].id);
-      setQueue(shuffled);
+      setQueue(shuffled.map((song) => ({ id: crypto.randomUUID(), song })));
       setIsPlaying(true);
     }
   };

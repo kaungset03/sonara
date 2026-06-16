@@ -15,7 +15,7 @@ function RouteComponent() {
   const handleSongSelect = (song: Song) => {
     if (!data) return;
     setCurrentSongId(song.id);
-    setQueue(data);
+    setQueue(data.map((song) => ({ id: crypto.randomUUID(), song })));
   };
 
   return (
