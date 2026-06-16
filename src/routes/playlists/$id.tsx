@@ -2,11 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Play, Shuffle } from "lucide-react";
 import usePlayerStore from "@/store/store";
+import EditPlaylistDialog from "@/components/custom/EditPlaylistDialog";
+import DeletePlaylistAlert from "@/components/custom/DeletePlaylistAlert";
 import SongsTable from "@/components/custom/SongsTable";
 import AddSongsDialog from "@/components/custom/AddSongsDialog";
 import useGetSongsByPlaylistQuery from "@/features/playlists/useGetSongsByPlaylistQuery";
-import EditPlaylistDialog from "@/components/custom/EditPlaylistDialog";
-import DeletePlaylistAlert from "@/components/custom/DeletePlaylistAlert";
+import useRemoveSongFromPlaylistMutation from "@/features/playlists/useRemoveSongFromPlaylistMutation";
+import { DropdownMenuItem } from "../../components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/playlists/$id")({
   component: RouteComponent,
@@ -16,6 +18,8 @@ function RouteComponent() {
   const { id } = Route.useParams();
   const { data } = useGetSongsByPlaylistQuery(Number(id));
   const songs = data?.songs;
+
+  const { mutate } = useRemoveSongFromPlaylistMutation();
 
   const { setCurrentSongId, setIsPlaying, setQueue } = usePlayerStore();
 
@@ -43,6 +47,10 @@ function RouteComponent() {
       setQueue(shuffled);
       setIsPlaying(true);
     }
+  };
+
+  const handleRemoveFromPlaylist = (songId: number) => {
+    mutate({ songId, playlistId: Number(id) });
   };
 
   if (!songs) {
@@ -98,7 +106,21 @@ function RouteComponent() {
             <AddSongsDialog playlistId={Number(id)} />
           </div>
         ) : (
-          <SongsTable songs={songs} handleSongClick={handleSongClick} />
+          <SongsTable
+            songs={songs}
+            handleSongClick={handleSongClick}
+            renderActions={(song) => (
+              <DropdownMenuItem
+                className="text-xs"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveFromPlaylist(song.id);
+                }}
+              >
+                Remove from Playlist
+              </DropdownMenuItem>
+            )}
+          />
         )}
       </div>
     </div>

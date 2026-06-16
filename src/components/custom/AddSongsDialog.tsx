@@ -14,7 +14,7 @@ import { Check, PlusCircle } from "lucide-react";
 import { SubmitEvent, useState } from "react";
 import { Input } from "@/components/ui/input";
 import useGetAllSongsQuery from "@/features/songs/useGetAllSongsQuery";
-import useAddSongsToPlaylistMutation from "@/features/playlists/useAddSongToPlaylistMutation";
+import useAddSongsToPlaylistMutation from "@/features/playlists/useAddSongsToPlaylistMutation";
 
 type AddSongsDialogProps = {
   playlistId: number;
@@ -99,7 +99,7 @@ const AddSongsDialog = ({ playlistId }: AddSongsDialogProps) => {
               disabled={selectedIds.length === 0}
             >
               <Check size={16} />
-              Add {selectedIds.length}
+              Add {selectedIds.length > 0 && `${selectedIds.length}`}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -25,5 +25,7 @@ declare global {
     id: number;
     name: string;
   };
+
+  type SongColumn = "Title" | "Artist" | "Album" | "Duration";
 }
 export {};

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import SongsTable from "@/components/custom/SongsTable";
 import useGetAllSongsQuery from "@/features/songs/useGetAllSongsQuery";
 import usePlayerStore from "@/store/store";
+import SongsTable from "@/components/custom/SongsTable";
 
 export const Route = createFileRoute("/songs/")({
   component: RouteComponent,
@@ -17,6 +17,10 @@ function RouteComponent() {
     setCurrentSongId(song.id);
     setQueue(data);
   };
+
+  // No data, show loading
+  // data and length is 0, show empty state
+  // if data exists, show table
 
   return (
     <div>

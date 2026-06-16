@@ -50,14 +50,12 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   const playAudio = () => {
     if (playerRef.current) {
       playerRef.current.play();
-      setIsPlaying(true);
     }
   };
 
   const pauseAudio = () => {
     if (playerRef.current) {
       playerRef.current.pause();
-      setIsPlaying(false);
     }
   };
 
@@ -122,23 +120,22 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
 
   useEffect(() => {
     const player = playerRef.current;
-    if (player && currentSong) {
+    if (player) {
       player.src = convertFileSrc(currentSong.path);
       player.play();
-      setIsPlaying(true);
     }
   }, [currentSong.id, setIsPlaying, playerRef]);
 
   return (
-    <footer className="fixed bottom-2 left-2 right-2 rounded-3xl p-4 shadow-lg border border-secondary bg-muted dark:bg-sidebar/50 backdrop-blur-lg z-10">
+    <footer className="fixed bottom-2 left-2 right-2 rounded-3xl p-4 shadow-lg border border-secondary bg-muted/50 dark:bg-sidebar/50 backdrop-blur-md z-10">
       <section className="w-full h-full grid grid-cols-10 items-center">
         <audio
           ref={playerRef}
           onEnded={handleEnded}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleOnLoadedMetadata}
-          onPlay={playAudio}
-          onPause={pauseAudio}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
         />
         <div className="flex items-center justify-center col-span-2 gap-x-2 2xl:gap-x-4">
           <Button
@@ -189,7 +186,7 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
           </span>
           <Slider
             defaultValue={[0]}
-            max={currentSong.duration}
+            max={duration}
             value={[currentTime]}
             onValueChange={(value) => {
               handleSeek(value[0]);
@@ -197,7 +194,7 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
             className="col-span-8 w-full"
           />
           <span className="text-sm font-heading font-medium text-muted-foreground text-center">
-            {getFormattedDuration(currentSong.duration)}
+            {getFormattedDuration(duration)}
           </span>
         </div>
         <div className="flex items-center justify-center gap-x-2 2xl:gap-x-4 col-span-1">

@@ -11,13 +11,19 @@ import { Heart, Music2 } from "lucide-react";
 import { getFormattedDuration } from "@/lib/helpers";
 import usePlayerStore from "@/store/store";
 import useToggleFavoriteMutation from "@/features/favorites/useToggleFavoriteMutation";
+import ActionsDropdown from "./ActionsDropdown";
 
 type SongsTableProps = {
   songs: Song[];
   handleSongClick: (song: Song) => void;
+  renderActions?: (song: Song) => React.ReactNode;
 };
 
-const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
+const SongsTable = ({
+  songs,
+  handleSongClick,
+  renderActions,
+}: SongsTableProps) => {
   const currentSongId = usePlayerStore((state) => state.currentSongId);
   const { mutate } = useToggleFavoriteMutation();
 
@@ -37,6 +43,7 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
           <TableHead>Album</TableHead>
           <TableHead className="text-center">Duration</TableHead>
           <TableHead className="text-center"> </TableHead>
+          <TableHead className="text-center">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="text-xs">
@@ -66,7 +73,7 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-5 hover:text-primary"
+                  className="size-4 hover:text-primary"
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleFavorite(song);
@@ -78,6 +85,11 @@ const SongsTable = ({ songs, handleSongClick }: SongsTableProps) => {
                     <Heart size={14} />
                   )}
                 </Button>
+              </TableCell>
+              <TableCell className="flex justify-center items-center">
+                <ActionsDropdown song={song}>
+                  {renderActions && renderActions(song)}
+                </ActionsDropdown>
               </TableCell>
             </TableRow>
           );

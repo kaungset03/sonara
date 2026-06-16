@@ -21,7 +21,7 @@ const AppSidebar = () => {
 
   return (
     <Sidebar variant="floating" className="pb-25">
-      <SidebarHeader className="h-16 flex justify-center items-center">
+      <SidebarHeader className="h-18 flex justify-center items-center">
         <div className="flex items-center gap-3 text-primary">
           <Music />
           <h2 className="text-lg font-semibold font-heading">Tauri Player</h2>

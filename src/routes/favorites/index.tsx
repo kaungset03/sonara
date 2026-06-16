@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import SongsTable from "@/components/custom/SongsTable";
 import useGetFavoriteSongsQuery from "@/features/favorites/useGetFavoriteSongsQuery";
 import usePlayerStore from "@/store/store";
+import SongsTable from "@/components/custom/SongsTable";
 
 export const Route = createFileRoute("/favorites/")({
   component: RouteComponent,

@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Play, Shuffle } from "lucide-react";
 import usePlayerStore from "@/store/store";
-import SongsTable from "@/components/custom/SongsTable";
 import useGetSongsByAlbumQuery from "@/features/albums/useGetSongsByAlbumQuery";
+import SongsTable from "@/components/custom/SongsTable";
 
 export const Route = createFileRoute("/albums/$name")({
   component: RouteComponent,
