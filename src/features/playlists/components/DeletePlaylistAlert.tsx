@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import useDeletePlaylistMutation from "@/features/playlists/useDeletePlaylistMutation";
+import useDeletePlaylistMutation from "@/features/playlists/api/useDeletePlaylistMutation";
 
 type DeletePlaylistAlertProps = {
   playlistId: number;

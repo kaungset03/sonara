@@ -9,8 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Heart, Music2 } from "lucide-react";
 import { getFormattedDuration } from "@/lib/helpers";
-import useToggleFavoriteMutation from "@/features/favorites/useToggleFavoriteMutation";
-import ActionsDropdown from "@/components/custom/ActionsDropdown";
+import useToggleFavoriteMutation from "@/features/songs/api/useToggleFavoriteMutation";
+import ActionsDropdown from "@/features/songs/components/ActionsDropdown";
 import useCurrentSong from "@/hooks/useCurrentSong";
 
 type SongsTableProps = {

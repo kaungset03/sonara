@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import useGetAllAlbumsQuery from "@/features/albums/useGetAllAlbumsQuery";
+import useGetAllAlbumsQuery from "@/features/albums/api/useGetAllAlbumsQuery";
 
 export const Route = createFileRoute("/albums/")({
   component: RouteComponent,

@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PlusCircle } from "lucide-react";
 import { SubmitEvent, useState } from "react";
-import useCreatePlaylistMutation from "@/features/playlists/useCreatePlaylistMutation";
+import useCreatePlaylistMutation from "@/features/playlists/api/useCreatePlaylistMutation";
 
 const CreatePlaylistDialog = () => {
   const [open, setOpen] = useState(false);

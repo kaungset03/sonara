@@ -14,9 +14,9 @@ import { Slider } from "@/components/ui/slider";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { useEffect, useRef, useState } from "react";
 import { getFormattedDuration } from "@/lib/helpers";
-import SongTitle from "@/components/custom/SongTitle";
+import SongTitle from "@/features/songs/components/SongTitle";
 import usePlayerStore from "@/store/store";
-import useToggleFavoriteMutation from "@/features/favorites/useToggleFavoriteMutation";
+import useToggleFavoriteMutation from "@/features/songs/api/useToggleFavoriteMutation";
 import useMediaSession from "@/hooks/useMediaSession";
 
 type AudioPlayerProps = {

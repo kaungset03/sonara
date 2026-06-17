@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Edit } from "lucide-react";
 import { SubmitEvent, useState } from "react";
-import useEditPlaylistMutation from "@/features/playlists/useEditPlaylistMutation";
+import useEditPlaylistMutation from "@/features/playlists/api/useEditPlaylistMutation";
 
 type EditPlaylistDialogProps = {
   playlist: Playlist;

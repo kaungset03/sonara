@@ -19,8 +19,8 @@ import {
 } from "@/components/ui/select";
 import { type SubmitEvent, useState } from "react";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import useAddSongsToPlaylistMutation from "@/features/playlists/useAddSongsToPlaylistMutation";
-import useGetAllPlaylistsQuery from "@/features/playlists/useGetAllPlaylistsQuery";
+import useAddSongsToPlaylistMutation from "@/features/playlists/api/useAddSongsToPlaylistMutation";
+import useGetAllPlaylistsQuery from "@/features/playlists/api/useGetAllPlaylistsQuery";
 
 type AddToPlaylistDialogProps = {
   song: Song;

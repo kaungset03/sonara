@@ -13,8 +13,8 @@ import {
 import { Link } from "@tanstack/react-router";
 import { Music, Settings } from "lucide-react";
 import { homeRoutes } from "@/constants/constants";
-import CreatePlaylistDialog from "@/components/custom/CreatePlaylistDialog";
-import useGetAllPlaylistsQuery from "@/features/playlists/useGetAllPlaylistsQuery";
+import CreatePlaylistDialog from "@/features/playlists/components/CreatePlaylistDialog";
+import useGetAllPlaylistsQuery from "@/features/playlists/api/useGetAllPlaylistsQuery";
 
 const AppSidebar = () => {
   const { data: playlists } = useGetAllPlaylistsQuery();

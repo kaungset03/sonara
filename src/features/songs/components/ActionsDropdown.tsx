@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link } from "@tanstack/react-router";
 import { EllipsisVertical } from "lucide-react";
-import AddToPlaylistDialog from "@/components/custom/AddToPlaylistDialog";
+import AddToPlaylistDialog from "@/features/playlists/components/AddToPlaylistDialog";
 import usePlayerStore from "@/store/store";
 
 type ActionsDropdownProps = {

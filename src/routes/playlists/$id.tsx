@@ -3,12 +3,12 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Play, Shuffle } from "lucide-react";
 import usePlayerStore from "@/store/store";
-import EditPlaylistDialog from "@/components/custom/EditPlaylistDialog";
-import DeletePlaylistAlert from "@/components/custom/DeletePlaylistAlert";
-import SongsTable from "@/components/custom/SongsTable";
-import AddSongsDialog from "@/components/custom/AddSongsDialog";
-import useGetSongsByPlaylistQuery from "@/features/playlists/useGetSongsByPlaylistQuery";
-import useRemoveSongFromPlaylistMutation from "@/features/playlists/useRemoveSongFromPlaylistMutation";
+import EditPlaylistDialog from "@/features/playlists/components/EditPlaylistDialog";
+import DeletePlaylistAlert from "@/features/playlists/components/DeletePlaylistAlert";
+import SongsTable from "@/features/songs/components/SongsTable";
+import AddSongsToPlaylistDialog from "@/features/playlists/components/AddSongsToPlaylistDialog";
+import useGetSongsByPlaylistQuery from "@/features/playlists/api/useGetSongsByPlaylistQuery";
+import useRemoveSongFromPlaylistMutation from "@/features/playlists/api/useRemoveSongFromPlaylistMutation";
 
 export const Route = createFileRoute("/playlists/$id")({
   component: RouteComponent,
@@ -86,7 +86,7 @@ function RouteComponent() {
             <Shuffle size={16} />
             Shuffle
           </Button>
-          <AddSongsDialog playlistId={Number(id)} />
+          <AddSongsToPlaylistDialog playlistId={Number(id)} />
         </div>
       </div>
 
@@ -96,7 +96,7 @@ function RouteComponent() {
             <p className="text-muted-foreground text-sm">
               No songs in this playlist yet.
             </p>
-            <AddSongsDialog playlistId={Number(id)} />
+            <AddSongsToPlaylistDialog playlistId={Number(id)} />
           </div>
         ) : (
           <SongsTable

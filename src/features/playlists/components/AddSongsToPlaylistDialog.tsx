@@ -13,14 +13,14 @@ import { Label } from "@/components/ui/label";
 import { Check, PlusCircle } from "lucide-react";
 import { SubmitEvent, useState } from "react";
 import { Input } from "@/components/ui/input";
-import useGetAllSongsQuery from "@/features/songs/useGetAllSongsQuery";
-import useAddSongsToPlaylistMutation from "@/features/playlists/useAddSongsToPlaylistMutation";
+import useGetAllSongsQuery from "@/features/songs/api/useGetAllSongsQuery";
+import useAddSongsToPlaylistMutation from "@/features/playlists/api/useAddSongsToPlaylistMutation";
 
-type AddSongsDialogProps = {
+type AddSongsToPlaylistProps = {
   playlistId: number;
 };
 
-const AddSongsDialog = ({ playlistId }: AddSongsDialogProps) => {
+const AddSongsToPlaylist = ({ playlistId }: AddSongsToPlaylistProps) => {
   const [open, setOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
@@ -107,4 +107,4 @@ const AddSongsDialog = ({ playlistId }: AddSongsDialogProps) => {
     </Dialog>
   );
 };
-export default AddSongsDialog;
+export default AddSongsToPlaylist;

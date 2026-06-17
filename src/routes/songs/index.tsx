@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import useGetAllSongsQuery from "@/features/songs/useGetAllSongsQuery";
+import useGetAllSongsQuery from "@/features/songs/api/useGetAllSongsQuery";
 import usePlayerStore from "@/store/store";
-import SongsTable from "@/components/custom/SongsTable";
+import SongsTable from "@/features/songs/components/SongsTable";
 
 export const Route = createFileRoute("/songs/")({
   component: RouteComponent,
