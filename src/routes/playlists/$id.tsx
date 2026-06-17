@@ -21,32 +21,25 @@ function RouteComponent() {
 
   const { mutate } = useRemoveSongFromPlaylistMutation();
 
-  const { setCurrentSongId, setIsPlaying, setQueue } = usePlayerStore();
+  const playSong = usePlayerStore((state) => state.playSong);
+  const isShuffle = usePlayerStore((state) => state.isShuffle);
+  const setIsShuffle = usePlayerStore((state) => state.setIsShuffle);
 
   const handleSongClick = (song: Song) => {
-    if (!songs) return;
-    setCurrentSongId(song.id);
-    setQueue(songs.map((song) => ({ id: crypto.randomUUID(), song })));
-    setIsPlaying(true);
+    if (songs) {
+      playSong(song, songs);
+    }
   };
 
   const handlePlayAll = () => {
-    if (!songs) return;
-    if (songs.length > 0) {
-      setCurrentSongId(songs[0].id);
-      setQueue(songs.map((song) => ({ id: crypto.randomUUID(), song })));
-      setIsPlaying(true);
+    if (songs) {
+      // play the first song, which will set the entire playlist as the queue
+      playSong(songs[0], songs);
     }
   };
 
   const handleShuffle = () => {
-    if (!songs) return;
-    if (songs.length > 0) {
-      const shuffled = [...songs].sort(() => Math.random() - 0.5);
-      setCurrentSongId(shuffled[0].id);
-      setQueue(shuffled.map((song) => ({ id: crypto.randomUUID(), song })));
-      setIsPlaying(true);
-    }
+    setIsShuffle(!isShuffle);
   };
 
   const handleRemoveFromPlaylist = (songId: number) => {

@@ -7,15 +7,15 @@ export const Route = createFileRoute("/songs/")({
   component: RouteComponent,
 });
 
+// get all songs from db
+
 function RouteComponent() {
   const { data } = useGetAllSongsQuery();
-  const setCurrentSongId = usePlayerStore((state) => state.setCurrentSongId);
-  const setQueue = usePlayerStore((state) => state.setQueue);
+  const playSong = usePlayerStore((state) => state.playSong);
 
   const handleSongSelect = (song: Song) => {
     if (!data) return;
-    setCurrentSongId(song.id);
-    setQueue(data.map((song) => ({ id: crypto.randomUUID(), song })));
+    playSong(song, data);
   };
 
   // No data, show loading

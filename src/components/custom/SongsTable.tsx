@@ -9,9 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Heart, Music2 } from "lucide-react";
 import { getFormattedDuration } from "@/lib/helpers";
-import usePlayerStore from "@/store/store";
 import useToggleFavoriteMutation from "@/features/favorites/useToggleFavoriteMutation";
-import ActionsDropdown from "./ActionsDropdown";
+import ActionsDropdown from "@/components/custom/ActionsDropdown";
+import useCurrentSong from "@/hooks/useCurrentSong";
 
 type SongsTableProps = {
   songs: Song[];
@@ -24,13 +24,12 @@ const SongsTable = ({
   handleSongClick,
   renderActions,
 }: SongsTableProps) => {
-  const currentSongId = usePlayerStore((state) => state.currentSongId);
+  const currentSong = useCurrentSong();
   const { mutate } = useToggleFavoriteMutation();
 
   const toggleFavorite = (song: Song) => {
     console.log("Toggling favorite for song:", song);
     mutate({ songId: song.id, isFavorite: !song.is_favorite });
-    console.log("✅ invoke sent to Rust");
   };
 
   return (
@@ -48,7 +47,7 @@ const SongsTable = ({
       </TableHeader>
       <TableBody className="text-xs">
         {songs.map((song, index) => {
-          const isActive = currentSongId === song.id;
+          const isActive = currentSong?.id === song.id;
 
           return (
             <TableRow

@@ -11,36 +11,30 @@ export const Route = createFileRoute("/albums/$name")({
 
 function RouteComponent() {
   const { name } = Route.useParams();
-  const { data: albumSongs } = useGetSongsByAlbumQuery(name);
-  const { setCurrentSongId, setIsPlaying, setQueue } = usePlayerStore();
+  const { data: songs } = useGetSongsByAlbumQuery(name);
+
+  const playSong = usePlayerStore((state) => state.playSong);
+  const isShuffle = usePlayerStore((state) => state.isShuffle);
+  const setIsShuffle = usePlayerStore((state) => state.setIsShuffle);
 
   const handleSongClick = (song: Song) => {
-    if (!albumSongs) return;
-    setCurrentSongId(song.id);
-    setQueue(albumSongs.map((song) => ({ id: crypto.randomUUID(), song })));
-    setIsPlaying(true);
+    if (songs) {
+      playSong(song, songs);
+    }
   };
 
   const handlePlayAll = () => {
-    if (!albumSongs) return;
-    if (albumSongs.length > 0) {
-      setCurrentSongId(albumSongs[0].id);
-      setQueue(albumSongs.map((song) => ({ id: crypto.randomUUID(), song })));
-      setIsPlaying(true);
+    if (songs) {
+      // play the first song, which will set the entire playlist as the queue
+      playSong(songs[0], songs);
     }
   };
 
   const handleShuffle = () => {
-    if (!albumSongs) return;
-    if (albumSongs.length > 0) {
-      const shuffled = [...albumSongs].sort(() => Math.random() - 0.5);
-      setCurrentSongId(shuffled[0].id);
-      setQueue(shuffled.map((song) => ({ id: crypto.randomUUID(), song })));
-      setIsPlaying(true);
-    }
+    setIsShuffle(!isShuffle);
   };
 
-  if (!albumSongs) {
+  if (!songs) {
     return <div>Loading...</div>;
   }
 
@@ -52,7 +46,7 @@ function RouteComponent() {
             {name}
           </h1>
           <p className="text-muted-foreground">
-            {albumSongs.length} {albumSongs.length === 1 ? "Song" : "Songs"}
+            {songs.length} {songs.length === 1 ? "Song" : "Songs"}
           </p>
         </div>
 
@@ -73,7 +67,7 @@ function RouteComponent() {
       </div>
 
       <div>
-        <SongsTable songs={albumSongs} handleSongClick={handleSongClick} />
+        <SongsTable songs={songs} handleSongClick={handleSongClick} />
       </div>
     </div>
   );

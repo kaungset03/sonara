@@ -1,10 +1,15 @@
-import useGetAllSongsQuery from "@/features/songs/useGetAllSongsQuery";
 import usePlayerStore from "@/store/store";
 
 const useCurrentSong = () => {
-  const { data } = useGetAllSongsQuery();
+  const currentQueueItemId = usePlayerStore(
+    (state) => state.currentQueueItemId,
+  );
+  const playbackQueue = usePlayerStore((state) => state.playbackQueue);
 
-  const currentSongId = usePlayerStore((state) => state.currentSongId);
-  return data?.find((song) => song.id === currentSongId) || null;
+  const currentSong = playbackQueue.find(
+    (item) => item.id === currentQueueItemId,
+  )?.song;
+
+  return currentSong;
 };
 export default useCurrentSong;

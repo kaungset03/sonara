@@ -9,13 +9,12 @@ export const Route = createFileRoute("/favorites/")({
 
 function RouteComponent() {
   const { data } = useGetFavoriteSongsQuery();
-  const setCurrentSongId = usePlayerStore((state) => state.setCurrentSongId);
-  const setQueue = usePlayerStore((state) => state.setQueue);
+  const playSong = usePlayerStore((state) => state.playSong);
 
   const handleSongSelect = (song: Song) => {
-    if (!data) return;
-    setCurrentSongId(song.id);
-    setQueue(data.map((song) => ({ id: crypto.randomUUID(), song })));
+    if (data) {
+      playSong(song, data);
+    }
   };
 
   return (

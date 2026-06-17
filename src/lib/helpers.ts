@@ -4,6 +4,15 @@ const getFormattedDuration = (duration: number) => {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 };
 
+const shuffleQueue = (q: QueueItem[]) => {
+  const shuffled = [...q];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
 // type Updater = (song: Song) => Song;
 
 // const updateSongInCache = (
@@ -18,4 +27,4 @@ const getFormattedDuration = (duration: number) => {
 //   });
 // };
 
-export { getFormattedDuration };
+export { getFormattedDuration, shuffleQueue };
