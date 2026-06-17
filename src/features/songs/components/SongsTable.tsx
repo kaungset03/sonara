@@ -12,6 +12,7 @@ import { getFormattedDuration } from "@/lib/helpers";
 import useToggleFavoriteMutation from "@/features/songs/api/useToggleFavoriteMutation";
 import ActionsDropdown from "@/features/songs/components/ActionsDropdown";
 import useCurrentSong from "@/hooks/useCurrentSong";
+import AddToPlaylistDialog from "@/features/playlists/components/AddToPlaylistDialog";
 
 type SongsTableProps = {
   songs: Song[];
@@ -55,7 +56,9 @@ const SongsTable = ({
               className={`cursor-pointer ${
                 isActive ? "text-primary" : "hover:bg-muted"
               }`}
-              onClick={() => handleSongClick(song)}
+              onClick={() => {
+                handleSongClick(song);
+              }}
             >
               <TableCell className="w-10 text-center">
                 {isActive ? <Music2 size={14} /> : index + 1}
@@ -87,7 +90,11 @@ const SongsTable = ({
               </TableCell>
               <TableCell className="flex justify-center items-center">
                 <ActionsDropdown song={song}>
-                  {renderActions && renderActions(song)}
+                  {renderActions ? (
+                    renderActions(song)
+                  ) : (
+                    <AddToPlaylistDialog song={song} />
+                  )}
                 </ActionsDropdown>
               </TableCell>
             </TableRow>

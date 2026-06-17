@@ -27,18 +27,6 @@ const useToggleFavoriteMutation = () => {
         isFavorite,
       });
     },
-    // onMutate: async ({ songId, isFavorite }) => {
-    //   await queryClient.cancelQueries({ queryKey: ["songs"] });
-
-    //   const previousSongs = queryClient.getQueryData<Song[]>(["songs"]);
-
-    //   updateSongInCache(queryClient, songId, (song) => ({
-    //     ...song,
-    //     isFavorite,
-    //   }));
-
-    //   return { previousSongs };
-    // },
     onSuccess: () => {
       toast.success("Favorite status updated");
       queryClient.invalidateQueries({ queryKey: ["songs"], exact: false });
@@ -47,11 +35,6 @@ const useToggleFavoriteMutation = () => {
       toast.error("Failed to update favorite status: ");
       console.error(err);
     },
-    // onError: (_err, _vars, context) => {
-    //   if (context?.previousSongs) {
-    //     queryClient.setQueryData(["songs"], context.previousSongs);
-    //   }
-    // },
   });
 
   return mutation;

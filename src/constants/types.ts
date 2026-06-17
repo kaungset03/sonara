@@ -28,7 +28,7 @@ declare global {
 
   type QueueItem = {
     id: string; // unique id for the queue item
-    song: Song;
+    songId: number; // reference to the song id
   };
 
   type SongColumn = "Title" | "Artist" | "Album" | "Duration";

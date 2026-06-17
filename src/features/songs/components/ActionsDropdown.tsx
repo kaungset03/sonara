@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link } from "@tanstack/react-router";
 import { EllipsisVertical } from "lucide-react";
-import AddToPlaylistDialog from "@/features/playlists/components/AddToPlaylistDialog";
 import usePlayerStore from "@/store/store";
 
 type ActionsDropdownProps = {
@@ -31,31 +30,22 @@ const ActionsDropdown = ({ song, children }: ActionsDropdownProps) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {children ? children : <AddToPlaylistDialog song={song} />}
+        {children}
         <DropdownMenuItem
           className="text-xs"
-          onClick={(e) => {
-            e.stopPropagation();
+          onClick={() => {
             addToQueue(song);
           }}
         >
           Add to Queue
         </DropdownMenuItem>
         <DropdownMenuItem className="text-xs" asChild>
-          <Link
-            to={"/artists/$name"}
-            params={{ name: song.artist }}
-            onClick={(e) => e.stopPropagation()}
-          >
+          <Link to={"/artists/$name"} params={{ name: song.artist }}>
             View Artist
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="text-xs" asChild>
-          <Link
-            to={"/albums/$name"}
-            params={{ name: song.album }}
-            onClick={(e) => e.stopPropagation()}
-          >
+          <Link to={"/albums/$name"} params={{ name: song.album }}>
             View Album
           </Link>
         </DropdownMenuItem>

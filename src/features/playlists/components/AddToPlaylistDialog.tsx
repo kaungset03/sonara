@@ -52,12 +52,8 @@ const AddToPlaylistDialog = ({ song }: AddToPlaylistDialogProps) => {
         <DialogTrigger asChild>
           <DropdownMenuItem
             className="text-xs"
-            onSelect={(e) => {
-              e.preventDefault();
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
+            onSelect={(e) => e.preventDefault()}
+            onClick={(e) => e.stopPropagation()}
           >
             Add to Playlist
           </DropdownMenuItem>
@@ -88,11 +84,12 @@ const AddToPlaylistDialog = ({ song }: AddToPlaylistDialogProps) => {
           </Select>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline" onClick={(e) => e.stopPropagation()}>
+              <Button onClick={(e) => e.stopPropagation()} variant="outline">
                 Cancel
               </Button>
             </DialogClose>
             <Button
+              onClick={(e) => e.stopPropagation()}
               type="submit"
               form="add-to-playlist-form"
               disabled={selectedId === null}
