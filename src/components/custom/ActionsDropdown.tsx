@@ -43,6 +43,15 @@ const ActionsDropdown = ({ song, children }: ActionsDropdownProps) => {
         </DropdownMenuItem>
         <DropdownMenuItem className="text-xs" asChild>
           <Link
+            to={"/artists/$name"}
+            params={{ name: song.artist }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            View Artist
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="text-xs" asChild>
+          <Link
             to={"/albums/$name"}
             params={{ name: song.album }}
             onClick={(e) => e.stopPropagation()}

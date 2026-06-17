@@ -32,6 +32,9 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
 
+  const isShuffle = usePlayerStore((state) => state.isShuffle);
+  const setIsShuffle = usePlayerStore((state) => state.setIsShuffle);
+
   const muted = usePlayerStore((state) => state.muted);
   const setMuted = usePlayerStore((state) => state.setMuted);
 
@@ -111,9 +114,17 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
 
   useEffect(() => {
     const player = playerRef.current;
+
     if (player) {
       player.src = convertFileSrc(currentSong.path);
-      player.play();
+      const playPromise = player.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          if (err.name !== "AbortError") {
+            console.error("Audio play failed:", err);
+          }
+        });
+      }
     }
   }, [currentSong.id, setIsPlaying, playerRef]);
 
@@ -164,7 +175,12 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
           >
             <SkipForward size={16} />
           </Button>
-          <Button variant="ghost" size="icon" className="border border-primary">
+          <Button
+            variant={isShuffle ? "default" : "ghost"}
+            size="icon"
+            className="border border-primary"
+            onClick={() => setIsShuffle(!isShuffle)}
+          >
             <Shuffle size={16} />
           </Button>
           <Button variant="ghost" size="icon" className="border border-primary">

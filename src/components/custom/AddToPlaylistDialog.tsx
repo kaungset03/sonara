@@ -70,15 +70,11 @@ const AddToPlaylistDialog = ({ song }: AddToPlaylistDialogProps) => {
             </DialogDescription>
           </DialogHeader>
           <Select
-            defaultValue={
-              playlists && playlists.length > 0
-                ? playlists[0].id.toString()
-                : "Select a playlist"
-            }
+            value={selectedId ? selectedId.toString() : undefined}
             onValueChange={(value) => setSelectedId(Number(value))}
           >
             <SelectTrigger className="w-full">
-              <SelectValue />
+              <SelectValue placeholder="Select a playlist" />
             </SelectTrigger>
             <SelectContent position={"popper"} className="w-full">
               <SelectGroup>
@@ -92,7 +88,9 @@ const AddToPlaylistDialog = ({ song }: AddToPlaylistDialogProps) => {
           </Select>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" onClick={(e) => e.stopPropagation()}>
+                Cancel
+              </Button>
             </DialogClose>
             <Button
               type="submit"
