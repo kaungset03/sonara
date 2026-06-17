@@ -1,7 +1,7 @@
 import {
   BookImage,
-  Clock,
   Heart,
+  Home,
   Music,
   User,
   type LucideProps,
@@ -17,9 +17,9 @@ type HomeRoute = {
 
 const homeRoutes: HomeRoute[] = [
   {
-    name: "Recents",
+    name: "Home",
     href: "/",
-    icon: Clock,
+    icon: Home,
   },
   {
     name: "Songs",

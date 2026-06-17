@@ -11,7 +11,7 @@ import usePlayerStore from "@/store/store";
 
 type ActionsDropdownProps = {
   song: Song;
-  children?: React.ReactNode;
+  children: React.ReactNode;
 };
 
 const ActionsDropdown = ({ song, children }: ActionsDropdownProps) => {
@@ -33,19 +33,28 @@ const ActionsDropdown = ({ song, children }: ActionsDropdownProps) => {
         {children}
         <DropdownMenuItem
           className="text-xs"
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             addToQueue(song);
           }}
         >
           Add to Queue
         </DropdownMenuItem>
         <DropdownMenuItem className="text-xs" asChild>
-          <Link to={"/artists/$name"} params={{ name: song.artist }}>
+          <Link
+            onClick={(e) => e.stopPropagation()}
+            to={"/artists/$name"}
+            params={{ name: song.artist }}
+          >
             View Artist
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="text-xs" asChild>
-          <Link to={"/albums/$name"} params={{ name: song.album }}>
+          <Link
+            onClick={(e) => e.stopPropagation()}
+            to={"/albums/$name"}
+            params={{ name: song.album }}
+          >
             View Album
           </Link>
         </DropdownMenuItem>

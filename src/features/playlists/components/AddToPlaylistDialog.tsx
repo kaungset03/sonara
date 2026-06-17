@@ -27,7 +27,7 @@ type AddToPlaylistDialogProps = {
 };
 
 const AddToPlaylistDialog = ({ song }: AddToPlaylistDialogProps) => {
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string>("");
   const [open, setOpen] = useState(false);
 
   const { data: playlists } = useGetAllPlaylistsQuery();
@@ -40,9 +40,7 @@ const AddToPlaylistDialog = ({ song }: AddToPlaylistDialogProps) => {
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (selectedId) {
-      // Call the mutation to add the song to the playlist
-      // addSongToPlaylist({ playlistId: selectedId, songId: song.id });
-      mutate({ playlistId: selectedId, songIds: [song.id] });
+      mutate({ playlistId: Number(selectedId), songIds: [song.id] });
     }
   };
 
@@ -65,10 +63,7 @@ const AddToPlaylistDialog = ({ song }: AddToPlaylistDialogProps) => {
               Select a playlist to add the song to.
             </DialogDescription>
           </DialogHeader>
-          <Select
-            value={selectedId ? selectedId.toString() : undefined}
-            onValueChange={(value) => setSelectedId(Number(value))}
-          >
+          <Select value={selectedId} onValueChange={setSelectedId}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select a playlist" />
             </SelectTrigger>
@@ -92,7 +87,7 @@ const AddToPlaylistDialog = ({ song }: AddToPlaylistDialogProps) => {
               onClick={(e) => e.stopPropagation()}
               type="submit"
               form="add-to-playlist-form"
-              disabled={selectedId === null}
+              disabled={selectedId === ""}
             >
               Save
             </Button>
