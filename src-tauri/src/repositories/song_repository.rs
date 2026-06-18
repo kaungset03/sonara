@@ -162,7 +162,7 @@ pub fn get_favorite_songs_query(
     conn: &rusqlite::Connection,
 ) -> rusqlite::Result<Vec<crate::models::song::Song>> {
     let mut stmt = conn.prepare(
-        "SELECT id, title, artist, album, duration, path, is_favorite, favorite_added_at, last_played_at, play_count, created_at FROM songs WHERE is_favorite = 1 ORDER BY favorite_added_at DESC",
+        "SELECT id, title, artist, album, duration, path, is_favorite, favorite_added_at, last_played_at, play_count, created_at FROM songs WHERE is_favorite = 1 ORDER BY favorite_added_at",
     )?;
     let song_iter = stmt.query_map([], |row| {
         Ok(crate::models::song::Song {
@@ -281,4 +281,17 @@ pub fn get_stats_query(conn: &rusqlite::Connection) -> rusqlite::Result<Stats> {
         total_artists,
         total_favorites,
     })
+}
+
+pub fn record_song_play_query(conn: &rusqlite::Connection, song_id: i32) -> rusqlite::Result<()> {
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_secs() as i64;
+
+    conn.execute(
+        "UPDATE songs SET last_played_at = ?1, play_count = play_count + 1 WHERE id = ?2",
+        rusqlite::params![now, song_id],
+    )?;
+    Ok(())
 }

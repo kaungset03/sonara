@@ -49,6 +49,7 @@ pub fn run() {
             add_songs_to_playlist,
             remove_song_from_playlist,
             get_home_data,
+            record_song_play
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -145,3 +145,10 @@ pub fn get_home_data(db: State<DbState>) -> Result<crate::models::stats::HomeDat
     let conn = db.0.lock().map_err(|e| e.to_string())?;
     services::library::get_home_data(&conn).map_err(|e| e.to_string())
 }
+
+// update song play count and last played at
+#[tauri::command]
+pub fn record_song_play(db: State<DbState>, song_id: i32) -> Result<(), String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::song::record_song_play(&conn, song_id).map_err(|e| e.to_string())
+}

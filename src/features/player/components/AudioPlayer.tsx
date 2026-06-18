@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { convertFileSrc } from "@tauri-apps/api/core";
+import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { useEffect, useRef, useState } from "react";
 import { getFormattedDuration } from "@/lib/helpers";
 import SongTitle from "@/features/player/components/SongTitle";
@@ -26,6 +26,8 @@ type AudioPlayerProps = {
 
 const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   const playerRef = useRef<HTMLAudioElement | null>(null);
+
+  const hasCountedPlay = useRef(false);
 
   const next = usePlayerStore((state) => state.next);
   const previous = usePlayerStore((state) => state.previous);
@@ -112,6 +114,30 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
     onPrevious: handlePrevious,
     onSeek: handleSeek,
   });
+
+  useEffect(() => {
+    if (!hasCountedPlay.current && duration > 0) {
+      const playThreshold = Math.min(30, duration * 0.5);
+
+      if (currentTime >= playThreshold) {
+        // Flip the flag synchronously BEFORE making the async network/IPC call
+        hasCountedPlay.current = true;
+
+        invoke("record_song_play", { songId: currentSong.id })
+          .then(() => console.log(`${currentSong.title}`))
+          .catch((err) => {
+            console.error("Ops! Failed to record song play:", err);
+            // Optional: reset to false if you want to retry on failure
+            // hasCountedPlay.current = false;
+          });
+      }
+    }
+
+    return () => {
+      // Reset the flag when the song changes or component unmounts
+      hasCountedPlay.current = false;
+    };
+  }, [currentTime, duration, currentSong.id]);
 
   useEffect(() => {
     const player = playerRef.current;

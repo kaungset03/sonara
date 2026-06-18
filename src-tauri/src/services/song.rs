@@ -45,3 +45,7 @@ pub fn get_favorite_songs(
 ) -> rusqlite::Result<Vec<crate::models::song::Song>> {
     song_repository::get_favorite_songs_query(conn)
 }
+
+pub fn record_song_play(conn: &rusqlite::Connection, song_id: i32) -> rusqlite::Result<()> {
+    song_repository::record_song_play_query(conn, song_id)
+}
