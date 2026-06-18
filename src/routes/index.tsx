@@ -12,6 +12,7 @@ import {
 import SongCard from "@/features/home/components/SongCard";
 import StatsCard from "@/features/home/components/StatsCard";
 import useGetHomeDataQuery from "@/features/home/api/useGetHomeDataQuery";
+import usePlayerStore from "@/store/store";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -19,6 +20,11 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { data } = useGetHomeDataQuery();
+  const playSong = usePlayerStore((state) => state.playSong);
+
+  const handlePlaySong = (song: Song, songs: Song[]) => {
+    playSong(song, songs);
+  };
 
   if (!data) {
     return (
@@ -40,7 +46,13 @@ function Index() {
           </div>
           <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {data.recently_played_songs.slice(0, 4).map((song) => (
-              <SongCard key={song.id} song={song} />
+              <SongCard
+                key={song.id}
+                song={song}
+                handleClick={() =>
+                  handlePlaySong(song, data.recently_played_songs)
+                }
+              />
             ))}
           </div>
         </section>
@@ -101,7 +113,11 @@ function Index() {
           </div>
           <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {data.most_played_songs.map((song) => (
-              <SongCard key={song.id} song={song} />
+              <SongCard
+                key={song.id}
+                song={song}
+                handleClick={() => handlePlaySong(song, data.most_played_songs)}
+              />
             ))}
           </div>
         </section>
@@ -121,7 +137,13 @@ function Index() {
         </div>
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {data.recently_added_songs.map((song) => (
-            <SongCard key={song.id} song={song} />
+            <SongCard
+              key={song.id}
+              song={song}
+              handleClick={() =>
+                handlePlaySong(song, data.recently_added_songs)
+              }
+            />
           ))}
         </div>
       </section>
