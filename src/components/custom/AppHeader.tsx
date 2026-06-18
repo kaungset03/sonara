@@ -1,9 +1,9 @@
 import { ChevronLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { open } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
 import { useCanGoBack, useRouter } from "@tanstack/react-router";
+import SearchDialog from "@/features/search/components/SearchDialog";
 
 const AppHeader = () => {
   const router = useRouter();
@@ -37,10 +37,10 @@ const AppHeader = () => {
         <Button variant="ghost" size="icon" onClick={handleBack}>
           <ChevronLeft />
         </Button>
-        <Input placeholder="Search..." className="max-w-sm w-full" />
+        <SearchDialog />
       </div>
       <Button variant="outline" onClick={handleFolderSelection}>
-        <Plus />
+        <Plus size={16} />
         <span className="text-xs font-heading">Scan Folder</span>
       </Button>
     </header>
