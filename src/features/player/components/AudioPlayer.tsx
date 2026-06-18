@@ -1,6 +1,5 @@
 import {
   Heart,
-  ListMusic,
   Pause,
   Play,
   Repeat,
@@ -18,6 +17,7 @@ import { getFormattedDuration } from "@/lib/helpers";
 import SongTitle from "@/features/player/components/SongTitle";
 import usePlayerStore from "@/store/store";
 import useToggleFavoriteMutation from "@/features/songs/api/useToggleFavoriteMutation";
+import PlaybackQueue from "@/features/queue/components/PlaybackQueue";
 import useMediaSession from "@/hooks/useMediaSession";
 
 type AudioPlayerProps = {
@@ -116,27 +116,25 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   });
 
   useEffect(() => {
+    hasCountedPlay.current = false;
+  }, [currentSong.id]);
+
+  useEffect(() => {
     if (!hasCountedPlay.current && duration > 0) {
       const playThreshold = Math.min(30, duration * 0.5);
 
       if (currentTime >= playThreshold) {
-        // Flip the flag synchronously BEFORE making the async network/IPC call
         hasCountedPlay.current = true;
 
         invoke("record_song_play", { songId: currentSong.id })
-          .then(() => console.log(`${currentSong.title}`))
+          .then(() =>
+            console.log("Recorded song play for song ID:", currentSong.id),
+          )
           .catch((err) => {
-            console.error("Ops! Failed to record song play:", err);
-            // Optional: reset to false if you want to retry on failure
-            // hasCountedPlay.current = false;
+            console.error("Failed to record song play:", err);
           });
       }
     }
-
-    return () => {
-      // Reset the flag when the song changes or component unmounts
-      hasCountedPlay.current = false;
-    };
   }, [currentTime, duration, currentSong.id]);
 
   useEffect(() => {
@@ -263,9 +261,7 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
           </Button>
         </div>
         <div className="col-span-1 flex items-center justify-end">
-          <Button variant="ghost" size="icon" className="border border-primary">
-            <ListMusic size={16} />
-          </Button>
+          <PlaybackQueue />
         </div>
       </section>
     </footer>

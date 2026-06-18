@@ -18,7 +18,7 @@ type PlayerStore = {
   playSong: (song: Song, songs: Song[]) => void;
 
   // select current song
-  //setCurrentQueueItem: (item: QueueItem | null) => void;
+  setCurrentQueueItem: (item: QueueItem | null) => void;
 
   // set queue with new songs
   // setQueue: (songs: Song[]) => void;
@@ -50,7 +50,7 @@ const usePlayerStore = create<PlayerStore>()((set) => ({
   muted: false,
   repeatedMode: "all",
 
-  //setCurrentQueueItem: (item) => set({ currentQueueItem: item }),
+  setCurrentQueueItem: (item) => set({ currentQueueItem: item }),
 
   playSong: (song, songs) => {
     set((state) => {
