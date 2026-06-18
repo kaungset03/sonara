@@ -29,3 +29,19 @@ pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<(
     }
     Ok(())
 }
+
+pub fn get_home_data(
+    conn: &rusqlite::Connection,
+) -> rusqlite::Result<crate::models::stats::HomeData> {
+    let stats = song_repository::get_stats_query(conn)?;
+    let recently_added_songs = song_repository::get_recently_added_songs_query(conn, 8)?;
+    let most_played_songs = song_repository::get_most_played_songs_query(conn, 8)?;
+    let recently_played_songs = song_repository::get_recently_played_songs_query(conn, 4)?;
+
+    Ok(crate::models::stats::HomeData {
+        stats,
+        recently_added_songs,
+        most_played_songs,
+        recently_played_songs,
+    })
+}

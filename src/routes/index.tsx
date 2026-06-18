@@ -4,49 +4,30 @@ import {
   BarChart3,
   Flame,
   Heart,
+  Music,
   Play,
   Sparkle,
   User,
 } from "lucide-react";
 import SongCard from "@/features/home/components/SongCard";
 import StatsCard from "@/features/home/components/StatsCard";
+import useGetHomeDataQuery from "@/features/home/api/useGetHomeDataQuery";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const recentlyPlayedSongs = [
-  {
-    id: "1",
-    title: "Shape of You",
-    artist: "Ed Sheeran",
-    album: "Divide",
-    duration: 233,
-  },
-  {
-    id: "2",
-    title: "Blinding Lights",
-    artist: "The Weeknd",
-    album: "After Hours",
-    duration: 200,
-  },
-  {
-    id: "3",
-    title: "Levitating",
-    artist: "Dua Lipa",
-    album: "Future Nostalgia",
-    duration: 203,
-  },
-  {
-    id: "4",
-    title: "Watermelon Sugar",
-    artist: "Harry Styles",
-    album: "Fine Line",
-    duration: 174,
-  },
-];
-
 function Index() {
+  const { data } = useGetHomeDataQuery();
+
+  if (!data) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-10">
       <section className="space-y-4">
@@ -57,7 +38,7 @@ function Index() {
           </h2>
         </div>
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {recentlyPlayedSongs.slice(0, 4).map((song) => (
+          {data?.recently_played_songs.slice(0, 4).map((song) => (
             <SongCard key={song.id} song={song} />
           ))}
         </div>
@@ -70,30 +51,34 @@ function Index() {
           </h2>
         </div>
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          <StatsCard
-            icon={<BarChart3 size={20} />}
-            label="Songs"
-            value={25}
-            href="#"
-          />
-          <StatsCard
-            icon={<User size={20} />}
-            label="Artists"
-            value="15"
-            href="#"
-          />
-          <StatsCard
-            icon={<Album size={20} />}
-            label="Albums"
-            value="10"
-            href="#"
-          />
-          <StatsCard
-            icon={<Heart size={20} />}
-            label="Favorites"
-            value="10"
-            href="#"
-          />
+          <Link to={"/songs"} className="w-full">
+            <StatsCard
+              icon={<Music size={20} />}
+              label="Songs"
+              value={data?.stats.total_songs}
+            />
+          </Link>
+          <Link to={"/artists"} className="w-full">
+            <StatsCard
+              icon={<User size={20} />}
+              label="Artists"
+              value={data?.stats.total_artists}
+            />
+          </Link>
+          <Link to={"/albums"} className="w-full">
+            <StatsCard
+              icon={<Album size={20} />}
+              label="Albums"
+              value={data?.stats.total_albums}
+            />
+          </Link>
+          <Link to={"/favorites"} className="w-full">
+            <StatsCard
+              icon={<Heart size={20} />}
+              label="Favorites"
+              value={data?.stats.total_favorites}
+            />
+          </Link>
         </div>
       </section>
       <section className="space-y-4">
@@ -110,10 +95,7 @@ function Index() {
           </Link>
         </div>
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {recentlyPlayedSongs.slice(0, 4).map((song) => (
-            <SongCard key={song.id} song={song} />
-          ))}
-          {recentlyPlayedSongs.slice(0, 4).map((song) => (
+          {data?.most_played_songs.map((song) => (
             <SongCard key={song.id} song={song} />
           ))}
         </div>
@@ -132,10 +114,7 @@ function Index() {
           </Link>
         </div>
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {recentlyPlayedSongs.slice(0, 4).map((song) => (
-            <SongCard key={song.id} song={song} />
-          ))}
-          {recentlyPlayedSongs.slice(0, 4).map((song) => (
+          {data?.recently_added_songs.map((song) => (
             <SongCard key={song.id} song={song} />
           ))}
         </div>

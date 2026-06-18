@@ -20,6 +20,8 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
             path TEXT UNIQUE NOT NULL,
             is_favorite INTEGER NOT NULL DEFAULT 0 CHECK (is_favorite IN (0, 1)),
             favorite_added_at INTEGER,
+            last_played_at INTEGER,
+            play_count INTEGER NOT NULL DEFAULT 0,
             created_at INTEGER NOT NULL
         )",
         [],

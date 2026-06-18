@@ -47,7 +47,8 @@ pub fn run() {
             delete_playlist,
             get_songs_by_playlist,
             add_songs_to_playlist,
-            remove_song_from_playlist
+            remove_song_from_playlist,
+            get_home_data,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

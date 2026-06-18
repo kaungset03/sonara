@@ -54,5 +54,7 @@ pub fn extract_metadata(path: &Path) -> Result<Song, String> {
         created_at: 0,
         is_favorite: false,
         favorite_added_at: None,
+        last_played_at: None,
+        play_count: 0,
     })
 }

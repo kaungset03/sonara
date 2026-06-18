@@ -138,3 +138,10 @@ pub fn remove_song_from_playlist(
     services::playlist::remove_song_from_playlist(&conn, playlist_id, song_id)
         .map_err(|e| e.to_string())
 }
+
+// stats and data for home page
+#[tauri::command]
+pub fn get_home_data(db: State<DbState>) -> Result<crate::models::stats::HomeData, String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::library::get_home_data(&conn).map_err(|e| e.to_string())
+}

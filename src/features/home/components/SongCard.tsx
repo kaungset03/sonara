@@ -2,13 +2,7 @@ import { Music, Play } from "lucide-react";
 import { getFormattedDuration } from "@/lib/helpers";
 
 type SongCardProps = {
-  song: {
-    id: string;
-    title: string;
-    artist: string;
-    album: string;
-    duration: number;
-  };
+  song: Song;
 };
 
 const SongCard = ({ song }: SongCardProps) => {

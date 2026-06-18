@@ -3,3 +3,4 @@ pub mod artist;
 pub mod folder;
 pub mod playlist;
 pub mod song;
+pub mod stats;

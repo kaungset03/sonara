@@ -1,5 +1,6 @@
 import {
   Heart,
+  ListMusic,
   Pause,
   Play,
   Repeat,
@@ -130,16 +131,64 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
 
   return (
     <footer className="fixed bottom-2 left-2 right-2 rounded-3xl p-4 shadow-lg border border-secondary bg-muted/50 dark:bg-sidebar/50 backdrop-blur-md z-10">
+      <audio
+        ref={playerRef}
+        onEnded={handleEnded}
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleOnLoadedMetadata}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+      />
       <section className="w-full h-full grid grid-cols-10 items-center">
-        <audio
-          ref={playerRef}
-          onEnded={handleEnded}
-          onTimeUpdate={handleTimeUpdate}
-          onLoadedMetadata={handleOnLoadedMetadata}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-        />
-        <div className="flex items-center justify-center col-span-2 gap-x-2 2xl:gap-x-4">
+        <div className="col-span-2 flex items-center justify-start gap-2 2xl:gap-4 min-w-0">
+          <div className="size-12 rounded-sm bg-primary shrink-0" />
+          <div className="min-w-0 space-y-0.5">
+            <SongTitle text={currentSong.title} />
+            <p className="text-xs text-muted-foreground">
+              {currentSong.artist}
+            </p>
+          </div>
+        </div>
+        <div className="col-span-1 flex items-center justify-center gap-x-2 2xl:gap-x-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="border border-primary text-primary"
+            onClick={handleFavoriteToggle}
+          >
+            {currentSong.is_favorite ? (
+              <Heart size={16} fill="currentColor" />
+            ) : (
+              <Heart size={16} />
+            )}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="border border-primary"
+            onClick={handleMuteToggle}
+          >
+            {muted ? <VolumeOff size={16} /> : <Volume2 size={16} />}
+          </Button>
+        </div>
+        <div className="col-span-4 w-full grid grid-cols-10 items-center justify-center">
+          <span className="text-sm font-heading font-medium text-muted-foreground text-center">
+            {getFormattedDuration(currentTime)}
+          </span>
+          <Slider
+            defaultValue={[0]}
+            max={duration}
+            value={[currentTime]}
+            onValueChange={(value) => {
+              handleSeek(value[0]);
+            }}
+            className="col-span-8 w-full"
+          />
+          <span className="text-sm font-heading font-medium text-muted-foreground text-center">
+            {getFormattedDuration(duration)}
+          </span>
+        </div>
+        <div className="col-span-2 flex items-center justify-center gap-x-2 2xl:gap-x-4">
           <Button
             variant="ghost"
             size="icon"
@@ -187,53 +236,10 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
             <Repeat size={16} />
           </Button>
         </div>
-        <div className="col-span-5 w-full grid grid-cols-10 items-center justify-center">
-          <span className="text-sm font-heading font-medium text-muted-foreground text-center">
-            {getFormattedDuration(currentTime)}
-          </span>
-          <Slider
-            defaultValue={[0]}
-            max={duration}
-            value={[currentTime]}
-            onValueChange={(value) => {
-              handleSeek(value[0]);
-            }}
-            className="col-span-8 w-full"
-          />
-          <span className="text-sm font-heading font-medium text-muted-foreground text-center">
-            {getFormattedDuration(duration)}
-          </span>
-        </div>
-        <div className="flex items-center justify-center gap-x-2 2xl:gap-x-4 col-span-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="border border-primary text-primary"
-            onClick={handleFavoriteToggle}
-          >
-            {currentSong.is_favorite ? (
-              <Heart size={16} fill="currentColor" />
-            ) : (
-              <Heart size={16} />
-            )}
+        <div className="col-span-1 flex items-center justify-end">
+          <Button variant="ghost" size="icon" className="border border-primary">
+            <ListMusic size={16} />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="border border-primary"
-            onClick={handleMuteToggle}
-          >
-            {muted ? <VolumeOff size={16} /> : <Volume2 size={16} />}
-          </Button>
-        </div>
-        <div className="flex items-center gap-2 2xl:gap-4 col-span-2 min-w-0">
-          <div className="size-12 rounded-sm bg-primary shrink-0" />
-          <div className="min-w-0 space-y-0.5">
-            <SongTitle text={currentSong.title} />
-            <p className="text-xs text-muted-foreground">
-              {currentSong.artist}
-            </p>
-          </div>
         </div>
       </section>
     </footer>
