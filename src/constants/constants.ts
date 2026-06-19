@@ -43,23 +43,6 @@ const homeRoutes: HomeRoute[] = [
   },
 ];
 
-const playlistRoutes: Playlist[] = [
-  {
-    id: 1,
-    name: "Jazz Classics",
-  },
-  {
-    id: 2,
-    name: "Pop Hits",
-  },
-  {
-    id: 3,
-    name: "Nujabes Special",
-  },
-  {
-    id: 4,
-    name: "Liu Yuning OSTs",
-  },
-];
+const themeOptions: Theme[] = ["light", "dark", "system"];
 
-export { homeRoutes, playlistRoutes };
+export { homeRoutes, themeOptions };

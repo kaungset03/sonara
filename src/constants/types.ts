@@ -52,5 +52,7 @@ declare global {
     artists: Artist[];
     albums: Album[];
   };
+
+  type Theme = "dark" | "light" | "system";
 }
 export {};

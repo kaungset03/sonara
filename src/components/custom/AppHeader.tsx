@@ -32,7 +32,7 @@ const AppHeader = () => {
   };
 
   return (
-    <header className="h-20 p-2 flex items-center justify-between">
+    <header className="h-16 m-2 p-2 sticky top-2 rounded-3xl shadow-md border border-secondary bg-muted/50 dark:bg-sidebar/50 backdrop-blur-lg z-10 flex items-center justify-between">
       <div className="flex items-center gap-3 flex-1">
         <Button variant="ghost" size="icon" onClick={handleBack}>
           <ChevronLeft />
