@@ -40,7 +40,7 @@ function RouteComponent() {
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="flex flex-col gap-6 mb-8 border-b pb-8">
+      <div className="flex flex-col gap-6 mb-8 border-b border-muted-foreground/30 pb-8">
         <div>
           <h1 className="text-4xl font-bold font-heading tracking-tight mb-2">
             {name}
