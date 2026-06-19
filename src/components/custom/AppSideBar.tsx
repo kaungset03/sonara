@@ -33,14 +33,16 @@ const AppSidebar = () => {
             Your Library
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-0.5">
               {homeRoutes.map((route) => (
                 <SidebarMenuItem key={route.name}>
                   <SidebarMenuButton className="w-full h-10 p-0">
                     <Link
                       to={route.href}
-                      className="w-full h-full text-xs px-6 flex items-center gap-3"
-                      activeProps={{ className: "bg-secondary" }}
+                      className="w-full h-full text-xs font-medium px-6 flex items-center gap-3"
+                      activeProps={{
+                        className: "bg-secondary-foreground/90 text-secondary",
+                      }}
                     >
                       <route.icon />
                       {route.name}
@@ -57,15 +59,17 @@ const AppSidebar = () => {
             <CreatePlaylistDialog />
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-0.5">
               {playlists?.map((playlist) => (
                 <SidebarMenuItem key={playlist.id}>
                   <SidebarMenuButton className="w-full h-10 p-0">
                     <Link
                       to={"/playlists/$id"}
                       params={{ id: playlist.id.toString() }}
-                      className="w-full h-full text-xs px-6 flex items-center"
-                      activeProps={{ className: "bg-secondary" }}
+                      className="w-full h-full text-xs font-medium px-6 flex items-center"
+                      activeProps={{
+                        className: "bg-secondary-foreground/90 text-secondary",
+                      }}
                     >
                       {playlist.name}
                     </Link>
@@ -83,7 +87,9 @@ const AppSidebar = () => {
               <Link
                 to={"/settings"}
                 className="w-full h-full text-xs px-6 flex items-center gap-3"
-                activeProps={{ className: "bg-secondary" }}
+                activeProps={{
+                  className: "bg-secondary-foreground/90 text-secondary",
+                }}
               >
                 <Settings />
                 Settings

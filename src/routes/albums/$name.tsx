@@ -57,7 +57,7 @@ function RouteComponent() {
           </Button>
           <Button
             onClick={handleShuffle}
-            variant="secondary"
+            variant={isShuffle ? "default" : "outline"}
             className="gap-2 text-xs"
           >
             <Shuffle size={16} />

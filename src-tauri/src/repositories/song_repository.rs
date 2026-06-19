@@ -1,3 +1,5 @@
+use rusqlite::params;
+
 use crate::models::stats::Stats;
 
 // insert song metadata into the database
@@ -294,4 +296,109 @@ pub fn record_song_play_query(conn: &rusqlite::Connection, song_id: i32) -> rusq
         rusqlite::params![now, song_id],
     )?;
     Ok(())
+}
+
+// search songs by title query
+pub fn search_songs_by_title_query(
+    conn: &rusqlite::Connection,
+    search: &str,
+) -> rusqlite::Result<Vec<crate::models::song::Song>> {
+    let mut stmt = conn.prepare(
+        "
+        SELECT
+            id,
+            title,
+            artist,
+            album,
+            duration,
+            path,
+            is_favorite,
+            favorite_added_at,
+            last_played_at,
+            play_count,
+            created_at
+        FROM songs
+        WHERE title LIKE ?1 COLLATE NOCASE
+        ORDER BY created_at DESC
+        ",
+    )?;
+
+    let pattern = format!("%{}%", search);
+    let song_iter = stmt.query_map(params![pattern], |row| {
+        Ok(crate::models::song::Song {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            artist: row.get(2)?,
+            album: row.get(3)?,
+            duration: row.get(4)?,
+            path: row.get(5)?,
+            is_favorite: row.get::<_, i64>(6)? == 1,
+            favorite_added_at: row.get(7)?,
+            last_played_at: row.get(8)?,
+            play_count: row.get(9)?,
+            created_at: row.get(10)?,
+        })
+    })?;
+
+    let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
+    songs
+}
+
+// search artists by name query
+pub fn search_artists_by_name_query(
+    conn: &rusqlite::Connection,
+    search: &str,
+) -> rusqlite::Result<Vec<crate::models::artist::Artist>> {
+    let mut stmt = conn.prepare(
+        "
+        SELECT
+            artist,
+            COUNT(*) as count
+        FROM songs
+        WHERE artist LIKE ?1 COLLATE NOCASE
+        GROUP BY artist
+        ORDER BY count DESC
+        ",
+    )?;
+
+    let pattern = format!("%{}%", search);
+    let artist_iter = stmt.query_map(params![pattern], |row| {
+        Ok(crate::models::artist::Artist {
+            name: row.get(0)?,
+            count: row.get(1)?,
+        })
+    })?;
+
+    let artists: Result<Vec<crate::models::artist::Artist>, rusqlite::Error> =
+        artist_iter.collect();
+    artists
+}
+
+// search albums by name query
+pub fn search_albums_by_name_query(
+    conn: &rusqlite::Connection,
+    search: &str,
+) -> rusqlite::Result<Vec<crate::models::album::Album>> {
+    let mut stmt = conn.prepare(
+        "
+        SELECT
+            album,
+            COUNT(*) as count
+        FROM songs
+        WHERE album LIKE ?1 COLLATE NOCASE
+        GROUP BY album
+        ORDER BY count DESC
+        ",
+    )?;
+
+    let pattern = format!("%{}%", search);
+    let album_iter = stmt.query_map(params![pattern], |row| {
+        Ok(crate::models::album::Album {
+            name: row.get(0)?,
+            count: row.get(1)?,
+        })
+    })?;
+
+    let albums: Result<Vec<crate::models::album::Album>, rusqlite::Error> = album_iter.collect();
+    albums
 }

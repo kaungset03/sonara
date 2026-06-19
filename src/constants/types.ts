@@ -46,5 +46,11 @@ declare global {
     most_played_songs: Song[];
     recently_played_songs: Song[];
   };
+
+  type SearchResults = {
+    songs: Song[];
+    artists: Artist[];
+    albums: Album[];
+  };
 }
 export {};

@@ -32,6 +32,12 @@ const AddSongsToPlaylist = ({ playlistId }: AddSongsToPlaylistProps) => {
   const { data: songs } = useGetAllSongsQuery();
   const { mutate } = useAddSongsToPlaylistMutation({ closeDialog });
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredSongs = songs?.filter((song) =>
+    song.title.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   const toggleSelection = (songId: number) => {
     setSelectedIds((prev) => {
       if (prev.includes(songId)) {
@@ -52,23 +58,28 @@ const AddSongsToPlaylist = ({ playlistId }: AddSongsToPlaylistProps) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <form onSubmit={handleSubmit} id="add-songs-form">
-        <DialogTrigger asChild>
-          <Button variant="secondary" className="text-xs">
-            <PlusCircle size={16} />
-            Add Songs
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-md" showCloseButton={false}>
-          <DialogHeader>
+      <DialogTrigger asChild>
+        <Button variant="secondary" className="text-xs">
+          <PlusCircle size={16} />
+          Add Songs
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md" showCloseButton={false}>
+        <form onSubmit={handleSubmit} id={`add-songs-form-${playlistId}`}>
+          <DialogHeader className="pb-4 space-y-1">
             <DialogTitle>Add Songs to Playlist</DialogTitle>
             <DialogDescription>
               Select songs to add from your library
             </DialogDescription>
+            <Input
+              placeholder="Search songs to add into playlist..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </DialogHeader>
-          <Input placeholder="Search songs, artists, or albums..." />
+
           <div className="space-y-2 no-scrollbar max-h-[50vh] overflow-y-auto">
-            {songs?.map((song) => (
+            {filteredSongs?.map((song) => (
               <Label
                 key={song.id}
                 className="w-full rounded-2xl flex items-center gap-3 p-3 border border-border cursor-pointer transition-colors hover:bg-muted/50"
@@ -89,21 +100,21 @@ const AddSongsToPlaylist = ({ playlistId }: AddSongsToPlaylistProps) => {
             ))}
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="pt-4">
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <Button
               type="submit"
-              form="add-songs-form"
+              form={`add-songs-form-${playlistId}`}
               disabled={selectedIds.length === 0}
             >
               <Check size={16} />
               Add {selectedIds.length > 0 && `${selectedIds.length}`}
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 };

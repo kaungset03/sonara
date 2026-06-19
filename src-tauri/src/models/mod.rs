@@ -4,3 +4,4 @@ pub mod folder;
 pub mod playlist;
 pub mod song;
 pub mod stats;
+pub mod search;

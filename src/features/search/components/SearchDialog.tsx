@@ -1,18 +1,41 @@
+import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Music, Search, X } from "lucide-react";
-import SearchResults from "@/features/search/components/SearchResults";
+import { BookImage, Music, Search, User, X } from "lucide-react";
+import SearchResultItem from "@/features/search/components/SearchResultItem";
+import useSearchLibraryQuery from "@/features/search/api/useSearchLibraryQuery";
+import usePlayerStore from "@/store/store";
 
 const SearchDialog = () => {
+  const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const { data } = useSearchLibraryQuery({ search });
+  const navigate = useNavigate();
+  const playSong = usePlayerStore((state) => state.playSong);
+
+  // actions based on search result category
+  // song => play song
+  // artist => navigate to artist page
+  // album => navigate to album page
+
+  const closeDialog = () => {
+    setOpen(false);
+    setSearch("");
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant="outline"
@@ -26,8 +49,19 @@ const SearchDialog = () => {
       </DialogTrigger>
       <DialogContent showCloseButton={false} className="sm:max-w-lg">
         <DialogHeader>
+          <DialogTitle hidden>
+            <span className="text-hidden">Search Library</span>
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            Search your library for songs, artists, and albums.
+          </DialogDescription>
           <div className="flex items-center gap-2">
-            <Input autoFocus placeholder="Search songs, artists, albums..." />
+            <Input
+              autoFocus
+              placeholder="Search songs, artists, albums..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
             <DialogClose asChild>
               <Button variant="ghost" size="icon">
                 <X size={16} />
@@ -35,17 +69,90 @@ const SearchDialog = () => {
             </DialogClose>
           </div>
         </DialogHeader>
-        {/* <div className="py-10">
-          <Music size={48} className="mx-auto text-muted-foreground" />
-          <p className="text-center text-muted-foreground mt-4">
-            Start typing to search your library...
-          </p>
-        </div> */}
-        <div className="space-y-6 w-full max-h-[70vh] overflow-y-auto no-scrollbar">
-          <SearchResults title="SONGS" />
-          <SearchResults title="ARTISTS" />
-          <SearchResults title="ALBUMS" />
-        </div>
+        {search.trim() === "" ? (
+          <div className="py-10">
+            <Music size={48} className="mx-auto text-muted-foreground" />
+            <p className="text-center text-muted-foreground mt-4">
+              Start typing to search your library...
+            </p>
+          </div>
+        ) : data ? (
+          <div className="space-y-6 w-full max-h-[70vh] overflow-y-auto no-scrollbar">
+            {/** render search results for each category */}
+            <div className="space-y-2">
+              <h3 className="text-xs font-semibold uppercase text-muted-foreground">
+                SONGS ({data.songs.length})
+              </h3>
+              <div className="space-y-1">
+                {data.songs.map((song) => (
+                  <SearchResultItem
+                    key={song.id}
+                    title={song.title}
+                    description={`${song.artist} • ${song.album}`}
+                    icon={<Music size={16} className="text-muted-foreground" />}
+                    handleClick={() => {
+                      playSong(song, data.songs);
+                      closeDialog();
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xs font-semibold uppercase text-muted-foreground">
+                ARTISTS ({data.artists.length})
+              </h3>
+              <div className="space-y-1">
+                {data.artists.map((artist) => (
+                  <SearchResultItem
+                    key={artist.name}
+                    title={artist.name}
+                    description={`${artist.count} songs`}
+                    icon={<User size={16} className="text-muted-foreground" />}
+                    handleClick={() => {
+                      navigate({
+                        to: "/artists/$name",
+                        params: { name: artist.name },
+                      });
+                      closeDialog();
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xs font-semibold uppercase text-muted-foreground">
+                ALBUMS ({data.albums.length})
+              </h3>
+              <div className="space-y-1">
+                {data.albums.map((album) => (
+                  <SearchResultItem
+                    key={album.name}
+                    title={album.name}
+                    description={`${album.count} songs`}
+                    icon={
+                      <BookImage size={16} className="text-muted-foreground" />
+                    }
+                    handleClick={() => {
+                      navigate({
+                        to: "/albums/$name",
+                        params: { name: album.name },
+                      });
+                      closeDialog();
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="py-10">
+            <Music size={48} className="mx-auto text-muted-foreground" />
+            <p className="text-center text-muted-foreground mt-4">
+              Start typing to search your library...
+            </p>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

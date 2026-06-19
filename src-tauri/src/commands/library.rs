@@ -152,3 +152,13 @@ pub fn record_song_play(db: State<DbState>, song_id: i32) -> Result<(), String> 
     let conn = db.0.lock().map_err(|e| e.to_string())?;
     services::song::record_song_play(&conn, song_id).map_err(|e| e.to_string())
 }
+
+// search songs, artists, and albums
+#[tauri::command]
+pub fn search_library(
+    db: State<DbState>,
+    search: String,
+) -> Result<crate::models::search::SearchResults, String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::search::preview_search_results(&conn, &search).map_err(|e| e.to_string())
+}
