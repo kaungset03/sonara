@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import useGetFavoriteSongsQuery from "@/features/songs/api/useGetFavoriteSongsQuery";
-import usePlayerStore from "@/store/store";
 import SongsTable from "@/features/songs/components/SongsTable";
+import useAppStore from "@/store/app-store";
 
 export const Route = createFileRoute("/favorites/")({
   component: RouteComponent,
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/favorites/")({
 
 function RouteComponent() {
   const { data } = useGetFavoriteSongsQuery();
-  const playSong = usePlayerStore((state) => state.playSong);
+  const playSong = useAppStore((state) => state.playSong);
 
   const handleSongSelect = (song: Song) => {
     if (data) {

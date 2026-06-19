@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link } from "@tanstack/react-router";
 import { EllipsisVertical } from "lucide-react";
-import usePlayerStore from "@/store/store";
+import useAppStore from "@/store/app-store";
 
 type ActionsDropdownProps = {
   song: Song;
@@ -15,7 +15,7 @@ type ActionsDropdownProps = {
 };
 
 const ActionsDropdown = ({ song, children }: ActionsDropdownProps) => {
-  const addToQueue = usePlayerStore((state) => state.addToQueue);
+  const addToQueue = useAppStore((state) => state.addToQueue);
 
   return (
     <DropdownMenu>

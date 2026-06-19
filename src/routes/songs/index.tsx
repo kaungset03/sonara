@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import useGetAllSongsQuery from "@/features/songs/api/useGetAllSongsQuery";
-import usePlayerStore from "@/store/store";
+import useAppStore from "@/store/app-store";
 import SongsTable from "@/features/songs/components/SongsTable";
 
 export const Route = createFileRoute("/songs/")({
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/songs/")({
 
 function RouteComponent() {
   const { data } = useGetAllSongsQuery();
-  const playSong = usePlayerStore((state) => state.playSong);
+  const playSong = useAppStore((state) => state.playSong);
 
   const handleSongSelect = (song: Song) => {
     if (!data) return;

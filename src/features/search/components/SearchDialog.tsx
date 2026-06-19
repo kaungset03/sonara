@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { BookImage, Music, Search, User, X } from "lucide-react";
 import SearchResultItem from "@/features/search/components/SearchResultItem";
 import useSearchLibraryQuery from "@/features/search/api/useSearchLibraryQuery";
-import usePlayerStore from "@/store/store";
+import useAppStore from "@/store/app-store";
 
 const SearchDialog = () => {
   const [search, setSearch] = useState("");
@@ -22,7 +22,7 @@ const SearchDialog = () => {
 
   const { data } = useSearchLibraryQuery({ search });
   const navigate = useNavigate();
-  const playSong = usePlayerStore((state) => state.playSong);
+  const playSong = useAppStore((state) => state.playSong);
 
   // actions based on search result category
   // song => play song

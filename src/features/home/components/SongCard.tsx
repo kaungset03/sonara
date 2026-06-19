@@ -1,6 +1,6 @@
 import { Music, Play } from "lucide-react";
 import { getFormattedDuration } from "@/lib/helpers";
-import usePlayerStore from "@/store/store";
+import useAppStore from "@/store/app-store";
 
 type SongCardProps = {
   song: Song;
@@ -8,7 +8,7 @@ type SongCardProps = {
 };
 
 const SongCard = ({ song, handleClick }: SongCardProps) => {
-  const currentQueueItem = usePlayerStore((state) => state.currentQueueItem);
+  const currentQueueItem = useAppStore((state) => state.currentQueueItem);
   const isCurrentPlayingSong =
     currentQueueItem && currentQueueItem.songId === song.id;
   return (
@@ -32,14 +32,7 @@ const SongCard = ({ song, handleClick }: SongCardProps) => {
         </button>
       </div>
       <div className="flex-1 min-w-0">
-        <h3
-          className={`font-medium text-sm truncate transition-colors
-  ${
-    isCurrentPlayingSong
-      ? "text-primary"
-      : "text-foreground group-hover:text-primary"
-  }`}
-        >
+        <h3 className="font-medium text-sm truncate text-foreground">
           {song.title}
         </h3>
         <p className="text-xs text-muted-foreground truncate">{song.artist}</p>

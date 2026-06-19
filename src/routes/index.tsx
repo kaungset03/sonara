@@ -12,7 +12,7 @@ import {
 import SongCard from "@/features/home/components/SongCard";
 import StatsCard from "@/features/home/components/StatsCard";
 import useGetHomeDataQuery from "@/features/home/api/useGetHomeDataQuery";
-import usePlayerStore from "@/store/store";
+import useAppStore from "@/store/app-store";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { data } = useGetHomeDataQuery();
-  const playSong = usePlayerStore((state) => state.playSong);
+  const playSong = useAppStore((state) => state.playSong);
 
   const handlePlaySong = (song: Song, songs: Song[]) => {
     playSong(song, songs);
@@ -122,7 +122,7 @@ function Index() {
           </div>
         </section>
       )}
-      
+
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold flex items-center gap-2">

@@ -4,6 +4,7 @@ import {
   Pause,
   Play,
   Repeat,
+  Repeat1,
   Shuffle,
   SkipBack,
   SkipForward,
@@ -16,7 +17,7 @@ import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { useEffect, useRef, useState } from "react";
 import { getFormattedDuration } from "@/lib/helpers";
 import SongTitle from "@/features/player/components/SongTitle";
-import usePlayerStore from "@/store/store";
+import useAppStore from "@/store/app-store";
 import useToggleFavoriteMutation from "@/features/songs/api/useToggleFavoriteMutation";
 import PlaybackQueue from "@/features/queue/components/PlaybackQueue";
 import useMediaSession from "@/hooks/useMediaSession";
@@ -30,17 +31,20 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
 
   const hasCountedPlay = useRef(false);
 
-  const next = usePlayerStore((state) => state.next);
-  const previous = usePlayerStore((state) => state.previous);
+  const next = useAppStore((state) => state.next);
+  const previous = useAppStore((state) => state.previous);
 
-  const isPlaying = usePlayerStore((state) => state.isPlaying);
-  const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
+  const isPlaying = useAppStore((state) => state.isPlaying);
+  const setIsPlaying = useAppStore((state) => state.setIsPlaying);
 
-  const isShuffle = usePlayerStore((state) => state.isShuffle);
-  const setIsShuffle = usePlayerStore((state) => state.setIsShuffle);
+  const isShuffle = useAppStore((state) => state.isShuffle);
+  const setIsShuffle = useAppStore((state) => state.setIsShuffle);
 
-  const muted = usePlayerStore((state) => state.muted);
-  const setMuted = usePlayerStore((state) => state.setMuted);
+  const muted = useAppStore((state) => state.muted);
+  const setMuted = useAppStore((state) => state.setMuted);
+
+  const repeatMode = useAppStore((state) => state.repeatMode);
+  const toggleRepeatMode = useAppStore((state) => state.toggleRepeatMode);
 
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -74,7 +78,14 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   };
 
   const handleEnded = () => {
-    handleNext();
+    if (repeatMode === "one") {
+      if (playerRef.current) {
+        playerRef.current.currentTime = 0;
+        playerRef.current.play();
+      }
+    } else {
+      next();
+    }
   };
 
   const handleTimeUpdate = () => {
@@ -259,8 +270,15 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
           >
             <Shuffle size={16} />
           </Button>
-          <Button variant="ghost" size="icon" className="border border-primary">
-            <Repeat size={16} />
+          <Button
+            variant={repeatMode !== "off" ? "default" : "ghost"}
+            size="icon"
+            className="border border-primary"
+            onClick={toggleRepeatMode}
+          >
+            {repeatMode === "off" && <Repeat size={16} />}
+            {repeatMode === "one" && <Repeat1 size={16} />}
+            {repeatMode === "all" && <Repeat size={16} />}
           </Button>
         </div>
         <div className="col-span-1 flex items-center justify-end">

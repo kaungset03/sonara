@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Play, Shuffle } from "lucide-react";
-import usePlayerStore from "@/store/store";
+import useAppStore from "@/store/app-store";
 import EditPlaylistDialog from "@/features/playlists/components/EditPlaylistDialog";
 import DeletePlaylistAlert from "@/features/playlists/components/DeletePlaylistAlert";
 import SongsTable from "@/features/songs/components/SongsTable";
@@ -21,9 +21,9 @@ function RouteComponent() {
 
   const { mutate } = useRemoveSongFromPlaylistMutation();
 
-  const playSong = usePlayerStore((state) => state.playSong);
-  const isShuffle = usePlayerStore((state) => state.isShuffle);
-  const setIsShuffle = usePlayerStore((state) => state.setIsShuffle);
+  const playSong = useAppStore((state) => state.playSong);
+  const isShuffle = useAppStore((state) => state.isShuffle);
+  const setIsShuffle = useAppStore((state) => state.setIsShuffle);
 
   const handleSongClick = (song: Song) => {
     if (songs) {

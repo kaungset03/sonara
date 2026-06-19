@@ -10,15 +10,15 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ListMusic } from "lucide-react";
-import usePlayerStore from "@/store/store";
+import useAppStore from "@/store/app-store";
 import QueueItem from "@/features/queue/components/QueueItem";
 import { useEffect, useRef, useState } from "react";
 
 const PlaybackQueue = () => {
   const [open, setOpen] = useState(false);
 
-  const playbackQueue = usePlayerStore((state) => state.playbackQueue);
-  const currentQueueItem = usePlayerStore((state) => state.currentQueueItem);
+  const playbackQueue = useAppStore((state) => state.playbackQueue);
+  const currentQueueItem = useAppStore((state) => state.currentQueueItem);
 
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 

@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { colorOptions, themeOptions } from "@/constants/constants";
+import useAppStore from "@/store/app-store";
 
 export const Route = createFileRoute("/settings/")({
   component: RouteComponent,
@@ -19,6 +20,11 @@ export const Route = createFileRoute("/settings/")({
 
 function RouteComponent() {
   const { setTheme, theme, color, setColor } = useTheme();
+  const isShuffleConfig = useAppStore((state) => state.isShuffleConfig);
+  const setShuffleConfig = useAppStore((state) => state.setShuffleConfig);
+
+  const repeatModeConfig = useAppStore((state) => state.repeatModeConfig);
+  const setRepeatModeConfig = useAppStore((state) => state.setRepeatModeConfig);
 
   return (
     <div className="space-y-8">
@@ -32,7 +38,7 @@ function RouteComponent() {
       <div className="space-y-7">
         <Card>
           <CardHeader>
-            <CardTitle>Theme</CardTitle>
+            <CardTitle className="text-xl">Theme</CardTitle>
             <CardDescription>Choose your preferred theme</CardDescription>
           </CardHeader>
           <CardContent className="flex items-center gap-8 mt-2">
@@ -56,7 +62,7 @@ function RouteComponent() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Accent Color</CardTitle>
+            <CardTitle className="text-xl">Accent Color</CardTitle>
             <CardDescription>
               Choose your preferred accent color
             </CardDescription>
@@ -74,7 +80,7 @@ function RouteComponent() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Playback Behavior</CardTitle>
+            <CardTitle className="text-xl">Playback Behavior</CardTitle>
             <CardDescription>
               Configure default playback settings
             </CardDescription>
@@ -89,7 +95,12 @@ function RouteComponent() {
                   Start playback with shuffle enabled by default.
                 </p>
               </div>
-              <Input type="checkbox" className="size-5" />
+              <Input
+                type="checkbox"
+                className="size-5"
+                checked={isShuffleConfig}
+                onChange={(e) => setShuffleConfig(e.target.checked)}
+              />
             </div>
             <Separator />
             <div className="flex items-center justify-between w-full">
@@ -101,7 +112,13 @@ function RouteComponent() {
                   Choose how tracks repeat
                 </p>
               </div>
-              <select className="bg-popover border border-border rounded-md h-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+              <select
+                className="bg-popover border border-border rounded-md h-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                value={repeatModeConfig}
+                onChange={(e) =>
+                  setRepeatModeConfig(e.target.value as "off" | "one" | "all")
+                }
+              >
                 <option value="off">Off</option>
                 <option value="one">One</option>
                 <option value="all">All</option>

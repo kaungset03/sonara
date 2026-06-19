@@ -1,6 +1,8 @@
-import { create } from "zustand";
+import { StateCreator } from "zustand";
+import { type AppStoreState } from "./app-store";
 import { shuffleQueue } from "@/lib/helpers";
-type PlayerStore = {
+
+export interface PlaybackState {
   currentQueueItem: QueueItem | null;
   // UI queue not affected by shuffle mode
   queue: QueueItem[];
@@ -11,7 +13,7 @@ type PlayerStore = {
   isPlaying: boolean;
   isShuffle: boolean;
   muted: boolean;
-  repeatedMode: "off" | "one" | "all";
+  repeatMode: "off" | "one" | "all";
 
   // Actions
   // main entry point for playing a song, sets the current queue item and queue
@@ -35,20 +37,29 @@ type PlayerStore = {
   setIsPlaying: (isPlaying: boolean) => void;
   setIsShuffle: (isShuffle: boolean) => void;
   setMuted: (muted: boolean) => void;
-  setRepeatedMode: (mode: "off" | "one" | "all") => void;
+  toggleRepeatMode: () => void;
 
   next: () => void;
   previous: () => void;
-};
 
-const usePlayerStore = create<PlayerStore>()((set) => ({
+  isPlaybackInitialized: boolean;
+
+  initPlaybackFromSettings: () => void;
+}
+
+const createPlaybackSlice: StateCreator<
+  AppStoreState,
+  [],
+  [],
+  PlaybackState
+> = (set, get) => ({
   currentQueueItem: null,
   queue: [],
   playbackQueue: [],
   isPlaying: false,
   isShuffle: false,
   muted: false,
-  repeatedMode: "all",
+  repeatMode: "all",
 
   setCurrentQueueItem: (item) => set({ currentQueueItem: item }),
 
@@ -118,14 +129,29 @@ const usePlayerStore = create<PlayerStore>()((set) => ({
       return { isShuffle, playbackQueue: newPlaybackQueue };
     }),
   setMuted: (muted) => set({ muted }),
-  setRepeatedMode: (mode) => set({ repeatedMode: mode }),
+  toggleRepeatMode: () =>
+    set((state) => {
+      const repeatModes: Array<"off" | "one" | "all"> = ["off", "one", "all"];
+      const currentIndex = repeatModes.indexOf(state.repeatMode);
+      const nextIndex = (currentIndex + 1) % repeatModes.length;
+      return { repeatMode: repeatModes[nextIndex] };
+    }),
 
   next: () =>
     set((state) => {
+      // repeated mode one is handled in the audio component
+
       const currentIndex = state.playbackQueue.findIndex(
         (item) => item.id === state.currentQueueItem?.id,
       );
       const nextIndex = (currentIndex + 1) % state.playbackQueue.length;
+
+      // reach the end of the queue and repeat mode is off, stop playback
+      if (state.repeatMode === "off" && nextIndex === 0) {
+        return { currentQueueItem: null, isPlaying: false };
+      }
+
+      // otherwise, move to the next song
       return { currentQueueItem: state.playbackQueue[nextIndex] };
     }),
   previous: () =>
@@ -138,6 +164,23 @@ const usePlayerStore = create<PlayerStore>()((set) => ({
         state.playbackQueue.length;
       return { currentQueueItem: state.playbackQueue[previousIndex] };
     }),
-}));
 
-export default usePlayerStore;
+  isPlaybackInitialized: false,
+
+  initPlaybackFromSettings: () => {
+    if (get().isPlaybackInitialized) return;
+
+    // Grab the freshly loaded persisted value
+    const isShuffle = get().isShuffleConfig;
+    const repeatMode = get().repeatModeConfig;
+
+    // Update the playback state with the persisted settings
+    set({
+      isShuffle: isShuffle,
+      repeatMode: repeatMode,
+      isPlaybackInitialized: true,
+    });
+  },
+});
+
+export default createPlaybackSlice;

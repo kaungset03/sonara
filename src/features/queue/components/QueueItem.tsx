@@ -1,7 +1,7 @@
 import { Music, Play } from "lucide-react";
 import { getFormattedDuration } from "@/lib/helpers";
 import useSongById from "@/features/queue/hooks/useSongById";
-import usePlayerStore from "@/store/store";
+import useAppStore from "@/store/app-store";
 
 type QueueItemProps = {
   queueItem: QueueItem;
@@ -10,7 +10,7 @@ type QueueItemProps = {
 
 const QueueItem = ({ queueItem, isCurrentPlaying }: QueueItemProps) => {
   const song = useSongById(queueItem.songId);
-  const setCurrentQueueItem = usePlayerStore((state) => state.setCurrentQueueItem);
+  const setCurrentQueueItem = useAppStore((state) => state.setCurrentQueueItem);
 
   const handleSelectQueueItem = () => {
     setCurrentQueueItem(queueItem);
@@ -23,7 +23,10 @@ const QueueItem = ({ queueItem, isCurrentPlaying }: QueueItemProps) => {
     >
       <div className="relative w-12 h-12 rounded-md bg-linear-to-br from-primary/30 to-primary/10 shrink-0 flex items-center justify-center overflow-hidden">
         <Music className="size-5 text-primary/50" />
-        <button className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/50" onClick={handleSelectQueueItem}>
+        <button
+          className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/50"
+          onClick={handleSelectQueueItem}
+        >
           {!isCurrentPlaying && (
             <Play className="size-4 text-white opacity-0 transition-opacity group-hover:opacity-100 fill-white" />
           )}
