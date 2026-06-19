@@ -39,9 +39,15 @@ const AppHeader = () => {
         </Button>
         <SearchDialog />
       </div>
-      <Button variant="outline" onClick={handleFolderSelection}>
+      <Button
+        variant="outline"
+        className="border border-primary"
+        onClick={handleFolderSelection}
+      >
         <Plus size={16} />
-        <span className="text-xs font-heading">Scan Folder</span>
+        <span className="text-xs font-heading text-foreground">
+          Scan Folder
+        </span>
       </Button>
     </header>
   );

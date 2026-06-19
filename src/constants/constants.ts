@@ -45,4 +45,27 @@ const homeRoutes: HomeRoute[] = [
 
 const themeOptions: Theme[] = ["light", "dark", "system"];
 
-export { homeRoutes, themeOptions };
+const colorOptions: Color[] = [
+  {
+    name: "purple",
+    hex: "#9264ef",
+  },
+  {
+    name: "red",
+    hex: "#e11421",
+  },
+  {
+    name: "green",
+    hex: "#00a884",
+  },
+  {
+    name: "blue",
+    hex: "#3280ff",
+  },
+  {
+    name: "yellow",
+    hex: "#f3bc16",
+  },
+];
+
+export { homeRoutes, themeOptions, colorOptions };

@@ -3,17 +3,23 @@ import { createContext, useContext, useEffect, useState } from "react";
 type ThemeProviderProps = {
   children: React.ReactNode;
   defaultTheme?: Theme;
-  storageKey?: string;
+  storageKeyMode?: string;
+  defaultColor?: string;
+  storageKeyColor?: string;
 };
 
 type ThemeProviderState = {
   theme: Theme;
   setTheme: (theme: Theme) => void;
+  color: string;
+  setColor: (color: string) => void;
 };
 
 const initialState: ThemeProviderState = {
   theme: "system",
   setTheme: () => null,
+  color: "purple",
+  setColor: () => null,
 };
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
@@ -21,15 +27,21 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 export function ThemeProvider({
   children,
   defaultTheme = "system",
-  storageKey = "vite-ui-theme",
+  storageKeyMode = "vite-ui-theme",
+  defaultColor = "purple",
+  storageKeyColor = "vite-ui-color",
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme,
+    () => (localStorage.getItem(storageKeyMode) as Theme) || defaultTheme,
+  );
+
+  const [color, setColor] = useState<string>(
+    () => (localStorage.getItem(storageKeyColor) as string) || defaultColor,
   );
 
   useEffect(() => {
-    const root = window.document.documentElement;
+    const root = document.documentElement;
 
     root.classList.remove("light", "dark");
 
@@ -40,17 +52,23 @@ export function ThemeProvider({
         : "light";
 
       root.classList.add(systemTheme);
-      return;
+    } else {
+      root.classList.add(theme);
     }
 
-    root.classList.add(theme);
-  }, [theme]);
+    root.setAttribute("data-theme", color);
+  }, [theme, color]);
 
   const value = {
     theme,
     setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme);
+      localStorage.setItem(storageKeyMode, theme);
       setTheme(theme);
+    },
+    color,
+    setColor: (color: string) => {
+      localStorage.setItem(storageKeyColor, color);
+      setColor(color);
     },
   };
 

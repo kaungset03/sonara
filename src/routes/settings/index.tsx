@@ -11,14 +11,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { themeOptions } from "@/constants/constants";
+import { colorOptions, themeOptions } from "@/constants/constants";
 
 export const Route = createFileRoute("/settings/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { setTheme, theme } = useTheme();
+  const { setTheme, theme, color, setColor } = useTheme();
 
   return (
     <div className="space-y-8">
@@ -37,7 +37,7 @@ function RouteComponent() {
           </CardHeader>
           <CardContent className="flex items-center gap-8 mt-2">
             {themeOptions.map((option) => (
-              <div className="flex items-center gap-2">
+              <div key={option} className="flex items-center gap-2">
                 <Input
                   id={option}
                   type="radio"
@@ -62,11 +62,14 @@ function RouteComponent() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex items-center gap-4 mt-2">
-            <div className="size-10 rounded-full bg-blue-500 border-2 border-muted-foreground ring-2 ring-muted-foreground ring-offset-2" />
-            <div className="size-10 rounded-full bg-green-500 border border-border hover:scale-105 transition-transform" />
-            <div className="size-10 rounded-full bg-yellow-500 border border-border hover:scale-105 transition-transform" />
-            <div className="size-10 rounded-full bg-purple-500 border border-border hover:scale-105 transition-transform" />
-            <div className="size-10 rounded-full bg-red-500 border border-border hover:scale-105 transition-transform" />
+            {colorOptions.map((c) => (
+              <button
+                key={c.name}
+                style={{ backgroundColor: c.hex }}
+                className={`size-10 rounded-full ${color === c.name ? "ring-2 ring-muted-foreground ring-offset-2" : ""}`}
+                onClick={() => setColor(c.name)}
+              />
+            ))}
           </CardContent>
         </Card>
         <Card>

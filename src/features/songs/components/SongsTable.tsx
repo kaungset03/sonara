@@ -54,7 +54,7 @@ const SongsTable = ({
             <TableRow
               key={song.id}
               className={`cursor-pointer ${
-                isActive ? "text-primary" : "hover:bg-muted"
+                isActive ? "text-primary" : "hover:bg-primary/10"
               }`}
               onClick={() => {
                 handleSongClick(song);

@@ -54,5 +54,10 @@ declare global {
   };
 
   type Theme = "dark" | "light" | "system";
+
+  type Color = {
+    name: string;
+    hex: string;
+  };
 }
 export {};

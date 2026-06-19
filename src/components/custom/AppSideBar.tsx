@@ -41,7 +41,7 @@ const AppSidebar = () => {
                       to={route.href}
                       className="w-full h-full text-xs font-medium px-6 flex items-center gap-3"
                       activeProps={{
-                        className: "bg-secondary-foreground/90 text-secondary",
+                        className: "text-primary-foreground bg-primary",
                       }}
                     >
                       <route.icon />
@@ -68,7 +68,7 @@ const AppSidebar = () => {
                       params={{ id: playlist.id.toString() }}
                       className="w-full h-full text-xs font-medium px-6 flex items-center"
                       activeProps={{
-                        className: "bg-secondary-foreground/90 text-secondary",
+                        className: "text-primary-foreground bg-primary",
                       }}
                     >
                       {playlist.name}
@@ -88,7 +88,7 @@ const AppSidebar = () => {
                 to={"/settings"}
                 className="w-full h-full text-xs px-6 flex items-center gap-3"
                 activeProps={{
-                  className: "bg-secondary-foreground/90 text-secondary",
+                  className: "text-primary-foreground bg-primary",
                 }}
               >
                 <Settings />

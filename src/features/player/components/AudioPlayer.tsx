@@ -1,5 +1,6 @@
 import {
   Heart,
+  Music,
   Pause,
   Play,
   Repeat,
@@ -165,7 +166,9 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
       />
       <section className="w-full h-full grid grid-cols-10 items-center">
         <div className="col-span-2 flex items-center justify-start gap-2 2xl:gap-4 min-w-0">
-          <div className="size-12 rounded-sm bg-primary shrink-0" />
+          <div className="size-12 rounded-md bg-linear-to-br from-primary/50 to-primary/30 shrink-0 flex items-center justify-center ">
+            <Music className="size-5 text-primary" />
+          </div>
           <div className="min-w-0 space-y-0.5">
             <SongTitle text={currentSong.title} />
             <p className="text-xs text-muted-foreground">

@@ -23,7 +23,12 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <TooltipProvider>
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <ThemeProvider
+          defaultTheme="dark"
+          storageKeyMode="vite-ui-theme"
+          defaultColor="purple"
+          storageKeyColor="vite-ui-color"
+        >
           <RouterProvider router={router} />
         </ThemeProvider>
       </TooltipProvider>
