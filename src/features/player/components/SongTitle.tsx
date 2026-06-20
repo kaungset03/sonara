@@ -16,7 +16,7 @@ const SongTitle = ({ text }: { text: string }) => {
         ref={ref}
         className={[
           "whitespace-nowrap text-sm font-medium font-heading",
-          overflow ? "animate-marquee hover:paused" : "truncate",
+          overflow ? "animate-marquee inline-block hover:paused" : "truncate",
         ].join(" ")}
       >
         {text}

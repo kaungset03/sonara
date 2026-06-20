@@ -1,4 +1,5 @@
 import {
+  ChevronUp,
   Heart,
   Music,
   Pause,
@@ -20,6 +21,7 @@ import SongTitle from "@/features/player/components/SongTitle";
 import useAppStore from "@/store/app-store";
 import useToggleFavoriteMutation from "@/features/songs/api/useToggleFavoriteMutation";
 import PlaybackQueue from "@/features/queue/components/PlaybackQueue";
+import OverlayPlayer from "@/features/player/components/OverlayPlayer";
 import useMediaSession from "@/hooks/useMediaSession";
 
 type AudioPlayerProps = {
@@ -27,6 +29,8 @@ type AudioPlayerProps = {
 };
 
 const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const playerRef = useRef<HTMLAudioElement | null>(null);
 
   const hasCountedPlay = useRef(false);
@@ -50,6 +54,10 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   const [duration, setDuration] = useState(0);
 
   const { mutate } = useToggleFavoriteMutation();
+
+  const collapse = () => {
+    setIsExpanded(false);
+  };
 
   const handleFavoriteToggle = () => {
     if (currentSong) {
@@ -128,6 +136,19 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   });
 
   useEffect(() => {
+    // disable scroll when overlay is expanded
+    if (isExpanded) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isExpanded]);
+
+  useEffect(() => {
     hasCountedPlay.current = false;
   }, [currentSong.id]);
 
@@ -166,126 +187,119 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   }, [currentSong.id, setIsPlaying, playerRef]);
 
   return (
-    <footer className="fixed bottom-2 left-2 right-2 rounded-3xl p-4 shadow-lg border border-muted-foreground/30 bg-muted/50 dark:bg-sidebar/50 backdrop-blur-md z-10">
-      <audio
-        ref={playerRef}
-        onEnded={handleEnded}
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleOnLoadedMetadata}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-      />
-      <section className="w-full h-full grid grid-cols-10 items-center">
-        <div className="col-span-2 flex items-center justify-start gap-2 2xl:gap-4 min-w-0">
-          <div className="size-12 rounded-md bg-linear-to-br from-primary/50 to-primary/30 shrink-0 flex items-center justify-center ">
-            <Music className="size-5 text-primary" />
+    <>
+      <footer className="fixed bottom-2 left-2 right-2 rounded-3xl p-4 shadow-lg border border-muted-foreground/30 bg-muted/50 dark:bg-sidebar/50 backdrop-blur-md z-10">
+        <audio
+          ref={playerRef}
+          onEnded={handleEnded}
+          onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={handleOnLoadedMetadata}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          muted={muted}
+        />
+        <section className="w-full h-full grid grid-cols-10 items-center">
+          <div className="col-span-2 flex items-center justify-start gap-2 2xl:gap-4 min-w-0">
+            <div className="size-12 rounded-md bg-linear-to-br from-primary/50 to-primary/30 shrink-0 flex items-center justify-center ">
+              <Music className="size-5 text-primary" />
+            </div>
+            <div className="min-w-0 space-y-0.5">
+              <SongTitle text={currentSong.title} />
+              <p className="text-xs text-muted-foreground">
+                {currentSong.artist}
+              </p>
+            </div>
           </div>
-          <div className="min-w-0 space-y-0.5">
-            <SongTitle text={currentSong.title} />
-            <p className="text-xs text-muted-foreground">
-              {currentSong.artist}
-            </p>
+          <div className="col-span-1 flex items-center justify-center gap-x-2 2xl:gap-x-4">
+            <Button variant="ghost" size="icon" onClick={handleFavoriteToggle}>
+              {currentSong.is_favorite ? (
+                <Heart className="text-primary" fill="currentColor" />
+              ) : (
+                <Heart />
+              )}
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleMuteToggle}>
+              {muted ? <VolumeOff /> : <Volume2 />}
+            </Button>
           </div>
-        </div>
-        <div className="col-span-1 flex items-center justify-center gap-x-2 2xl:gap-x-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="border border-primary text-primary"
-            onClick={handleFavoriteToggle}
-          >
-            {currentSong.is_favorite ? (
-              <Heart size={16} fill="currentColor" />
+          <div className="col-span-4 w-full grid grid-cols-10 items-center justify-center">
+            <span className="text-sm font-heading font-medium text-muted-foreground text-center">
+              {getFormattedDuration(currentTime)}
+            </span>
+            <Slider
+              defaultValue={[0]}
+              max={duration}
+              value={[currentTime]}
+              onValueChange={(value) => {
+                handleSeek(value[0]);
+              }}
+              className="col-span-8 w-full"
+            />
+            <span className="text-sm font-heading font-medium text-muted-foreground text-center">
+              {getFormattedDuration(duration)}
+            </span>
+          </div>
+          <div className="col-span-2 flex items-center justify-center gap-x-2 2xl:gap-x-4">
+            <Button variant="ghost" size="icon" onClick={handlePrevious}>
+              <SkipBack />
+            </Button>
+            {isPlaying ? (
+              <Button variant="ghost" size="icon" onClick={pauseAudio}>
+                <Pause />
+              </Button>
             ) : (
-              <Heart size={16} />
+              <Button variant="ghost" size="icon" onClick={playAudio}>
+                <Play />
+              </Button>
             )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="border border-primary"
-            onClick={handleMuteToggle}
-          >
-            {muted ? <VolumeOff size={16} /> : <Volume2 size={16} />}
-          </Button>
-        </div>
-        <div className="col-span-4 w-full grid grid-cols-10 items-center justify-center">
-          <span className="text-sm font-heading font-medium text-muted-foreground text-center">
-            {getFormattedDuration(currentTime)}
-          </span>
-          <Slider
-            defaultValue={[0]}
-            max={duration}
-            value={[currentTime]}
-            onValueChange={(value) => {
-              handleSeek(value[0]);
-            }}
-            className="col-span-8 w-full"
-          />
-          <span className="text-sm font-heading font-medium text-muted-foreground text-center">
-            {getFormattedDuration(duration)}
-          </span>
-        </div>
-        <div className="col-span-2 flex items-center justify-center gap-x-2 2xl:gap-x-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handlePrevious}
-            className="border border-primary"
-          >
-            <SkipBack size={16} />
-          </Button>
-          {isPlaying ? (
+            <Button variant="ghost" size="icon" onClick={handleNext}>
+              <SkipForward />
+            </Button>
+            <Button
+              variant={isShuffle ? "default" : "ghost"}
+              size="icon"
+              onClick={() => setIsShuffle(!isShuffle)}
+            >
+              <Shuffle />
+            </Button>
+            <Button
+              variant={repeatMode !== "off" ? "default" : "ghost"}
+              size="icon"
+              onClick={toggleRepeatMode}
+            >
+              {repeatMode === "off" && <Repeat />}
+              {repeatMode === "one" && <Repeat1 />}
+              {repeatMode === "all" && <Repeat />}
+            </Button>
+          </div>
+          <div className="col-span-1 flex items-center justify-end gap-x-2 2xl:gap-x-4">
             <Button
               variant="ghost"
               size="icon"
-              onClick={pauseAudio}
-              className="border border-primary"
+              onClick={() => setIsExpanded(true)}
             >
-              <Pause size={16} />
+              <ChevronUp />
             </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={playAudio}
-              className="border border-primary"
-            >
-              <Play size={16} />
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleNext}
-            className="border border-primary"
-          >
-            <SkipForward size={16} />
-          </Button>
-          <Button
-            variant={isShuffle ? "default" : "ghost"}
-            size="icon"
-            className="border border-primary"
-            onClick={() => setIsShuffle(!isShuffle)}
-          >
-            <Shuffle size={16} />
-          </Button>
-          <Button
-            variant={repeatMode !== "off" ? "default" : "ghost"}
-            size="icon"
-            className="border border-primary"
-            onClick={toggleRepeatMode}
-          >
-            {repeatMode === "off" && <Repeat size={16} />}
-            {repeatMode === "one" && <Repeat1 size={16} />}
-            {repeatMode === "all" && <Repeat size={16} />}
-          </Button>
-        </div>
-        <div className="col-span-1 flex items-center justify-end">
-          <PlaybackQueue />
-        </div>
-      </section>
-    </footer>
+            <PlaybackQueue />
+          </div>
+        </section>
+      </footer>
+
+      <OverlayPlayer
+        isExpanded={isExpanded}
+        collapse={collapse}
+        song={currentSong}
+        position={currentTime}
+        duration={duration}
+        isPlaying={isPlaying}
+        onPlay={playAudio}
+        onPause={pauseAudio}
+        onNext={handleNext}
+        onPrevious={handlePrevious}
+        onSeek={handleSeek}
+        toggleFavorite={handleFavoriteToggle}
+      />
+    </>
   );
 };
 export default AudioPlayer;
