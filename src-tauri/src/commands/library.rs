@@ -14,6 +14,13 @@ pub fn add_library_folder(db: State<DbState>, path: String) -> Result<ImportResu
     Ok(import_result)
 }
 
+// sync library folders - re-scan the folders and update the songs in the database
+#[tauri::command]
+pub fn sync_library_folders(db: State<DbState>) -> Result<ImportResult, String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::library::sync_library(&conn).map_err(|e| e.to_string())
+}
+
 // get all imported folders with their song counts
 #[tauri::command]
 pub fn get_imported_folders(
@@ -25,7 +32,7 @@ pub fn get_imported_folders(
 
 // remove library folder
 #[tauri::command]
-pub fn remove_library_folder(db: State<DbState>, id: i32) -> Result<(), String> {
+pub fn remove_library_folder(db: State<DbState>, id: i64) -> Result<(), String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
     services::library::remove_folder(&conn, id).map_err(|e| e.to_string())
 }

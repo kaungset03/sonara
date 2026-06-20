@@ -64,6 +64,7 @@ declare global {
     imported: number; // number of songs imported
     skipped: number; // number of songs skipped (already exist)
     failed: number; // number of songs failed to import
+    removed: number; // number of songs removed
   };
 
   type ImportedFolder = {

@@ -2,7 +2,7 @@ use rusqlite::{params, Connection};
 
 use crate::models::folder::Folder;
 
-pub fn insert_folder(conn: &Connection, path: &str) -> rusqlite::Result<i32> {
+pub fn insert_folder(conn: &Connection, path: &str) -> rusqlite::Result<i64> {
     let created_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
@@ -12,7 +12,7 @@ pub fn insert_folder(conn: &Connection, path: &str) -> rusqlite::Result<i32> {
         "INSERT OR IGNORE INTO library_folders (path, created_at) VALUES (?1, ?2)",
         params![path, created_at],
     )?;
-    let folder_id = conn.last_insert_rowid() as i32;
+    let folder_id = conn.last_insert_rowid() as i64;
     Ok(folder_id)
 }
 
@@ -42,7 +42,7 @@ pub fn get_all_folders_query(conn: &Connection) -> rusqlite::Result<Vec<Folder>>
     folder_iter.collect()
 }
 
-pub fn delete_folder_query(conn: &Connection, id: i32) -> rusqlite::Result<()> {
+pub fn delete_folder_query(conn: &Connection, id: i64) -> rusqlite::Result<()> {
     conn.execute("DELETE FROM library_folders WHERE id = ?1", params![id])?;
     Ok(())
 }

@@ -12,4 +12,5 @@ pub struct ImportResult {
     pub imported: usize,
     pub skipped: usize,
     pub failed: usize,
+    pub removed: usize,
 }

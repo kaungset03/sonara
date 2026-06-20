@@ -2,8 +2,7 @@ import { Plus } from "lucide-react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { Button } from "@/components/ui/button";
 import useImportFilesMutation from "@/features/import/api/useImportFilesMutation";
-import LoadingOverlay from "@/features/import/components/LoadingOverlay";
-
+import LoadingOverlay from "@/components/custom/LoadingOverlay";
 
 const ImportButton = () => {
   const mutation = useImportFilesMutation();

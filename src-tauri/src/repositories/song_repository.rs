@@ -12,7 +12,7 @@ pub fn insert_song_metadata(
     is_favorite: i32,
     favorite_added_at: Option<i64>,
     duration: i64,
-    folder_id: Option<i32>,
+    folder_id: Option<i64>,
 ) -> rusqlite::Result<()> {
     let created_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -402,4 +402,22 @@ pub fn search_albums_by_name_query(
 
     let albums: Result<Vec<crate::models::album::Album>, rusqlite::Error> = album_iter.collect();
     albums
+}
+
+// get song paths by folder id
+pub fn get_song_paths_by_folder_id_query(
+    conn: &rusqlite::Connection,
+    folder_id: i64,
+) -> rusqlite::Result<Vec<String>> {
+    let mut stmt = conn.prepare("SELECT path FROM songs WHERE folder_id = ?1")?;
+    let song_iter = stmt.query_map([folder_id], |row| Ok(row.get(0)?))?;
+
+    let paths: Result<Vec<String>, rusqlite::Error> = song_iter.collect();
+    paths
+}
+
+// delete song by path
+pub fn delete_song_by_path_query(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<()> {
+    conn.execute("DELETE FROM songs WHERE path = ?1", [path])?;
+    Ok(())
 }

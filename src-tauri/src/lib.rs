@@ -36,6 +36,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             greet,
             add_library_folder,
+            sync_library_folders,
             get_imported_folders,
             remove_library_folder,
             get_all_songs,

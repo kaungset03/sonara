@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::{
     models::folder::ImportResult,
     repositories::{folder_repository, song_repository},
@@ -55,6 +57,7 @@ pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<I
         imported,
         skipped,
         failed,
+        removed: 0,
     })
 }
 
@@ -82,6 +85,81 @@ pub fn get_imported_folders(
 }
 
 // remove library folder
-pub fn remove_folder(conn: &rusqlite::Connection, id: i32) -> rusqlite::Result<()> {
+pub fn remove_folder(conn: &rusqlite::Connection, id: i64) -> rusqlite::Result<()> {
     folder_repository::delete_folder_query(conn, id)
+}
+
+// sync library folders - re-scan the folders and update the songs in the database
+pub fn sync_library(conn: &rusqlite::Connection) -> rusqlite::Result<ImportResult> {
+    let folders = folder_repository::get_all_folders_query(conn)?;
+
+    let mut imported = 0;
+    let mut skipped = 0;
+    let mut failed = 0;
+    let mut removed = 0;
+
+    for folder in folders {
+        let files = scanner::scan_for_mp3s(&folder.path);
+        let scanned_paths: HashSet<String> = files
+            .into_iter()
+            .map(|f| f.to_string_lossy().into_owned())
+            .collect();
+
+        let db_paths = song_repository::get_song_paths_by_folder_id_query(conn, folder.id)?;
+
+        // Remove songs that are no longer in the folder
+        for db_path in &db_paths {
+            if !scanned_paths.contains(db_path) {
+                song_repository::delete_song_by_path_query(conn, &db_path)?;
+                removed += 1;
+            }
+        }
+
+        // Add new songs that are in the folder but not in the database
+        for scanned_path in scanned_paths {
+            if !db_paths.contains(&scanned_path) {
+                let file = std::path::Path::new(&scanned_path);
+                match extract_metadata(file) {
+                    Ok(metadata) => {
+                        match song_repository::insert_song_metadata(
+                            conn,
+                            &metadata.title,
+                            &metadata.artist,
+                            &metadata.album,
+                            &metadata.path,
+                            if metadata.is_favorite { 1 } else { 0 },
+                            metadata.favorite_added_at,
+                            metadata.duration,
+                            Some(folder.id),
+                        ) {
+                            Ok(_) => imported += 1,
+
+                            Err(rusqlite::Error::SqliteFailure(err, _))
+                                if err.code == rusqlite::ErrorCode::ConstraintViolation =>
+                            {
+                                skipped += 1;
+                            }
+
+                            Err(e) => {
+                                failed += 1;
+                                eprintln!("Failed to insert {}: {}", metadata.path, e);
+                            }
+                        }
+                    }
+
+                    Err(e) => {
+                        failed += 1;
+                        eprintln!("Failed to read metadata from {}: {}", file.display(), e);
+                    }
+                }
+            }
+        }
+    }
+
+    Ok(ImportResult {
+        imported,
+        skipped,
+        failed,
+        removed,
+    })
 }

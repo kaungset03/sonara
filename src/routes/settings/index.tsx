@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { colorOptions, themeOptions } from "@/constants/constants";
 import LibraryManagement from "@/features/settings/components/LibraryManagement";
@@ -129,28 +128,7 @@ function RouteComponent() {
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Library Management</CardTitle>
-            <CardDescription>Manage your music library</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <LibraryManagement />
-
-            <Separator />
-
-            {/* Actions */}
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-muted-foreground">
-                Scan folders for new or updated music files
-              </p>
-
-              <Button size="sm" className="text-xs font-medium">
-                Rescan Library
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <LibraryManagement />
       </div>
     </div>
   );
