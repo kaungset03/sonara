@@ -17,7 +17,7 @@ const AppHeader = () => {
   };
 
   return (
-    <header className="h-16 mt-2.5 mb-2 p-2 sticky top-2 rounded-3xl shadow-md border border-muted-foreground/30 bg-muted/50 dark:bg-sidebar/50 backdrop-blur-lg z-10 flex items-center justify-between">
+    <header className="h-16 m-2 mt-2.5 p-2 sticky top-2 rounded-3xl shadow-md border border-muted-foreground/30 bg-muted/50 dark:bg-sidebar/50 backdrop-blur-lg z-10 flex items-center justify-between">
       <div className="flex items-center gap-3 flex-1">
         <Button
           variant="outline"

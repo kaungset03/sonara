@@ -14,6 +14,22 @@ pub fn add_library_folder(db: State<DbState>, path: String) -> Result<ImportResu
     Ok(import_result)
 }
 
+// get all imported folders with their song counts
+#[tauri::command]
+pub fn get_imported_folders(
+    db: State<DbState>,
+) -> Result<Vec<crate::models::folder::Folder>, String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::library::get_imported_folders(&conn).map_err(|e| e.to_string())
+}
+
+// remove library folder
+#[tauri::command]
+pub fn remove_library_folder(db: State<DbState>, id: i32) -> Result<(), String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::library::remove_folder(&conn, id).map_err(|e| e.to_string())
+}
+
 // get all the songs
 #[tauri::command]
 pub fn get_all_songs(db: State<DbState>) -> Result<Vec<crate::models::song::Song>, String> {

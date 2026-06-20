@@ -64,6 +64,13 @@ declare global {
     imported: number; // number of songs imported
     skipped: number; // number of songs skipped (already exist)
     failed: number; // number of songs failed to import
-  }
+  };
+
+  type ImportedFolder = {
+    id: number;
+    path: string;
+    song_count: number; // number of songs found in the folder
+    created_at: number; // timestamp when the folder was imported
+  };
 }
 export {};

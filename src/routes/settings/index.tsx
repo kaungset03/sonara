@@ -10,8 +10,10 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { colorOptions, themeOptions } from "@/constants/constants";
+import LibraryManagement from "@/features/settings/components/LibraryManagement";
 import useAppStore from "@/store/app-store";
 
 export const Route = createFileRoute("/settings/")({
@@ -38,7 +40,7 @@ function RouteComponent() {
       <div className="space-y-7">
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">Theme</CardTitle>
+            <CardTitle className="text-lg">Theme</CardTitle>
             <CardDescription>Choose your preferred theme</CardDescription>
           </CardHeader>
           <CardContent className="flex items-center gap-8 mt-2">
@@ -62,7 +64,7 @@ function RouteComponent() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">Accent Color</CardTitle>
+            <CardTitle className="text-lg">Accent Color</CardTitle>
             <CardDescription>
               Choose your preferred accent color
             </CardDescription>
@@ -72,7 +74,7 @@ function RouteComponent() {
               <button
                 key={c.name}
                 style={{ backgroundColor: c.hex }}
-                className={`size-10 rounded-full ${color === c.name ? "ring-2 ring-muted-foreground ring-offset-2" : ""}`}
+                className={`size-8 rounded-full ${color === c.name ? "ring-2 ring-muted-foreground ring-offset-2" : ""}`}
                 onClick={() => setColor(c.name)}
               />
             ))}
@@ -80,9 +82,10 @@ function RouteComponent() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">Playback Behavior</CardTitle>
+            <CardTitle className="text-lg">Playback Behavior</CardTitle>
             <CardDescription>
-              Configure default playback settings
+              Configure default playback settings. Changes take effect on next
+              launch.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 mt-2">
@@ -113,7 +116,7 @@ function RouteComponent() {
                 </p>
               </div>
               <select
-                className="bg-popover border border-border rounded-md h-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                className="bg-popover border border-border rounded-md h-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 value={repeatModeConfig}
                 onChange={(e) =>
                   setRepeatModeConfig(e.target.value as "off" | "one" | "all")
@@ -123,6 +126,28 @@ function RouteComponent() {
                 <option value="one">One</option>
                 <option value="all">All</option>
               </select>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Library Management</CardTitle>
+            <CardDescription>Manage your music library</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <LibraryManagement />
+
+            <Separator />
+
+            {/* Actions */}
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">
+                Scan folders for new or updated music files
+              </p>
+
+              <Button size="sm" className="text-xs font-medium">
+                Rescan Library
+              </Button>
             </div>
           </CardContent>
         </Card>

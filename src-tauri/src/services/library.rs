@@ -6,28 +6,11 @@ use crate::{
 
 pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<ImportResult> {
     // insert the folder into the database
-    // if successful, scan the folder for music files
-    folder_repository::insert_folder(conn, path)?;
+    let folder_id = folder_repository::insert_folder(conn, path)?;
 
     // scan the folder for files
     let files = scanner::scan_for_mp3s(path);
 
-    // for file in files {
-    //     // extract the metadata from the music file
-    //     if let Ok(metadata) = extract_metadata(&file) {
-    //         // insert the song into the database
-    //         let _ = song_repository::insert_song_metadata(
-    //             conn,
-    //             &metadata.title,
-    //             &metadata.artist,
-    //             &metadata.album,
-    //             &metadata.path,
-    //             if metadata.is_favorite { 1 } else { 0 },
-    //             metadata.favorite_added_at,
-    //             metadata.duration,
-    //         );
-    //     }
-    // }
     let mut imported = 0;
     let mut skipped = 0;
     let mut failed = 0;
@@ -44,6 +27,7 @@ pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<I
                     if metadata.is_favorite { 1 } else { 0 },
                     metadata.favorite_added_at,
                     metadata.duration,
+                    Some(folder_id),
                 ) {
                     Ok(_) => imported += 1,
 
@@ -66,6 +50,7 @@ pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<I
             }
         }
     }
+
     Ok(ImportResult {
         imported,
         skipped,
@@ -87,4 +72,16 @@ pub fn get_home_data(
         most_played_songs,
         recently_played_songs,
     })
+}
+
+// get all imported folders with their song counts
+pub fn get_imported_folders(
+    conn: &rusqlite::Connection,
+) -> rusqlite::Result<Vec<crate::models::folder::Folder>> {
+    folder_repository::get_all_folders_query(conn)
+}
+
+// remove library folder
+pub fn remove_folder(conn: &rusqlite::Connection, id: i32) -> rusqlite::Result<()> {
+    folder_repository::delete_folder_query(conn, id)
 }

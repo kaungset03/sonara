@@ -12,6 +12,7 @@ pub fn insert_song_metadata(
     is_favorite: i32,
     favorite_added_at: Option<i64>,
     duration: i64,
+    folder_id: Option<i32>,
 ) -> rusqlite::Result<()> {
     let created_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -19,8 +20,8 @@ pub fn insert_song_metadata(
         .as_secs() as i64;
 
     conn.execute(
-        "INSERT INTO songs (title, artist, album, duration, path, is_favorite, favorite_added_at, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
-        rusqlite::params![title, artist, album, duration, path, is_favorite, favorite_added_at, created_at],
+        "INSERT INTO songs (title, artist, album, duration, path, is_favorite, favorite_added_at, created_at, folder_id) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+        rusqlite::params![title, artist, album, duration, path, is_favorite, favorite_added_at, created_at, folder_id],
     )?;
     Ok(())
 }
