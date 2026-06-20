@@ -1,9 +1,10 @@
 use crate::{
+    models::folder::ImportResult,
     repositories::{folder_repository, song_repository},
     services::{metadata::extract_metadata, scanner},
 };
 
-pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<()> {
+pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<ImportResult> {
     // insert the folder into the database
     // if successful, scan the folder for music files
     folder_repository::insert_folder(conn, path)?;
@@ -11,23 +12,65 @@ pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<(
     // scan the folder for files
     let files = scanner::scan_for_mp3s(path);
 
+    // for file in files {
+    //     // extract the metadata from the music file
+    //     if let Ok(metadata) = extract_metadata(&file) {
+    //         // insert the song into the database
+    //         let _ = song_repository::insert_song_metadata(
+    //             conn,
+    //             &metadata.title,
+    //             &metadata.artist,
+    //             &metadata.album,
+    //             &metadata.path,
+    //             if metadata.is_favorite { 1 } else { 0 },
+    //             metadata.favorite_added_at,
+    //             metadata.duration,
+    //         );
+    //     }
+    // }
+    let mut imported = 0;
+    let mut skipped = 0;
+    let mut failed = 0;
+
     for file in files {
-        // extract the metadata from the music file
-        if let Ok(metadata) = extract_metadata(&file) {
-            // insert the song into the database
-            let _ = song_repository::insert_song_metadata(
-                conn,
-                &metadata.title,
-                &metadata.artist,
-                &metadata.album,
-                &metadata.path,
-                if metadata.is_favorite { 1 } else { 0 },
-                metadata.favorite_added_at,
-                metadata.duration,
-            );
+        match extract_metadata(&file) {
+            Ok(metadata) => {
+                match song_repository::insert_song_metadata(
+                    conn,
+                    &metadata.title,
+                    &metadata.artist,
+                    &metadata.album,
+                    &metadata.path,
+                    if metadata.is_favorite { 1 } else { 0 },
+                    metadata.favorite_added_at,
+                    metadata.duration,
+                ) {
+                    Ok(_) => imported += 1,
+
+                    Err(rusqlite::Error::SqliteFailure(err, _))
+                        if err.code == rusqlite::ErrorCode::ConstraintViolation =>
+                    {
+                        skipped += 1;
+                    }
+
+                    Err(e) => {
+                        failed += 1;
+                        eprintln!("Failed to insert {}: {}", metadata.path, e);
+                    }
+                }
+            }
+
+            Err(e) => {
+                failed += 1;
+                eprintln!("Failed to read metadata from {}: {}", file.display(), e);
+            }
         }
     }
-    Ok(())
+    Ok(ImportResult {
+        imported,
+        skipped,
+        failed,
+    })
 }
 
 pub fn get_home_data(

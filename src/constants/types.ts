@@ -59,5 +59,11 @@ declare global {
     name: string;
     hex: string;
   };
+
+  type ImportResult = {
+    imported: number; // number of songs imported
+    skipped: number; // number of songs skipped (already exist)
+    failed: number; // number of songs failed to import
+  }
 }
 export {};

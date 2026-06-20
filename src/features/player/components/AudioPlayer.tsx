@@ -166,7 +166,7 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   }, [currentSong.id, setIsPlaying, playerRef]);
 
   return (
-    <footer className="fixed bottom-2 left-2 right-2 rounded-3xl p-4 shadow-lg border border-secondary bg-muted/50 dark:bg-sidebar/50 backdrop-blur-md z-10">
+    <footer className="fixed bottom-2 left-2 right-2 rounded-3xl p-4 shadow-lg border border-muted-foreground/30 bg-muted/50 dark:bg-sidebar/50 backdrop-blur-md z-10">
       <audio
         ref={playerRef}
         onEnded={handleEnded}

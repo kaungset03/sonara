@@ -1,15 +1,17 @@
 use tauri::State;
 
 use crate::{
+    models::folder::ImportResult,
     services::{self},
     DbState,
 };
 
 #[tauri::command]
-pub fn add_library_folder(db: State<DbState>, path: String) -> Result<(), String> {
+pub fn add_library_folder(db: State<DbState>, path: String) -> Result<ImportResult, String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
 
-    services::library::add_folder(&conn, &path).map_err(|e| e.to_string())
+    let import_result = services::library::add_folder(&conn, &path).map_err(|e| e.to_string())?;
+    Ok(import_result)
 }
 
 // get all the songs

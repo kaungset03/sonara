@@ -1,9 +1,8 @@
-import { ChevronLeft, Plus } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { open } from "@tauri-apps/plugin-dialog";
-import { invoke } from "@tauri-apps/api/core";
 import { useCanGoBack, useRouter } from "@tanstack/react-router";
 import SearchDialog from "@/features/search/components/SearchDialog";
+import ImportButton from "@/features/import/components/ImportButton";
 
 const AppHeader = () => {
   const router = useRouter();
@@ -17,38 +16,20 @@ const AppHeader = () => {
     }
   };
 
-  const handleFolderSelection = async () => {
-    // Implementation for folder selection
-    const path = await open({
-      multiple: false,
-      directory: true,
-    });
-    if (path) {
-      console.log("Selected folder:", path);
-      // Here you would typically send the selected path to your backend or state management
-      const result = await invoke("add_library_folder", { path });
-      console.log("Result:", result);
-    }
-  };
-
   return (
-    <header className="h-16 m-2 p-2 sticky top-2 rounded-3xl shadow-md border border-muted-foreground/30 bg-muted/50 dark:bg-sidebar/50 backdrop-blur-lg z-10 flex items-center justify-between">
+    <header className="h-16 mt-2.5 mb-2 p-2 sticky top-2 rounded-3xl shadow-md border border-muted-foreground/30 bg-muted/50 dark:bg-sidebar/50 backdrop-blur-lg z-10 flex items-center justify-between">
       <div className="flex items-center gap-3 flex-1">
-        <Button variant="outline" className="border border-secondary-foreground/30" size="icon" onClick={handleBack}>
+        <Button
+          variant="outline"
+          className="border border-secondary-foreground/30"
+          size="icon"
+          onClick={handleBack}
+        >
           <ChevronLeft />
         </Button>
         <SearchDialog />
       </div>
-      <Button
-        variant="outline"
-        className="border border-secondary-foreground/30"
-        onClick={handleFolderSelection}
-      >
-        <Plus size={16} />
-        <span className="text-xs font-heading text-foreground">
-          Scan Folder
-        </span>
-      </Button>
+      <ImportButton />
     </header>
   );
 };
