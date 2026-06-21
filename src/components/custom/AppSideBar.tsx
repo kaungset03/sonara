@@ -24,7 +24,7 @@ const AppSidebar = () => {
       <SidebarHeader className="h-18 flex justify-center items-center">
         <div className="flex items-center gap-3 text-primary">
           <Music />
-          <h2 className="text-lg font-semibold font-heading">Tauri Player</h2>
+          <h2 className="text-lg font-semibold font-heading">Sonara</h2>
         </div>
       </SidebarHeader>
       <SidebarContent className="overscroll-contain w-full h-full">

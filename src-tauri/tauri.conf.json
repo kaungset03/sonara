@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Tauri Music",
+  "productName": "Sonara",
   "version": "0.1.0",
-  "identifier": "com.kaungset.musicplayer",
+  "identifier": "com.kaungset.sonara",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
@@ -12,14 +12,14 @@
   "app": {
     "windows": [
       {
-        "title": "Tauri Music Player",
+        "title": "Sonara",
         "minWidth": 1280,
         "minHeight": 720,
         "resizable": true
       }
     ],
     "security": {
-      "csp": "default-src 'self' ipc: http://ipc.localhost; media-src 'self' asset: https://asset.localhost http://asset.localhost; img-src 'self' asset: https://asset.localhost http://asset.localhost",
+      "csp": "default-src 'self' ipc: http://ipc.localhost; style-src 'self' 'unsafe-inline'; script-src 'self'; media-src 'self' asset: https://asset.localhost http://asset.localhost; img-src 'self' asset: https://asset.localhost http://asset.localhost",
       "assetProtocol": {
         "enable": true,
         "scope": {

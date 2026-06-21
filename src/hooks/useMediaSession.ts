@@ -29,6 +29,12 @@ const useMediaSession = ({
         title: song.title || "Unknown Title",
         artist: song.artist || "Unknown Artist",
         album: song.album || "Unknown Album",
+        artwork: [
+          {
+            src: "/music-icon.svg",
+            type: "image/svg+xml",
+          },
+        ],
       });
     }
   }, [song]);

@@ -52,7 +52,7 @@ const SongLyrics = ({ path, audioCurrentTime }: SongLyricsProps) => {
       >
         {lyricsLines.map((line, index) => (
           <p
-            key={line.time}
+            key={`${line.time}-${index}`}
             className={`text-xl font-medium font-heading transition-all duration-300 ${
               index === activeIndex
                 ? "text-primary scale-105 font-bold opacity-100"

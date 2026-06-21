@@ -5,6 +5,7 @@ import { routeTree } from "./routeTree.gen";
 import "./App.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/custom/ThemeProvider";
+import { Toaster } from "sonner";
 
 // Create a new router instance
 const router = createRouter({ routeTree });
@@ -30,6 +31,13 @@ if (!rootElement.innerHTML) {
           storageKeyColor="vite-ui-color"
         >
           <RouterProvider router={router} />
+          <Toaster
+            position="top-right"
+            richColors
+            toastOptions={{
+              duration: 2000,
+            }}
+          />
         </ThemeProvider>
       </TooltipProvider>
     </StrictMode>,

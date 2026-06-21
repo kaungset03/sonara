@@ -1,7 +1,6 @@
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "sonner";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AppSideBar from "@/components/custom/AppSideBar";
 import AppHeader from "@/components/custom/AppHeader";
@@ -31,13 +30,6 @@ const RootLayout = () => (
       </SidebarInset>
       <AppFooter />
     </SidebarProvider>
-    <Toaster
-      position="top-right"
-      richColors
-      toastOptions={{
-        duration: 2000,
-      }}
-    />
     <TanStackRouterDevtools />
   </QueryClientProvider>
 );
