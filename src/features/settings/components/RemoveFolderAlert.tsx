@@ -32,7 +32,7 @@ const RemoveFolderAlert = ({ folderId }: RemoveFolderAlertProps) => {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently remove the folder and delete the songs
+            This will remove the folder from the imported folders list and delete the songs
             associated with it. This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>

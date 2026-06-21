@@ -240,6 +240,13 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
             </span>
           </div>
           <div className="col-span-2 flex items-center justify-center gap-x-2 2xl:gap-x-4">
+            <Button
+              variant={isShuffle ? "default" : "ghost"}
+              size="icon"
+              onClick={() => setIsShuffle(!isShuffle)}
+            >
+              <Shuffle />
+            </Button>
             <Button variant="ghost" size="icon" onClick={handlePrevious}>
               <SkipBack />
             </Button>
@@ -254,13 +261,6 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
             )}
             <Button variant="ghost" size="icon" onClick={handleNext}>
               <SkipForward />
-            </Button>
-            <Button
-              variant={isShuffle ? "default" : "ghost"}
-              size="icon"
-              onClick={() => setIsShuffle(!isShuffle)}
-            >
-              <Shuffle />
             </Button>
             <Button
               variant={repeatMode !== "off" ? "default" : "ghost"}

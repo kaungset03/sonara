@@ -40,6 +40,7 @@ pub fn run() {
             get_imported_folders,
             remove_library_folder,
             get_all_songs,
+            get_song_by_id,
             get_all_artists,
             get_all_albums,
             get_songs_by_artist,
@@ -55,7 +56,8 @@ pub fn run() {
             remove_song_from_playlist,
             get_home_data,
             record_song_play,
-            search_library
+            search_library,
+            update_song_lyrics_path
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

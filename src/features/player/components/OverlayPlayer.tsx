@@ -17,6 +17,8 @@ import { Slider } from "@/components/ui/slider";
 import { getFormattedDuration } from "@/lib/helpers";
 import SongLyrics from "@/features/player/components/SongLyrics";
 import useAppStore from "@/store/app-store";
+import UpdateSongLyricsButton from "@/features/player/components/UpdateSongLyricsButton";
+import PlaybackQueue from "@/features/queue/components/PlaybackQueue";
 
 type OverlayPlayerProps = {
   isExpanded: boolean;
@@ -67,9 +69,12 @@ const OverlayPlayer = ({
         {/** Header */}
         <div className="w-full h-16 flex items-center justify-between py-4 px-8 border-b border-muted">
           <h3 className="font-semibold text-primary">Tauri Music Player</h3>
-          <Button variant="ghost" size="icon" onClick={collapse}>
-            <ChevronDown />
-          </Button>
+          <div className="flex items-center gap-x-4">
+            <Button variant="ghost" size="icon" onClick={collapse}>
+              <ChevronDown />
+            </Button>
+            <PlaybackQueue />
+          </div>
         </div>
         <div className="w-full h-[calc(100%-64px)] grid grid-cols-4 ">
           <div className="col-span-2 w-full h-full p-4 flex flex-col justify-center items-center gap-y-6">
@@ -164,7 +169,19 @@ const OverlayPlayer = ({
               </div>
             </div>
           </div>
-          <SongLyrics />
+          <div className="col-span-2 w-full h-full p-4 flex flex-col justify-center items-center gap-y-8">
+            {song.lyrics_path ? (
+              <SongLyrics audioCurrentTime={position} path={song.lyrics_path} />
+            ) : (
+              <div className="h-85 w-full flex justify-center items-center text-center">
+                <p className="font-heading font-medium text-muted-foreground mb-4">
+                  No lyrics available for this song. <br /> You can add lyrics
+                  by clicking the button below.
+                </p>
+              </div>
+            )}
+            <UpdateSongLyricsButton songId={song.id} />
+          </div>
         </div>
       </div>
     </section>

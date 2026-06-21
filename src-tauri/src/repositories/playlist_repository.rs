@@ -80,7 +80,7 @@ pub fn get_songs_by_playlist_query(
     playlist_id: i64,
 ) -> rusqlite::Result<Vec<crate::models::song::Song>> {
     let mut stmt = conn.prepare(
-        "SELECT s.id, s.title, s.artist, s.album, s.duration, s.path, s.is_favorite, s.favorite_added_at, s.last_played_at, s.play_count, s.created_at
+        "SELECT s.id, s.title, s.artist, s.album, s.duration, s.path, s.lyrics_path, s.is_favorite, s.favorite_added_at, s.last_played_at, s.play_count, s.created_at
          FROM songs s
          INNER JOIN playlist_songs ps ON s.id = ps.song_id
          WHERE ps.playlist_id = ?1
@@ -95,11 +95,12 @@ pub fn get_songs_by_playlist_query(
             album: row.get(3)?,
             duration: row.get(4)?,
             path: row.get(5)?,
-            is_favorite: row.get(6)?,
-            favorite_added_at: row.get(7)?,
-            last_played_at: row.get(8)?,
-            play_count: row.get(9)?,
-            created_at: row.get(10)?,
+            lyrics_path: row.get(6)?,
+            is_favorite: row.get(7)?,
+            favorite_added_at: row.get(8)?,
+            last_played_at: row.get(9)?,
+            play_count: row.get(10)?,
+            created_at: row.get(11)?,
         })
     })?;
     let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();

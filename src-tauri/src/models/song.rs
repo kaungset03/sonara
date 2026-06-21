@@ -8,6 +8,7 @@ pub struct Song {
     pub album: String,
     pub duration: i64,
     pub path: String,
+    pub lyrics_path: Option<String>,
     pub is_favorite: bool,
     pub favorite_added_at: Option<i64>,
     pub last_played_at: Option<i64>,

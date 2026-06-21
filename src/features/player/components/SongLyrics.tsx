@@ -1,29 +1,77 @@
-const SongLyrics = () => {
-  return (
-    <div className="col-span-2 w-full h-full p-4 flex justify-center items-center">
-      <div className="w-fit h-fit p-6 space-y-6 font-heading mb-30">
-        <div>
-          <p className="text-xl text-muted-foreground leading-relaxed">
-            [Verse 1]
-            <br />
-            If I could be in your eyes, I would be in your eyes
-            <br />
-            If I could be in your eyes, I would be in your eyes
-            <br />
-            If I could be in your eyes, I would be in your eyes
-            <br />
-            If I could be in your eyes, I would be in your eyes
+import { useEffect, useRef, useState } from "react";
+import useReadFile from "@/features/player/hooks/useLyrics";
+
+type SongLyricsProps = {
+  path: string;
+  audioCurrentTime: number;
+};
+
+const SongLyrics = ({ path, audioCurrentTime }: SongLyricsProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const { lyricsLines } = useReadFile({ filePath: path });
+
+  const lastIndexRef = useRef(-1);
+
+  useEffect(() => {
+    if (!lyricsLines?.length) return;
+
+    let currentLineIndex = -1;
+
+    for (let i = 0; i < lyricsLines.length; i++) {
+      if (audioCurrentTime >= lyricsLines[i].time) {
+        currentLineIndex = i;
+      } else {
+        break;
+      }
+    }
+
+    if (currentLineIndex !== lastIndexRef.current) {
+      lastIndexRef.current = currentLineIndex;
+      setActiveIndex(currentLineIndex);
+    }
+  }, [audioCurrentTime, lyricsLines]);
+
+  useEffect(() => {
+    if (activeIndex !== -1 && containerRef.current) {
+      const activeElement = containerRef.current.children[activeIndex];
+      if (activeElement) {
+        activeElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }
+  }, [activeIndex]);
+
+  if (lyricsLines) {
+    return (
+      <div
+        ref={containerRef}
+        className="h-85 w-full overflow-y-auto space-y-4 p-4 text-center scrollbar-none mask-fade-y"
+      >
+        {lyricsLines.map((line, index) => (
+          <p
+            key={line.time}
+            className={`text-xl font-medium font-heading transition-all duration-300 ${
+              index === activeIndex
+                ? "text-primary scale-105 font-bold opacity-100"
+                : "text-muted-foreground opacity-40"
+            }`}
+          >
+            {line.text || ". . ."}
           </p>
-        </div>
-        <div>
-          <p className="text-xl text-muted-foreground leading-relaxed">
-            [Chorus]
-            <br />
-            I want to be in your eyes, I want to be in your eyes
-            <br />I want to be in your eyes, I want to be in your eyes
-          </p>
-        </div>
+        ))}
       </div>
+    );
+  }
+
+  return (
+    <div className="h-85 w-full flex justify-center items-center text-center">
+      <p className="font-heading font-medium text-muted-foreground mb-4">
+        Error in loading lyrics.
+        <br /> Please make sure the lyrics file exists and is accessible.
+      </p>
     </div>
   );
 };

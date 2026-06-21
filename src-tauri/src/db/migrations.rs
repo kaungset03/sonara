@@ -22,6 +22,7 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
             favorite_added_at INTEGER,
             last_played_at INTEGER,
             play_count INTEGER NOT NULL DEFAULT 0,
+            lyrics_path TEXT DEFAULT NULL,
             created_at INTEGER NOT NULL,
             folder_id INTEGER DEFAULT NULL,
             FOREIGN KEY (folder_id) REFERENCES library_folders(id) ON DELETE CASCADE

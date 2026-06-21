@@ -45,6 +45,16 @@ pub fn get_all_songs(db: State<DbState>) -> Result<Vec<crate::models::song::Song
     services::song::get_all_songs(&conn).map_err(|e| e.to_string())
 }
 
+// get song by id
+#[tauri::command]
+pub fn get_song_by_id(
+    db: State<DbState>,
+    id: i32,
+) -> Result<Option<crate::models::song::Song>, String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::song::get_song_by_id(&conn, id).map_err(|e| e.to_string())
+}
+
 // get all the artists
 #[tauri::command]
 pub fn get_all_artists(db: State<DbState>) -> Result<Vec<crate::models::artist::Artist>, String> {
@@ -186,4 +196,15 @@ pub fn search_library(
 ) -> Result<crate::models::search::SearchResults, String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
     services::search::preview_search_results(&conn, &search).map_err(|e| e.to_string())
+}
+
+// update song lyrics path
+#[tauri::command]
+pub fn update_song_lyrics_path(
+    db: State<DbState>,
+    song_id: i32,
+    lyrics_path: String,
+) -> Result<(), String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::song::update_song_lyrics_path(&conn, song_id, &lyrics_path).map_err(|e| e.to_string())
 }

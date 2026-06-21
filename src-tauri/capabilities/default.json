@@ -7,6 +7,11 @@
     "core:default",
     "opener:default",
     "dialog:default",
-    "fs:default"
+    "fs:default",
+    {
+      "identifier": "fs:allow-read-text-file",
+      "description": "Allow reading text files from the filesystem",
+      "allow": [{ "path": "$HOME/**" }]
+    }
   ]
 }

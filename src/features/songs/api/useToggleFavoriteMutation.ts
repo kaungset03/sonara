@@ -8,19 +8,10 @@ type ToggleFavoriteInput = {
   isFavorite: boolean;
 };
 
-type ToggleFavoriteContext = {
-  previousSongs: Song[] | undefined;
-};
-
 const useToggleFavoriteMutation = () => {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<
-    void,
-    Error,
-    ToggleFavoriteInput,
-    ToggleFavoriteContext
-  >({
+  const mutation = useMutation<void, Error, ToggleFavoriteInput>({
     mutationFn: async ({ songId, isFavorite }) => {
       await invoke("set_favorite_song", {
         songId,

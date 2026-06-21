@@ -6,6 +6,7 @@ declare global {
     album: string;
     duration: number; // in seconds
     path: string; // file path to the song
+    lyrics_path: string | null; // file path to the lyrics, if available
     is_favorite: boolean; // whether the song is marked as favorite
     favorite_added_at: number | null; // timestamp when the song was marked as favorite
     last_played_at: number | null; // timestamp when the song was last played
@@ -73,5 +74,11 @@ declare global {
     song_count: number; // number of songs found in the folder
     created_at: number; // timestamp when the folder was imported
   };
+
+  type LyricLine = {
+    time: number; // time in seconds when the lyric line should be displayed
+    text: string; // the lyric text to display
+  };
 }
+
 export {};

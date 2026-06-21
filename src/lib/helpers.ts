@@ -13,18 +13,30 @@ const shuffleQueue = (q: QueueItem[]) => {
   return shuffled;
 };
 
-// type Updater = (song: Song) => Song;
+const parseLRC = (lrcText: string): LyricLine[] => {
+  const lines = lrcText.split("\n");
+  const lyrics: LyricLine[] = [];
 
-// const updateSongInCache = (
-//   queryClient: QueryClient,
-//   songId: number,
-//   updater: Updater,
-// ) => {
-//   queryClient.setQueriesData<Song[]>({ queryKey: ["songs"] }, (old) => {
-//     if (!old) return old;
+  // Regex to match the [mm:ss.xx] or [mm:ss.xxx] format
+  const timeRegex = /^\[(\d{2}):(\d{2})\.(\d{2,3})\]/;
 
-//     return old.map((song) => (song.id === songId ? updater(song) : song));
-//   });
-// };
+  lines.forEach((line) => {
+    const match = timeRegex.exec(line.trim());
 
-export { getFormattedDuration, shuffleQueue };
+    if (match) {
+      const minutes = parseInt(match[1], 10);
+      const seconds = parseInt(match[2], 10);
+
+      const milliseconds = parseInt(match[3].padEnd(3, "0"), 10);
+
+      const timeInSeconds = minutes * 60 + seconds + milliseconds / 1000;
+      const text = line.replace(timeRegex, "").trim();
+
+      lyrics.push({ time: timeInSeconds, text });
+    }
+  });
+
+  return lyrics.sort((a, b) => a.time - b.time);
+};
+
+export { getFormattedDuration, shuffleQueue, parseLRC };
