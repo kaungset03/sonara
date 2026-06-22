@@ -39,7 +39,7 @@ const SearchDialog = () => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="flex justify-start items-center border border-secondary-foreground/30 gap-2 min-w-2xs"
+          className="flex justify-start items-center border border-muted-foreground/30 gap-2 min-w-2xs"
         >
           <Search size={16} />
           <span className="text-xs font-heading">

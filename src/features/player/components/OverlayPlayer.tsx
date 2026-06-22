@@ -19,6 +19,7 @@ import SongLyrics from "@/features/player/components/SongLyrics";
 import useAppStore from "@/store/app-store";
 import UpdateSongLyricsButton from "@/features/player/components/UpdateSongLyricsButton";
 import PlaybackQueue from "@/features/queue/components/PlaybackQueue";
+import WindowControlButtons from "@/components/custom/WindowControlButtons";
 
 type OverlayPlayerProps = {
   isExpanded: boolean;
@@ -58,18 +59,18 @@ const OverlayPlayer = ({
   const setMuted = useAppStore((state) => state.setMuted);
 
   return (
-    <section className="fixed inset-0 z-50 pointer-events-none">
+    <section className="fixed inset-0 z-50 pointer-events-none rounded-3xl">
       <div
-        className={`absolute inset-0 bg-background backdrop-blur-md transition-opacity duration-350 ease-in ${isExpanded ? "opacity-100" : "opacity-0"}`}
+        className={`absolute rounded-3xl inset-0 bg-background backdrop-blur-md transition-opacity duration-350 ease-in ${isExpanded ? "opacity-100" : "opacity-0"}`}
         onClick={collapse}
       />
       <div
         className={`absolute top-0 left-0 w-full h-full  ${isExpanded ? "translate-y-0" : "translate-y-full"} transition-transform duration-350 ease-in pointer-events-auto`}
       >
         {/** Header */}
-        <div className="w-full h-16 flex items-center justify-between py-4 px-8 border-b border-muted">
-          <h3 className="font-semibold text-primary">Tauri Music Player</h3>
-          <div className="flex items-center gap-x-4">
+        <div className="w-full h-16 flex items-center justify-between p-2 border-b border-muted">
+          <WindowControlButtons />
+          <div className="flex items-center gap-x-4 pr-4">
             <Button variant="ghost" size="icon" onClick={collapse}>
               <ChevronDown />
             </Button>

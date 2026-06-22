@@ -45,7 +45,7 @@ const PlaybackQueue = () => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="border border-primary">
+        <Button variant="ghost" size="icon" className="border border-muted-foreground/30">
           <ListMusic />
         </Button>
       </SheetTrigger>

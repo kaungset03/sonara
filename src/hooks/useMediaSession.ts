@@ -31,8 +31,14 @@ const useMediaSession = ({
         album: song.album || "Unknown Album",
         artwork: [
           {
-            src: "/music-icon.svg",
-            type: "image/svg+xml",
+            src: "/128x128.png",
+            sizes: "128x128",
+            type: "image/png",
+          },
+          {
+            src: "/128x128@2x.png",
+            sizes: "256x256",
+            type: "image/png",
           },
         ],
       });

@@ -11,21 +11,19 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Link } from "@tanstack/react-router";
-import { Music, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import { homeRoutes } from "@/constants/constants";
 import CreatePlaylistDialog from "@/features/playlists/components/CreatePlaylistDialog";
 import useGetAllPlaylistsQuery from "@/features/playlists/api/useGetAllPlaylistsQuery";
+import WindowControlButtons from "@/components/custom/WindowControlButtons";
 
 const AppSidebar = () => {
   const { data: playlists } = useGetAllPlaylistsQuery();
 
   return (
     <Sidebar variant="floating" className="pb-25">
-      <SidebarHeader className="h-18 flex justify-center items-center">
-        <div className="flex items-center gap-3 text-primary">
-          <Music />
-          <h2 className="text-lg font-semibold font-heading">Sonara</h2>
-        </div>
+      <SidebarHeader className="flex justify-center items-center h-14">
+        <WindowControlButtons />
       </SidebarHeader>
       <SidebarContent className="overscroll-contain w-full h-full">
         <SidebarGroup className="space-y-1">
@@ -33,7 +31,7 @@ const AppSidebar = () => {
             Your Library
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-0.5">
+            <SidebarMenu className="space-y-1">
               {homeRoutes.map((route) => (
                 <SidebarMenuItem key={route.name}>
                   <SidebarMenuButton className="w-full h-10 p-0">
@@ -59,7 +57,7 @@ const AppSidebar = () => {
             <CreatePlaylistDialog />
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-0.5">
+            <SidebarMenu className="space-y-1">
               {playlists?.map((playlist) => (
                 <SidebarMenuItem key={playlist.id}>
                   <SidebarMenuButton className="w-full h-10 p-0">
@@ -80,7 +78,7 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t border-secondary">
+      <SidebarFooter className="border-t border-muted-foreground/20">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton className="w-full p-0">

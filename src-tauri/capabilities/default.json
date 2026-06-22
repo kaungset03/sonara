@@ -12,6 +12,14 @@
       "identifier": "fs:allow-read-text-file",
       "description": "Allow reading text files from the filesystem",
       "allow": [{ "path": "$HOME/**" }]
-    }
+    },
+    "core:window:default",
+    "core:window:allow-close",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-start-dragging",
+    "core:window:allow-set-fullscreen",
+    "core:window:allow-unmaximize",
+    "core:window:allow-maximize"
   ]
 }

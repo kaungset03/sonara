@@ -21,9 +21,9 @@ const RootLayout = () => (
     <SidebarProvider>
       <AppSideBar />
       <SidebarInset>
-        <div className="w-full h-screen">
+        <div className="w-full h-screen overflow-auto custom-scrollbar">
           <AppHeader />
-          <main className="p-2 pr-3 pb-25 w-full">
+          <main className="p-2 mt-4 pb-25 w-full">
             <Outlet />
           </main>
         </div>

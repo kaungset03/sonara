@@ -30,7 +30,7 @@ const UpdateSongLyricsButton = ({ songId }: UpdateSongLyricsButtonProps) => {
       variant="outline"
       onClick={handleUpdateLyrics}
       size="sm"
-      className="text-xs"
+      className="text-xs border border-muted-foreground/30"
     >
       Update Lyrics
     </Button>

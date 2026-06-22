@@ -21,7 +21,7 @@ const ImportButton = () => {
     <>
       <Button
         variant="outline"
-        className="border border-secondary-foreground/30"
+        className="border border-muted-foreground/30"
         onClick={handleFolderSelection}
       >
         <Plus size={10} />

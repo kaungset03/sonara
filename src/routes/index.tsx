@@ -108,7 +108,7 @@ function Index() {
               </h2>
               <Link
                 to={"/songs"}
-                className="text-xs text-foreground underline hover:text-primary"
+                className="text-xs text-muted-foreground underline hover:text-primary"
               >
                 View All
               </Link>
@@ -135,7 +135,7 @@ function Index() {
             </h2>
             <Link
               to={"/songs"}
-              className="text-xs text-foreground underline hover:text-primary"
+              className="text-xs text-muted-foreground underline hover:text-primary"
             >
               View All
             </Link>
