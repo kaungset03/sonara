@@ -66,9 +66,8 @@ const OverlayPlayer = ({
       />
       <div
         className={`absolute top-0 left-0 w-full h-full  ${isExpanded ? "translate-y-0" : "translate-y-full"} transition-transform duration-350 ease-in pointer-events-auto`}
-      >
-        {/** Header */}
-        <div className="w-full h-16 flex items-center justify-between p-2 border-b border-muted">
+      > 
+        <div className="w-full h-16 flex items-center justify-between p-2">
           <WindowControlButtons />
           <div className="flex items-center gap-x-4 pr-4">
             <Button variant="ghost" size="icon" onClick={collapse}>

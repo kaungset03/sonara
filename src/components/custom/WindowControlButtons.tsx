@@ -38,18 +38,19 @@ const WindowControlButtons = () => {
     };
   }, []);
 
-
   const handler = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
     e.stopPropagation();
     if (e.buttons === 1) {
-      e.detail === 2 ? await appWindow.toggleMaximize() : await appWindow.startDragging();
+      e.detail === 2
+        ? await appWindow.toggleMaximize()
+        : await appWindow.startDragging();
     }
   };
 
   return (
     <div
-      className={`flex items-start gap-x-2 w-full h-full px-1 py-1.5 transition-opacity ${isFullscreen ? "opacity-0" : "opacity-100"}`}
+      className={`group/btn flex items-start gap-x-2 w-fit h-fit mr-auto mb-auto p-1 transition-opacity ${isFullscreen ? "opacity-0" : "opacity-100"}`}
       ref={containerRef}
       data-tauri-drag-region
       onMouseDown={handler}
@@ -60,7 +61,7 @@ const WindowControlButtons = () => {
         onClick={handleClose}
       >
         <svg
-          className="w-1.5 h-1.5 text-[#4C0002] stroke-[2.5]"
+          className="size-1.5 group-hover/btn:text-[#4C0002] text-transparent transition-colors stroke-[2.5]"
           viewBox="0 0 10 10"
           fill="none"
           stroke="currentColor"
@@ -76,7 +77,7 @@ const WindowControlButtons = () => {
         onClick={handleMinimize}
       >
         <svg
-          className="w-2 h-2 text-[#5C3E00] stroke-3"
+          className="size-1.5 group-hover/btn:text-[#5C3E00] text-transparent transition-colors stroke-3"
           viewBox="0 0 10 10"
           fill="none"
           stroke="currentColor"
@@ -92,16 +93,14 @@ const WindowControlButtons = () => {
         onClick={handleFullscreen}
       >
         <svg
-          className="w-1.5 h-1.5 text-[#004D03]"
+          className="size-1.5 group-hover/btn:text-[#004D03] text-transparent transition-colors"
           viewBox="0 0 10 10"
           fill="currentColor"
         >
-          <path
-            d="M1 4.5V1H4.5M9 5.5V9H5.5"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            fill="none"
-          />
+          {/* Top-Left Triangle (Extended closer to center) */}
+          <path d="M0 0H7L0 7V0Z" />
+          {/* Bottom-Right Triangle (Extended closer to center) */}
+          <path d="M10 10H3L10 3V10Z" />
         </svg>
       </button>
     </div>

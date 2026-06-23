@@ -23,7 +23,7 @@ const RootLayout = () => (
       <SidebarInset>
         <div className="w-full h-screen overflow-auto custom-scrollbar">
           <AppHeader />
-          <main className="p-2 mt-4 pb-25 w-full">
+          <main className="p-2 mt-18 pb-25 w-full">
             <Outlet />
           </main>
         </div>
