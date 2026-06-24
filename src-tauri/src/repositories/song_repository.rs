@@ -299,25 +299,25 @@ pub fn get_most_played_songs_query(
 }
 
 pub fn get_stats_query(conn: &rusqlite::Connection) -> rusqlite::Result<Stats> {
-    let total_songs = conn.query_row("SELECT COUNT(*) FROM songs", [], |row| row.get(0))?;
-    let total_albums = conn.query_row("SELECT COUNT(DISTINCT album) FROM songs", [], |row| {
-        row.get(0)
-    })?;
-    let total_artists = conn.query_row("SELECT COUNT(DISTINCT artist) FROM songs", [], |row| {
-        row.get(0)
-    })?;
-    let total_favorites = conn.query_row(
-        "SELECT COUNT(*) FROM songs WHERE is_favorite = 1",
+    let stats = conn.query_row(
+        "SELECT 
+        COUNT(*), 
+        COUNT(DISTINCT album), 
+        COUNT(DISTINCT artist),
+        SUM(CASE WHEN is_favorite = 1 THEN 1 ELSE 0 END)
+     FROM songs",
         [],
-        |row| row.get(0),
+        |row| {
+            Ok(Stats {
+                total_songs: row.get(0)?,
+                total_albums: row.get(1)?,
+                total_artists: row.get(2)?,
+                total_favorites: row.get(3).unwrap_or(0), // Handles case if table is empty and SUM returns NULL
+            })
+        },
     )?;
 
-    Ok(Stats {
-        total_songs,
-        total_albums,
-        total_artists,
-        total_favorites,
-    })
+    Ok(stats)
 }
 
 pub fn record_song_play_query(conn: &rusqlite::Connection, song_id: i32) -> rusqlite::Result<()> {

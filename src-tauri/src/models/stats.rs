@@ -15,3 +15,12 @@ pub struct HomeData {
     pub most_played_songs: Vec<crate::models::song::Song>,
     pub recently_played_songs: Vec<crate::models::song::Song>,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct AppStats {
+    pub total_folders: i64,
+    pub total_songs: i64,
+    pub total_albums: i64,
+    pub total_artists: i64,
+    pub app_version: String,
+}

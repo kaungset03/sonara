@@ -55,6 +55,7 @@ pub fn run() {
             add_songs_to_playlist,
             remove_song_from_playlist,
             get_home_data,
+            get_app_stats,
             record_song_play,
             search_library,
             update_song_lyrics_path

@@ -7,14 +7,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
 
-const useAppStatsQuery = () => {
+const useGetAppStatsQuery = () => {
   const { data } = useQuery({
     queryKey: ["appStats"],
     queryFn: async () => {
-      const res = await invoke("get_app_stats");
+      const res = await invoke<AppStats>("get_app_stats");
       return res;
     },
   });
   return { data };
 };
-export default useAppStatsQuery;
+export default useGetAppStatsQuery;

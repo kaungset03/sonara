@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { colorOptions, themeOptions } from "@/constants/constants";
 import LibraryManagement from "@/features/settings/components/LibraryManagement";
+import useGetAppStatsQuery from "@/features/settings/api/useGetAppStatsQuery";
 import useAppStore from "@/store/app-store";
 
 export const Route = createFileRoute("/settings/")({
@@ -26,6 +27,8 @@ function RouteComponent() {
 
   const repeatModeConfig = useAppStore((state) => state.repeatModeConfig);
   const setRepeatModeConfig = useAppStore((state) => state.setRepeatModeConfig);
+
+  const { data } = useGetAppStatsQuery();
 
   return (
     <div className="space-y-8">
@@ -150,20 +153,20 @@ function RouteComponent() {
                   simplicity, and your local music library.
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Version 0.1.0
+                  Version {data?.app_version}
                 </p>
               </div>
             </div>
             <Separator />
             <div className="grid grid-cols-2 gap-y-3 text-sm">
               <span className="text-muted-foreground">🎵 Songs</span>
-              <span className="text-right">1,245</span>
+              <span className="text-right">{data?.total_songs}</span>
               <span className="text-muted-foreground">👤 Artists</span>
-              <span className="text-right">218</span>
+              <span className="text-right">{data?.total_artists}</span>
               <span className="text-muted-foreground">💿 Albums</span>
-              <span className="text-right">173</span>
+              <span className="text-right">{data?.total_albums}</span>
               <span className="text-muted-foreground">📁 Folders</span>
-              <span className="text-right">5</span>
+              <span className="text-right">{data?.total_folders}</span>
             </div>
             <Separator />
             <p className="text-xs text-muted-foreground text-center">

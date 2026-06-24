@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use crate::{
-    models::folder::ImportResult,
+    models::{folder::ImportResult, stats::AppStats},
     repositories::{folder_repository, song_repository},
     services::{metadata::extract_metadata, scanner},
 };
@@ -75,6 +75,13 @@ pub fn get_home_data(
         most_played_songs,
         recently_played_songs,
     })
+}
+
+pub fn get_app_stats(
+    app_handle: &tauri::AppHandle,
+    conn: &rusqlite::Connection,
+) -> rusqlite::Result<AppStats> {
+    folder_repository::get_app_stats_query(app_handle, conn)
 }
 
 // get all imported folders with their song counts

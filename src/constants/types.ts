@@ -48,6 +48,14 @@ declare global {
     recently_played_songs: Song[];
   };
 
+  type AppStats = {
+    total_songs: number;
+    total_albums: number;
+    total_artists: number;
+    total_folders: number;
+    app_version: string;
+  };
+
   type SearchResults = {
     songs: Song[];
     artists: Artist[];

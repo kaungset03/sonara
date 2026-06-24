@@ -1,6 +1,7 @@
 use rusqlite::{params, Connection};
+use tauri::AppHandle;
 
-use crate::models::folder::Folder;
+use crate::models::{folder::Folder, stats::AppStats};
 
 pub fn insert_folder(conn: &Connection, path: &str) -> rusqlite::Result<i64> {
     let created_at = std::time::SystemTime::now()
@@ -45,4 +46,26 @@ pub fn get_all_folders_query(conn: &Connection) -> rusqlite::Result<Vec<Folder>>
 pub fn delete_folder_query(conn: &Connection, id: i64) -> rusqlite::Result<()> {
     conn.execute("DELETE FROM library_folders WHERE id = ?1", params![id])?;
     Ok(())
+}
+
+pub fn get_app_stats_query(app_handle: &AppHandle, conn: &Connection) -> rusqlite::Result<AppStats> {
+    let app_version = app_handle.package_info().version.to_string();
+    let stats = conn.query_row(
+        "SELECT 
+        (SELECT COUNT(*) FROM songs) AS total_songs, 
+        (SELECT COUNT(DISTINCT album) FROM songs) AS total_albums, 
+        (SELECT COUNT(DISTINCT artist) FROM songs) AS total_artists,
+        (SELECT COUNT(*) FROM library_folders) AS total_folders",
+        [],
+        |row| {
+            Ok(AppStats {
+                total_songs: row.get(0)?,
+                total_albums: row.get(1)?,
+                total_artists: row.get(2)?,
+                total_folders: row.get(3)?,
+                app_version,
+            })
+        },
+    )?;
+    Ok(stats)
 }

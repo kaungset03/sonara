@@ -181,6 +181,16 @@ pub fn get_home_data(db: State<DbState>) -> Result<crate::models::stats::HomeDat
     services::library::get_home_data(&conn).map_err(|e| e.to_string())
 }
 
+// App stats for settings page
+#[tauri::command]
+pub fn get_app_stats(
+    app_handle: tauri::AppHandle,
+    db: State<DbState>,
+) -> Result<crate::models::stats::AppStats, String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::library::get_app_stats(&app_handle, &conn).map_err(|e| e.to_string())
+}
+
 // update song play count and last played at
 #[tauri::command]
 pub fn record_song_play(db: State<DbState>, song_id: i32) -> Result<(), String> {
