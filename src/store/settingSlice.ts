@@ -11,7 +11,7 @@ export interface SettingState {
 const createSettingSlice: StateCreator<AppStoreState, [], [], SettingState> = (
   set,
 ) => ({
-  isShuffleConfig: true,
+  isShuffleConfig: false,
   repeatModeConfig: "off",
   setShuffleConfig: (isShuffle) => set({ isShuffleConfig: isShuffle }),
   setRepeatModeConfig: (mode) => set({ repeatModeConfig: mode }),

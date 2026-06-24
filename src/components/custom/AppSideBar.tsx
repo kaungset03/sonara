@@ -15,15 +15,17 @@ import { Settings } from "lucide-react";
 import { homeRoutes } from "@/constants/constants";
 import CreatePlaylistDialog from "@/features/playlists/components/CreatePlaylistDialog";
 import useGetAllPlaylistsQuery from "@/features/playlists/api/useGetAllPlaylistsQuery";
-import WindowControlButtons from "@/components/custom/WindowControlButtons";
 
 const AppSidebar = () => {
   const { data: playlists } = useGetAllPlaylistsQuery();
 
   return (
     <Sidebar variant="floating" className="pb-25">
-      <SidebarHeader className="flex justify-center items-center h-14">
-        <WindowControlButtons />
+      <SidebarHeader
+        data-tauri-drag-region
+        className="flex justify-center items-center h-10"
+      >
+        {/* <WindowControlButtons /> */}
       </SidebarHeader>
       <SidebarContent className="overscroll-contain w-full h-full">
         <SidebarGroup className="space-y-1">

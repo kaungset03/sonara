@@ -199,7 +199,7 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
           muted={muted}
         />
         <section className="w-full h-full grid grid-cols-10 items-center">
-          <div className="col-span-2 flex items-center justify-start gap-2 2xl:gap-4 min-w-0">
+          <div className="col-span-2 flex items-center justify-start gap-x-2 2xl:gap-x-4 min-w-0">
             <div className="size-12 rounded-md bg-linear-to-br from-primary/50 to-primary/30 shrink-0 flex items-center justify-center ">
               <Music className="size-5 text-primary" />
             </div>

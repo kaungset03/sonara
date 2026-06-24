@@ -19,7 +19,6 @@ import SongLyrics from "@/features/player/components/SongLyrics";
 import useAppStore from "@/store/app-store";
 import UpdateSongLyricsButton from "@/features/player/components/UpdateSongLyricsButton";
 import PlaybackQueue from "@/features/queue/components/PlaybackQueue";
-import WindowControlButtons from "@/components/custom/WindowControlButtons";
 
 type OverlayPlayerProps = {
   isExpanded: boolean;
@@ -66,10 +65,12 @@ const OverlayPlayer = ({
       />
       <div
         className={`absolute top-0 left-0 w-full h-full  ${isExpanded ? "translate-y-0" : "translate-y-full"} transition-transform duration-350 ease-in pointer-events-auto`}
-      > 
-        <div className="w-full h-16 flex items-center justify-between p-2">
-          <WindowControlButtons />
-          <div className="flex items-center gap-x-4 pr-4">
+      >
+        <div
+          className="w-full h-16 flex items-center justify-end py-2 px-4"
+          data-tauri-drag-region
+        >
+          <div className="flex items-center gap-x-4">
             <Button variant="ghost" size="icon" onClick={collapse}>
               <ChevronDown />
             </Button>

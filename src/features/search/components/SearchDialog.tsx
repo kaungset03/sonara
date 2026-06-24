@@ -15,12 +15,14 @@ import { BookImage, Music, Search, User, X } from "lucide-react";
 import SearchResultItem from "@/features/search/components/SearchResultItem";
 import useSearchLibraryQuery from "@/features/search/api/useSearchLibraryQuery";
 import useAppStore from "@/store/app-store";
+import useDebounce from "@/hooks/useDebounce";
 
 const SearchDialog = () => {
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce({ value: search });
   const [open, setOpen] = useState(false);
 
-  const { data } = useSearchLibraryQuery({ search });
+  const { data } = useSearchLibraryQuery({ search: debouncedSearch });
   const navigate = useNavigate();
   const playSong = useAppStore((state) => state.playSong);
 
@@ -31,7 +33,6 @@ const SearchDialog = () => {
 
   const closeDialog = () => {
     setOpen(false);
-    setSearch("");
   };
 
   return (
@@ -92,7 +93,7 @@ const SearchDialog = () => {
                     icon={<Music size={16} className="text-muted-foreground" />}
                     handleClick={() => {
                       playSong(song, data.songs);
-                      closeDialog();
+                      closeDialog()
                     }}
                   />
                 ))}
@@ -146,11 +147,8 @@ const SearchDialog = () => {
             </div>
           </div>
         ) : (
-          <div className="py-10">
-            <Music size={48} className="mx-auto text-muted-foreground" />
-            <p className="text-center text-muted-foreground mt-4">
-              Start typing to search your library...
-            </p>
+          <div className="py-5 w-full h-full flex justify-center items-center">
+            <div className="size-5 rounded-full border-t border-primary animate-spin" />
           </div>
         )}
       </DialogContent>

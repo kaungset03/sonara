@@ -1,0 +1,30 @@
+{
+  "identifier": "com.kaungset.sonara",
+  "app": {
+    "macOSPrivateApi": true,
+    "windows": [
+      {
+        "title": "Sonara",
+        "minWidth": 1100,
+        "minHeight": 618,
+        "width": 1280,
+        "height": 720,
+        "resizable": true,
+        "shadow": true,
+        "center": true,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "transparent": true,
+        "windowEffects": {
+          "effects": ["hudWindow", "mica"],
+          "state": "active",
+          "radius": 16
+        },
+        "trafficLightPosition": {
+          "x": 18,
+          "y": 25
+        }
+      }
+    ]
+  }
+}

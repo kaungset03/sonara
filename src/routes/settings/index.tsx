@@ -129,6 +129,48 @@ function RouteComponent() {
           </CardContent>
         </Card>
         <LibraryManagement />
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">About Sonara</CardTitle>
+            <CardDescription>
+              Information about the application.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="flex items-center gap-4">
+              <img
+                src="/128x128.png"
+                alt="Sonara"
+                className="size-16 rounded-xl"
+              />
+              <div>
+                <h3 className="font-semibold text-lg">Sonara</h3>
+                <p className="text-sm text-muted-foreground">
+                  Sonara is a lightweight desktop music player focused on speed,
+                  simplicity, and your local music library.
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Version 0.1.0
+                </p>
+              </div>
+            </div>
+            <Separator />
+            <div className="grid grid-cols-2 gap-y-3 text-sm">
+              <span className="text-muted-foreground">🎵 Songs</span>
+              <span className="text-right">1,245</span>
+              <span className="text-muted-foreground">👤 Artists</span>
+              <span className="text-right">218</span>
+              <span className="text-muted-foreground">💿 Albums</span>
+              <span className="text-right">173</span>
+              <span className="text-muted-foreground">📁 Folders</span>
+              <span className="text-right">5</span>
+            </div>
+            <Separator />
+            <p className="text-xs text-muted-foreground text-center">
+              © 2026 Sonara • Made with Rust, Tauri and React
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

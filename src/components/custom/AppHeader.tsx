@@ -32,9 +32,9 @@ const AppHeader = () => {
 
   return (
     <header
+      ref={containerRef}
       onMouseDown={handler}
       data-tauri-drag-region
-      ref={containerRef}
       className="h-14 p-2 fixed top-2 right-2 left-64 rounded-3xl shadow-md border border-muted-foreground/30 bg-muted/50 dark:bg-sidebar/50 backdrop-blur-lg z-10 flex items-center justify-between"
     >
       <div className="flex items-center gap-3 flex-1">
