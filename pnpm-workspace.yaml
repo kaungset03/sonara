@@ -1,4 +1,4 @@
 allowBuilds:
   core-js: true
   esbuild: true
-  msw: set this to true or false
+  msw: true
