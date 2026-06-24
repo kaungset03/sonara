@@ -35,10 +35,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
+      - name: install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.6.0
+
       - name: setup node
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: 24.11.0
           cache: "pnpm"
 
       - name: install Rust stable
@@ -52,7 +57,7 @@ jobs:
           workspaces: "./src-tauri -> target"
 
       - name: install frontend dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - uses: tauri-apps/tauri-action@v0
         env:
