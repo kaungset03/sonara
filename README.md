@@ -56,7 +56,7 @@ Make sure you have installed:
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/sonara.git
+git clone https://github.com/kaungset03/sonara.git
 cd sonara
 
 # Install dependencies
