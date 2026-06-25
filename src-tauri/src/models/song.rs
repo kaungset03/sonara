@@ -6,7 +6,7 @@ pub struct Song {
     pub title: String,
     pub artist: String,
     pub album: String,
-    pub album_artwork_path: Option<String>,
+    //pub album_artwork_path: Option<String>,
     pub duration: i64,
     pub path: String,
     pub lyrics_path: Option<String>,

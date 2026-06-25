@@ -16,7 +16,7 @@ pub fn song_from_row(row: &Row) -> rusqlite::Result<Song> {
         last_played_at: row.get("last_played_at")?,
         play_count: row.get("play_count")?,
         created_at: row.get("created_at")?,
-        album_artwork_path: row.get("album_artwork_path")?,
+        //album_artwork_path: row.get("album_artwork_path")?,
     })
 }
 

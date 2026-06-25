@@ -10,13 +10,13 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
         [],
     )?;
 
+    // album_artwork_path TEXT DEFAULT NULL,
     conn.execute(
         "CREATE TABLE IF NOT EXISTS songs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT,
             artist TEXT,
-            album TEXT,
-            album_artwork_path TEXT DEFAULT NULL,
+            album TEXT, 
             duration INTEGER,
             path TEXT UNIQUE NOT NULL,
             is_favorite INTEGER NOT NULL DEFAULT 0 CHECK (is_favorite IN (0, 1)),

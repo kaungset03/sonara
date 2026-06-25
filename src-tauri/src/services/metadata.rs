@@ -81,7 +81,7 @@ pub fn extract_metadata(path: &Path) -> Result<Song, String> {
         title,
         artist,
         album,
-        album_artwork_path: None,
+        //album_artwork_path: None,
         duration,
         path: path.to_string_lossy().into_owned(),
         lyrics_path: None,
