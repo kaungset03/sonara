@@ -16,6 +16,7 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
             title TEXT,
             artist TEXT,
             album TEXT,
+            album_artwork_path TEXT DEFAULT NULL,
             duration INTEGER,
             path TEXT UNIQUE NOT NULL,
             is_favorite INTEGER NOT NULL DEFAULT 0 CHECK (is_favorite IN (0, 1)),

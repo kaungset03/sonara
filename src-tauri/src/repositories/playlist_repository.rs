@@ -88,20 +88,7 @@ pub fn get_songs_by_playlist_query(
          ",
     )?;
     let song_iter = stmt.query_map([playlist_id], |row| {
-        Ok(crate::models::song::Song {
-            id: row.get(0)?,
-            title: row.get(1)?,
-            artist: row.get(2)?,
-            album: row.get(3)?,
-            duration: row.get(4)?,
-            path: row.get(5)?,
-            lyrics_path: row.get(6)?,
-            is_favorite: row.get(7)?,
-            favorite_added_at: row.get(8)?,
-            last_played_at: row.get(9)?,
-            play_count: row.get(10)?,
-            created_at: row.get(11)?,
-        })
+        crate::repositories::song_repository::song_from_row(row)
     })?;
     let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
     songs
