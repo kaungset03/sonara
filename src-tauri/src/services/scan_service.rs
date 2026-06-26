@@ -4,8 +4,6 @@ use walkdir::WalkDir;
 pub fn scan_for_mp3s<P: AsRef<Path>>(path: P) -> Vec<PathBuf> {
     let mut mp3_files = Vec::new();
 
-    // WalkDir::new creates an iterator that recursively yields directory entries.
-    // .filter_map(|e| e.ok()) automatically skips any errors (like permission denied).
     for entry in WalkDir::new(path).into_iter().filter_map(|e| e.ok()) {
         let entry_path = entry.path();
 

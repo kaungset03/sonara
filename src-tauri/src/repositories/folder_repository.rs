@@ -3,21 +3,28 @@ use tauri::AppHandle;
 
 use crate::models::{folder::Folder, stats::AppStats};
 
-pub fn insert_folder(conn: &Connection, path: &str) -> rusqlite::Result<i64> {
+pub fn insert(conn: &Connection, path: &str) -> rusqlite::Result<i64> {
     let created_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
         .as_secs() as i64;
 
     conn.execute(
-        "INSERT OR IGNORE INTO library_folders (path, created_at) VALUES (?1, ?2)",
+        "INSERT OR IGNORE INTO library_folders (path, created_at)
+         VALUES (?1, ?2)",
         params![path, created_at],
     )?;
-    let folder_id = conn.last_insert_rowid() as i64;
+
+    let folder_id: i64 = conn.query_row(
+        "SELECT id FROM library_folders WHERE path = ?1",
+        [path],
+        |row| row.get(0),
+    )?;
+
     Ok(folder_id)
 }
 
-pub fn get_all_folders_query(conn: &Connection) -> rusqlite::Result<Vec<Folder>> {
+pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Folder>> {
     let mut stmt = conn.prepare(
         "
         SELECT
@@ -43,18 +50,18 @@ pub fn get_all_folders_query(conn: &Connection) -> rusqlite::Result<Vec<Folder>>
     folder_iter.collect()
 }
 
-pub fn delete_folder_query(conn: &Connection, id: i64) -> rusqlite::Result<()> {
+pub fn delete(conn: &Connection, id: i64) -> rusqlite::Result<()> {
     conn.execute("DELETE FROM library_folders WHERE id = ?1", params![id])?;
     Ok(())
 }
 
-pub fn get_app_stats_query(app_handle: &AppHandle, conn: &Connection) -> rusqlite::Result<AppStats> {
+pub fn app_stats(app_handle: &AppHandle, conn: &Connection) -> rusqlite::Result<AppStats> {
     let app_version = app_handle.package_info().version.to_string();
     let stats = conn.query_row(
         "SELECT 
         (SELECT COUNT(*) FROM songs) AS total_songs, 
-        (SELECT COUNT(DISTINCT album) FROM songs) AS total_albums, 
-        (SELECT COUNT(DISTINCT artist) FROM songs) AS total_artists,
+        (SELECT COUNT(*) FROM albums) AS total_albums, 
+        (SELECT COUNT(*) FROM artists) AS total_artists,
         (SELECT COUNT(*) FROM library_folders) AS total_folders",
         [],
         |row| {

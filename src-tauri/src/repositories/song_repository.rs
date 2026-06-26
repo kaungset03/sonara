@@ -1,36 +1,87 @@
-use rusqlite::{params, Row};
+use rusqlite::{params, Connection};
 
-use crate::models::{song::Song, stats::Stats};
+use crate::models::song::Song;
 
-pub fn song_from_row(row: &Row) -> rusqlite::Result<Song> {
+fn song_from_row(row: &rusqlite::Row) -> rusqlite::Result<Song> {
     Ok(Song {
         id: row.get("id")?,
         title: row.get("title")?,
-        artist: row.get("artist")?,
-        album: row.get("album")?,
         duration: row.get("duration")?,
         path: row.get("path")?,
-        lyrics_path: row.get("lyrics_path")?,
-        is_favorite: row.get::<_, i64>("is_favorite")? == 1,
+        is_favorite: row.get::<_, i32>("is_favorite")? != 0,
         favorite_added_at: row.get("favorite_added_at")?,
+        track_number: row.get("track_number")?,
         last_played_at: row.get("last_played_at")?,
         play_count: row.get("play_count")?,
+        lyrics_path: row.get("lyrics_path")?,
         created_at: row.get("created_at")?,
-        //album_artwork_path: row.get("album_artwork_path")?,
+        file_modified_at: row.get("file_modified_at")?,
+        file_size: row.get("file_size")?,
+        folder_id: row.get("folder_id")?,
+        album_id: row.get("album_id")?,
+        artist_id: row.get("artist_id")?,
     })
 }
 
-// insert song metadata into the database
-pub fn insert_song_metadata(
-    conn: &rusqlite::Connection,
+// get all the songs from the database
+pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Song>> {
+    let mut stmt = conn.prepare("SELECT * FROM songs")?;
+    let song_iter = stmt.query_map([], |row| song_from_row(row))?;
+
+    let songs = song_iter.collect();
+    songs
+}
+
+// get songs by album id
+pub fn get_by_album(conn: &Connection, album_id: i64) -> rusqlite::Result<Vec<Song>> {
+    let mut stmt = conn.prepare("SELECT * FROM songs WHERE album_id = ?1")?;
+    let song_iter = stmt.query_map(params![album_id], |row| song_from_row(row))?;
+
+    let songs = song_iter.collect();
+    songs
+}
+
+// get songs by artist id
+pub fn get_by_artist(conn: &Connection, artist_id: i64) -> rusqlite::Result<Vec<Song>> {
+    let mut stmt = conn.prepare("SELECT * FROM songs WHERE artist_id = ?1")?;
+    let song_iter = stmt.query_map(params![artist_id], |row| song_from_row(row))?;
+
+    let songs = song_iter.collect();
+    songs
+}
+
+// get songs by playlist id
+pub fn get_by_playlist(conn: &Connection, playlist_id: i64) -> rusqlite::Result<Vec<Song>> {
+    let mut stmt = conn.prepare(
+        "SELECT s.* FROM songs s
+         INNER JOIN playlist_songs ps ON s.id = ps.song_id
+         WHERE ps.playlist_id = ?1",
+    )?;
+    let song_iter = stmt.query_map(params![playlist_id], |row| song_from_row(row))?;
+
+    let songs = song_iter.collect();
+    songs
+}
+
+// get a song by id
+pub fn get(conn: &Connection, id: i64) -> rusqlite::Result<Song> {
+    let mut stmt = conn.prepare("SELECT * FROM songs WHERE id = ?1")?;
+    let song = stmt.query_row(params![id], |row| song_from_row(row))?;
+    Ok(song)
+}
+
+// create a new song
+pub fn create(
+    conn: &Connection,
     title: &str,
-    artist: &str,
-    album: &str,
-    path: &str,
-    is_favorite: i32,
-    favorite_added_at: Option<i64>,
     duration: i64,
-    folder_id: Option<i64>,
+    path: &str,
+    track_number: Option<i32>,
+    folder_id: i64,
+    album_id: i64,
+    artist_id: i64,
+    file_modified_at: i64,
+    file_size: i64,
 ) -> rusqlite::Result<()> {
     let created_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -38,91 +89,27 @@ pub fn insert_song_metadata(
         .as_secs() as i64;
 
     conn.execute(
-        "INSERT INTO songs (title, artist, album, duration, path, is_favorite, favorite_added_at, created_at, folder_id) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
-        rusqlite::params![title, artist, album, duration, path, is_favorite, favorite_added_at, created_at, folder_id],
+        "INSERT INTO songs (title, duration, path, track_number, created_at, folder_id, album_id, artist_id, file_modified_at, file_size) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
+        params![title, duration, path, track_number, created_at, folder_id, album_id, artist_id, file_modified_at, file_size],
     )?;
     Ok(())
 }
 
-// get the song metadata from the database
-pub fn get_all_songs_query(
-    conn: &rusqlite::Connection,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
-    let mut stmt = conn.prepare("SELECT * FROM songs")?;
-    let song_iter = stmt.query_map([], |row| song_from_row(row))?;
-    let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
+// search
+pub fn search(conn: &Connection, query: &str) -> rusqlite::Result<Vec<Song>> {
+    let mut stmt = conn.prepare("SELECT * FROM songs WHERE title LIKE ?1")?;
+    let song_iter = stmt.query_map(params![format!("%{}%", query)], |row| song_from_row(row))?;
+
+    let songs = song_iter.collect();
     songs
 }
 
-// get song by id
-pub fn get_song_by_id_query(
-    conn: &rusqlite::Connection,
-    id: i32,
-) -> rusqlite::Result<Option<crate::models::song::Song>> {
-    let mut stmt = conn.prepare("SELECT * FROM songs WHERE id = ?1")?;
-    let song_opt = stmt.query_row([id], |row| song_from_row(row))?;
-    Ok(Some(song_opt))
-}
-
-// get all the artists from the database
-pub fn get_all_artists_query(
-    conn: &rusqlite::Connection,
-) -> rusqlite::Result<Vec<crate::models::artist::Artist>> {
-    let mut stmt = conn.prepare("SELECT artist, COUNT(*) as count FROM songs GROUP BY artist")?;
-    let artist_iter = stmt.query_map([], |row| {
-        Ok(crate::models::artist::Artist {
-            name: row.get(0)?,
-            count: row.get(1)?,
-        })
-    })?;
-    let artists: Result<Vec<crate::models::artist::Artist>, rusqlite::Error> =
-        artist_iter.collect();
-    artists
-}
-
-// get all the albums from the database
-pub fn get_all_albums_query(
-    conn: &rusqlite::Connection,
-) -> rusqlite::Result<Vec<crate::models::album::Album>> {
-    let mut stmt = conn.prepare("SELECT album, COUNT(*) as count FROM songs GROUP BY album")?;
-    let album_iter = stmt.query_map([], |row| {
-        Ok(crate::models::album::Album {
-            name: row.get(0)?,
-            count: row.get(1)?,
-        })
-    })?;
-    let albums: Result<Vec<crate::models::album::Album>, rusqlite::Error> = album_iter.collect();
-    albums
-}
-
-// get songs by artist
-pub fn get_songs_by_artist_query(
-    conn: &rusqlite::Connection,
-    artist: &str,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
-    let mut stmt = conn.prepare("SELECT * FROM songs WHERE artist = ?1")?;
-    let song_iter = stmt.query_map([artist], |row| song_from_row(row))?;
-    let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
-    songs
-}
-
-// get songs by album
-pub fn get_songs_by_album_query(
-    conn: &rusqlite::Connection,
-    album: &str,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
-    let mut stmt = conn.prepare("SELECT * FROM songs WHERE album = ?1")?;
-    let song_iter = stmt.query_map([album], |row| song_from_row(row))?;
-    let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
-    songs
-}
-
-// set favorite song
-pub fn set_favorite_song_query(
-    conn: &rusqlite::Connection,
-    song_id: i32,
+// update favorite status of a song by id
+pub fn update_favorite_status(
+    conn: &Connection,
+    id: i64,
     is_favorite: bool,
-) -> rusqlite::Result<()> {
+) -> rusqlite::Result<String> {
     let favorite_added_at = if is_favorite {
         Some(
             std::time::SystemTime::now()
@@ -136,192 +123,43 @@ pub fn set_favorite_song_query(
 
     conn.execute(
         "UPDATE songs SET is_favorite = ?1, favorite_added_at = ?2 WHERE id = ?3",
-        rusqlite::params![is_favorite as i32, favorite_added_at, song_id],
+        params![is_favorite as i32, favorite_added_at, id],
+    )?;
+    Ok(if is_favorite {
+        "Song marked as favorite".to_string()
+    } else {
+        "Song removed from favorites".to_string()
+    })
+}
+
+// update lyrics path of a song by id
+pub fn update_lyrics_path(conn: &Connection, id: i64, lyrics_path: &str) -> rusqlite::Result<()> {
+    conn.execute(
+        "UPDATE songs SET lyrics_path = ?1 WHERE id = ?2",
+        params![lyrics_path, id],
     )?;
     Ok(())
 }
 
-// get favorite songs
-pub fn get_favorite_songs_query(
-    conn: &rusqlite::Connection,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
-    let mut stmt =
-        conn.prepare("SELECT * FROM songs WHERE is_favorite = 1 ORDER BY favorite_added_at")?;
-    let song_iter = stmt.query_map([], |row| song_from_row(row))?;
-    let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
-    songs
-}
-
-pub fn get_recently_added_songs_query(
-    conn: &rusqlite::Connection,
-    limit: i64,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
-    let mut stmt = conn.prepare("SELECT * FROM songs ORDER BY created_at DESC LIMIT ?1")?;
-    let song_iter = stmt.query_map([limit], |row| song_from_row(row))?;
-    let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
-    songs
-}
-
-pub fn get_recently_played_songs_query(
-    conn: &rusqlite::Connection,
-    limit: i64,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
-    let mut stmt = conn.prepare(
-        "SELECT * FROM songs WHERE last_played_at IS NOT NULL ORDER BY last_played_at DESC LIMIT ?1",
-    )?;
-    let song_iter = stmt.query_map([limit], |row| song_from_row(row))?;
-    let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
-    songs
-}
-
-pub fn get_most_played_songs_query(
-    conn: &rusqlite::Connection,
-    limit: i64,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
-    let mut stmt =
-        conn.prepare("SELECT * FROM songs WHERE play_count > 0 ORDER BY play_count DESC LIMIT ?1")?;
-    let song_iter = stmt.query_map([limit], |row| song_from_row(row))?;
-    let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
-    songs
-}
-
-pub fn get_stats_query(conn: &rusqlite::Connection) -> rusqlite::Result<Stats> {
-    let stats = conn.query_row(
-        "SELECT 
-        COUNT(*), 
-        COUNT(DISTINCT album), 
-        COUNT(DISTINCT artist),
-        SUM(CASE WHEN is_favorite = 1 THEN 1 ELSE 0 END)
-     FROM songs",
-        [],
-        |row| {
-            Ok(Stats {
-                total_songs: row.get(0)?,
-                total_albums: row.get(1)?,
-                total_artists: row.get(2)?,
-                total_favorites: row.get(3).unwrap_or(0), // Handles case if table is empty and SUM returns NULL
-            })
-        },
-    )?;
-
-    Ok(stats)
-}
-
-pub fn record_song_play_query(conn: &rusqlite::Connection, song_id: i32) -> rusqlite::Result<()> {
-    let now = std::time::SystemTime::now()
+// update last played at and play count of a song by id
+pub fn record_play(conn: &Connection, id: i64) -> rusqlite::Result<()> {
+    let last_played_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
         .as_secs() as i64;
 
     conn.execute(
         "UPDATE songs SET last_played_at = ?1, play_count = play_count + 1 WHERE id = ?2",
-        rusqlite::params![now, song_id],
+        params![last_played_at, id],
     )?;
     Ok(())
 }
 
-// search songs by title query
-pub fn search_songs_by_title_query(
-    conn: &rusqlite::Connection,
-    search: &str,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
-    let mut stmt = conn.prepare(
-        "SELECT * FROM songs WHERE title LIKE ?1 COLLATE NOCASE ORDER BY created_at DESC",
-    )?;
+// get all favorite songs
+pub fn get_favorites(conn: &Connection) -> rusqlite::Result<Vec<Song>> {
+    let mut stmt = conn.prepare("SELECT * FROM songs WHERE is_favorite = 1")?;
+    let song_iter = stmt.query_map([], |row| song_from_row(row))?;
 
-    let pattern = format!("%{}%", search);
-    let song_iter = stmt.query_map(params![pattern], |row| song_from_row(row))?;
-
-    let songs: Result<Vec<crate::models::song::Song>, rusqlite::Error> = song_iter.collect();
+    let songs = song_iter.collect();
     songs
-}
-
-// search artists by name query
-pub fn search_artists_by_name_query(
-    conn: &rusqlite::Connection,
-    search: &str,
-) -> rusqlite::Result<Vec<crate::models::artist::Artist>> {
-    let mut stmt = conn.prepare(
-        "
-        SELECT
-            artist,
-            COUNT(*) as count
-        FROM songs
-        WHERE artist LIKE ?1 COLLATE NOCASE
-        GROUP BY artist
-        ORDER BY count DESC
-        ",
-    )?;
-
-    let pattern = format!("%{}%", search);
-    let artist_iter = stmt.query_map(params![pattern], |row| {
-        Ok(crate::models::artist::Artist {
-            name: row.get(0)?,
-            count: row.get(1)?,
-        })
-    })?;
-
-    let artists: Result<Vec<crate::models::artist::Artist>, rusqlite::Error> =
-        artist_iter.collect();
-    artists
-}
-
-// search albums by name query
-pub fn search_albums_by_name_query(
-    conn: &rusqlite::Connection,
-    search: &str,
-) -> rusqlite::Result<Vec<crate::models::album::Album>> {
-    let mut stmt = conn.prepare(
-        "
-        SELECT
-            album,
-            COUNT(*) as count
-        FROM songs
-        WHERE album LIKE ?1 COLLATE NOCASE
-        GROUP BY album
-        ORDER BY count DESC
-        ",
-    )?;
-
-    let pattern = format!("%{}%", search);
-    let album_iter = stmt.query_map(params![pattern], |row| {
-        Ok(crate::models::album::Album {
-            name: row.get(0)?,
-            count: row.get(1)?,
-        })
-    })?;
-
-    let albums: Result<Vec<crate::models::album::Album>, rusqlite::Error> = album_iter.collect();
-    albums
-}
-
-// get song paths by folder id
-pub fn get_song_paths_by_folder_id_query(
-    conn: &rusqlite::Connection,
-    folder_id: i64,
-) -> rusqlite::Result<Vec<String>> {
-    let mut stmt = conn.prepare("SELECT path FROM songs WHERE folder_id = ?1")?;
-    let song_iter = stmt.query_map([folder_id], |row| Ok(row.get(0)?))?;
-
-    let paths: Result<Vec<String>, rusqlite::Error> = song_iter.collect();
-    paths
-}
-
-// delete song by path
-pub fn delete_song_by_path_query(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<()> {
-    conn.execute("DELETE FROM songs WHERE path = ?1", [path])?;
-    Ok(())
-}
-
-// update lyrics path by song id
-pub fn update_lyrics_path_by_song_id_query(
-    conn: &rusqlite::Connection,
-    song_id: i32,
-    lyrics_path: &str,
-) -> rusqlite::Result<()> {
-    conn.execute(
-        "UPDATE songs SET lyrics_path = ?1 WHERE id = ?2",
-        rusqlite::params![lyrics_path, song_id],
-    )?;
-    Ok(())
 }

@@ -1,6 +1,9 @@
-pub mod library;
-pub mod metadata;
-pub mod playlist;
-pub mod scanner;
+pub mod album_service;
+pub mod artist_service;
+pub mod artwork_service;
+pub mod library_service;
+pub mod metadata_service;
+pub mod playlist_service;
+pub mod scan_service;
 pub mod search;
-pub mod song;
+pub mod song_service;

@@ -1,15 +1,18 @@
-use crate::{models::playlist::PlaylistDetails, repositories::playlist_repository};
+use crate::{
+    models::playlist::PlaylistDetails,
+    repositories::{playlist_repository, song_repository},
+};
 
 // create new playlist
 pub fn create_playlist(conn: &rusqlite::Connection, name: &str) -> rusqlite::Result<i64> {
-    playlist_repository::create_playlist_query(conn, name)
+    playlist_repository::create(conn, name)
 }
 
 // get all playlists
 pub fn get_all_playlists(
     conn: &rusqlite::Connection,
 ) -> rusqlite::Result<Vec<crate::models::playlist::Playlist>> {
-    playlist_repository::get_all_playlists_query(conn)
+    playlist_repository::index(conn)
 }
 
 // edit playlist
@@ -18,24 +21,24 @@ pub fn edit_playlist(
     playlist_id: i64,
     new_name: &str,
 ) -> rusqlite::Result<()> {
-    playlist_repository::edit_playlist_query(conn, playlist_id, new_name)
+    playlist_repository::update(conn, playlist_id, new_name)
 }
 
 // delete playlist
 pub fn delete_playlist(conn: &rusqlite::Connection, playlist_id: i64) -> rusqlite::Result<()> {
-    playlist_repository::delete_playlist_query(conn, playlist_id)
+    playlist_repository::delete(conn, playlist_id)
 }
 
-// get songs by playlist
-pub fn get_songs_by_playlist(
+
+pub fn get_playlist_details(
     conn: &rusqlite::Connection,
     playlist_id: i64,
 ) -> rusqlite::Result<PlaylistDetails> {
-    let playlist = playlist_repository::get_playlist_by_id_query(conn, playlist_id)?;
-    if playlist.is_none() {
+    let playlist = playlist_repository::get(conn, playlist_id);
+    if playlist.is_err() {
         return Err(rusqlite::Error::QueryReturnedNoRows);
     }
-    let songs = playlist_repository::get_songs_by_playlist_query(conn, playlist_id)?;
+    let songs = song_repository::get_by_playlist(conn, playlist_id)?;
     Ok(PlaylistDetails {
         playlist: playlist.unwrap(),
         songs,
@@ -53,9 +56,9 @@ pub fn add_songs_to_playlist(
 
 // remove song from playlist
 pub fn remove_song_from_playlist(
-    conn: &rusqlite::Connection,
+    conn: &mut rusqlite::Connection,
     playlist_id: i64,
-    song_id: i64,
+    song_ids: &[i64],
 ) -> rusqlite::Result<()> {
-    playlist_repository::remove_song_from_playlist_query(conn, playlist_id, song_id)
+    playlist_repository::remove_songs_from_playlist_query(conn, playlist_id, song_ids)
 }
