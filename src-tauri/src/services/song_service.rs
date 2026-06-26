@@ -2,35 +2,21 @@ use crate::repositories::song_repository;
 
 pub fn get_all_songs(
     conn: &rusqlite::Connection,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
+) -> rusqlite::Result<Vec<crate::models::song::SongResponse>> {
     song_repository::index(conn)
 }
 
 pub fn get_song_by_id(
     conn: &rusqlite::Connection,
     id: i64,
-) -> rusqlite::Result<crate::models::song::Song> {
+) -> rusqlite::Result<crate::models::song::SongResponse> {
     song_repository::get(conn, id)
-}
-
-pub fn get_songs_by_artist(
-    conn: &rusqlite::Connection,
-    artist: i64,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
-    song_repository::get_by_artist(conn, artist)
-}
-
-pub fn get_songs_by_album(
-    conn: &rusqlite::Connection,
-    album: i64,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
-    song_repository::get_by_album(conn, album)
 }
 
 pub fn get_songs_by_search(
     conn: &rusqlite::Connection,
     query: &str,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
+) -> rusqlite::Result<Vec<crate::models::song::SongResponse>> {
     song_repository::search(conn, query)
 }
 
@@ -44,7 +30,7 @@ pub fn set_favorite_song(
 
 pub fn get_favorite_songs(
     conn: &rusqlite::Connection,
-) -> rusqlite::Result<Vec<crate::models::song::Song>> {
+) -> rusqlite::Result<Vec<crate::models::song::SongResponse>> {
     song_repository::get_favorites(conn)
 }
 

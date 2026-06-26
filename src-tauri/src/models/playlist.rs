@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::models::song::Song;
+use crate::models::song::SongResponse;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Playlist {
@@ -12,5 +12,5 @@ pub struct Playlist {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PlaylistDetails {
     pub playlist: Playlist,
-    pub songs: Vec<Song>,
+    pub songs: Vec<SongResponse>,
 }

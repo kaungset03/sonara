@@ -11,9 +11,9 @@ pub struct Stats {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct HomeData {
     pub stats: Stats,
-    pub recently_added_songs: Vec<crate::models::song::Song>,
-    pub most_played_songs: Vec<crate::models::song::Song>,
-    pub recently_played_songs: Vec<crate::models::song::Song>,
+    pub recently_added_songs: Vec<crate::models::song::SongResponse>,
+    pub most_played_songs: Vec<crate::models::song::SongResponse>,
+    pub recently_played_songs: Vec<crate::models::song::SongResponse>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

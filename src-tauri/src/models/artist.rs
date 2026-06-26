@@ -11,5 +11,5 @@ pub struct Artist {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ArtistDetails {
     pub artist: Artist,
-    pub songs: Vec<crate::models::song::Song>,
+    pub songs: Vec<crate::models::song::SongResponse>,
 }

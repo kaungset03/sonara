@@ -7,7 +7,7 @@ use crate::{
 
 // get all songs
 #[tauri::command]
-pub fn get_all_songs(db: State<DbState>) -> Result<Vec<crate::models::song::Song>, String> {
+pub fn get_all_songs(db: State<DbState>) -> Result<Vec<crate::models::song::SongResponse>, String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
 
     services::song_service::get_all_songs(&conn).map_err(|e| e.to_string())
@@ -15,7 +15,10 @@ pub fn get_all_songs(db: State<DbState>) -> Result<Vec<crate::models::song::Song
 
 // get song by id
 #[tauri::command]
-pub fn get_song_by_id(db: State<DbState>, id: i64) -> Result<crate::models::song::Song, String> {
+pub fn get_song_by_id(
+    db: State<DbState>,
+    id: i64,
+) -> Result<crate::models::song::SongResponse, String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
     services::song_service::get_song_by_id(&conn, id).map_err(|e| e.to_string())
 }
@@ -25,14 +28,16 @@ pub fn get_song_by_id(db: State<DbState>, id: i64) -> Result<crate::models::song
 pub fn get_songs_by_search(
     db: State<DbState>,
     query: String,
-) -> Result<Vec<crate::models::song::Song>, String> {
+) -> Result<Vec<crate::models::song::SongResponse>, String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
     services::song_service::get_songs_by_search(&conn, &query).map_err(|e| e.to_string())
 }
 
 // get favorite songs
 #[tauri::command]
-pub fn get_favorite_songs(db: State<DbState>) -> Result<Vec<crate::models::song::Song>, String> {
+pub fn get_favorite_songs(
+    db: State<DbState>,
+) -> Result<Vec<crate::models::song::SongResponse>, String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
     services::song_service::get_favorite_songs(&conn).map_err(|e| e.to_string())
 }
