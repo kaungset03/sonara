@@ -19,18 +19,18 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Artist>> {
 }
 
 // create a new artist
-pub fn create(conn: &Connection, name: &str, image_path: Option<&str>) -> rusqlite::Result<i64> {
-    let created_at = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .unwrap()
-        .as_secs() as i64;
+// pub fn create(conn: &Connection, name: &str, image_path: Option<&str>) -> rusqlite::Result<i64> {
+//     let created_at = std::time::SystemTime::now()
+//         .duration_since(std::time::UNIX_EPOCH)
+//         .unwrap()
+//         .as_secs() as i64;
 
-    conn.execute(
-        "INSERT INTO artists (name, image_path, created_at) VALUES (?1, ?2, ?3)",
-        params![name, image_path, created_at],
-    )?;
-    Ok(conn.last_insert_rowid())
-}
+//     conn.execute(
+//         "INSERT INTO artists (name, image_path, created_at) VALUES (?1, ?2, ?3)",
+//         params![name, image_path, created_at],
+//     )?;
+//     Ok(conn.last_insert_rowid())
+// }
 
 pub fn find_or_create(conn: &Connection, name: &str) -> rusqlite::Result<i64> {
     let created_at = std::time::SystemTime::now()

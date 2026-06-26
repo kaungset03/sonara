@@ -163,3 +163,34 @@ pub fn get_favorites(conn: &Connection) -> rusqlite::Result<Vec<Song>> {
     let songs = song_iter.collect();
     songs
 }
+
+// get recently played songs
+pub fn get_recently_played(conn: &Connection, limit: usize) -> rusqlite::Result<Vec<Song>> {
+    let mut stmt = conn.prepare(
+        "SELECT * FROM songs WHERE last_played_at IS NOT NULL ORDER BY last_played_at DESC LIMIT ?1",
+    )?;
+    let song_iter = stmt.query_map([limit], |row| song_from_row(row))?;
+
+    let songs = song_iter.collect();
+    songs
+}
+
+// get recently added songs
+pub fn get_recently_added(conn: &Connection, limit: usize) -> rusqlite::Result<Vec<Song>> {
+    let mut stmt = conn.prepare("SELECT * FROM songs ORDER BY created_at DESC LIMIT ?1")?;
+    let song_iter = stmt.query_map([limit], |row| song_from_row(row))?;
+
+    let songs = song_iter.collect();
+    songs
+}
+
+// get most played songs
+pub fn get_most_played(conn: &Connection, limit: usize) -> rusqlite::Result<Vec<Song>> {
+    let mut stmt = conn.prepare(
+        "SELECT * FROM songs WHERE play_count > 0 ORDER BY play_count DESC, last_played_at DESC LIMIT ?1",
+    )?;
+    let song_iter = stmt.query_map([limit], |row| song_from_row(row))?;
+
+    let songs = song_iter.collect();
+    songs
+}

@@ -1,10 +1,15 @@
 // Library Service
 
-use crate::services::{artwork_service, scan_service};
+use crate::{
+    models::folder::ImportResult,
+    services::{artwork_service, scan_service},
+};
 
 // insert user selected folder into the database and import its songs
 // This function will scan the folder for mp3 files, extract their metadata, and insert them into the database
-pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<()> {
+pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<ImportResult> {
+    let mut added = 0;
+    let mut failed = 0;
     // insert the folder into the database
     let folder_id = crate::repositories::folder_repository::insert(conn, path)?;
 
@@ -41,15 +46,26 @@ pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<(
                 )?;
 
                 // Save the embedded artwork to a file and get the path
-                artwork_service::process_album_artwork(conn, metadata.embedded_artwork, album_id);
+                let _ = artwork_service::process_album_artwork(
+                    conn,
+                    metadata.embedded_artwork,
+                    album_id,
+                );
+
+                added += 1;
             }
             Err(e) => {
                 eprintln!("Failed to read metadata from {}: {}", file.display(), e);
+                failed += 1;
             }
         }
     }
 
-    Ok(())
+    Ok(ImportResult {
+        added,
+        failed,
+        removed: 0,
+    })
 }
 
 // get all folders in the library and their song count
@@ -71,6 +87,13 @@ pub fn get_app_stats(
     conn: &rusqlite::Connection,
 ) -> rusqlite::Result<crate::models::stats::AppStats> {
     crate::repositories::folder_repository::app_stats(app_handle, conn)
+}
+
+// get home data
+pub fn get_home_data(
+    conn: &rusqlite::Connection,
+) -> rusqlite::Result<crate::models::stats::HomeData> {
+    crate::repositories::folder_repository::home_data(conn)
 }
 
 //TODO: Re scan the all folders in the library and update their songs

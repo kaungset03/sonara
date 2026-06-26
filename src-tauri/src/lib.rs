@@ -34,6 +34,11 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             greet,
+            commands::library::add_library_folder,
+            commands::library::get_imported_folders,
+            commands::library::remove_library_folder,
+            commands::library::get_home_data,
+            commands::library::get_app_stats,
             commands::song::get_all_songs,
             commands::song::get_song_by_id,
             commands::song::get_songs_by_search,
@@ -48,6 +53,12 @@ pub fn run() {
             commands::playlist::delete_playlist,
             commands::playlist::add_songs_to_playlist,
             commands::playlist::remove_songs_from_playlist,
+            commands::artist::get_all_artists,
+            commands::artist::get_artist_details,
+            commands::artist::update_artist_image,
+            commands::album::get_all_albums,
+            commands::album::get_album_details,
+            commands::album::update_album_artwork,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -9,8 +9,7 @@ pub struct Folder {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ImportResult {
-    pub imported: usize,
-    pub skipped: usize,
+    pub added: usize,
     pub failed: usize,
     pub removed: usize,
 }

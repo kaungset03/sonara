@@ -1,5 +1,3 @@
-//TODO
-
 // get all playlists
 pub fn index(
     conn: &rusqlite::Connection,

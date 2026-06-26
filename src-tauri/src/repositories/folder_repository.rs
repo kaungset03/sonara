@@ -76,3 +76,31 @@ pub fn app_stats(app_handle: &AppHandle, conn: &Connection) -> rusqlite::Result<
     )?;
     Ok(stats)
 }
+
+pub fn home_data(conn: &Connection) -> rusqlite::Result<crate::models::stats::HomeData> {
+    let stats = conn.query_row(
+        "SELECT 
+        (SELECT COUNT(*) FROM songs) AS total_songs, 
+        (SELECT COUNT(*) FROM albums) AS total_albums, 
+        (SELECT COUNT(*) FROM artists) AS total_artists,
+        (SELECT COUNT(*) FROM songs WHERE is_favorite = 1) AS total_favorites",
+        [],
+        |row| {
+            Ok(crate::models::stats::Stats {
+                total_songs: row.get(0)?,
+                total_albums: row.get(1)?,
+                total_artists: row.get(2)?,
+                total_favorites: row.get(3)?,
+            })
+        },
+    )?;
+
+    let home_data = crate::models::stats::HomeData {
+        stats,
+        recently_added_songs: crate::repositories::song_repository::get_recently_added(conn, 8)?,
+        most_played_songs: crate::repositories::song_repository::get_most_played(conn, 8)?,
+        recently_played_songs: crate::repositories::song_repository::get_recently_played(conn, 4)?,
+    };
+
+    Ok(home_data)
+}

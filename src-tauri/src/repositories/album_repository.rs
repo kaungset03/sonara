@@ -20,22 +20,22 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {
 }
 
 // create a new album
-pub fn create(
-    conn: &Connection,
-    name: &str,
-    artist_id: Option<i64>,
-    artwork_path: Option<&str>,
-) -> rusqlite::Result<()> {
-    let created_at = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .unwrap()
-        .as_secs() as i64;
-    conn.execute(
-        "INSERT INTO albums (name, artist_id, artwork_path, created_at) VALUES (?1, ?2, ?3, ?4)",
-        params![name, artist_id, artwork_path, created_at],
-    )?;
-    Ok(())
-}
+// pub fn create(
+//     conn: &Connection,
+//     name: &str,
+//     artist_id: Option<i64>,
+//     artwork_path: Option<&str>,
+// ) -> rusqlite::Result<()> {
+//     let created_at = std::time::SystemTime::now()
+//         .duration_since(std::time::UNIX_EPOCH)
+//         .unwrap()
+//         .as_secs() as i64;
+//     conn.execute(
+//         "INSERT INTO albums (name, artist_id, artwork_path, created_at) VALUES (?1, ?2, ?3, ?4)",
+//         params![name, artist_id, artwork_path, created_at],
+//     )?;
+//     Ok(())
+// }
 
 // find or create an album by name and artist_id
 pub fn find_or_create(conn: &Connection, name: &str, artist_id: i64) -> rusqlite::Result<i64> {
