@@ -6,13 +6,13 @@ const useRemoveSongFromPlaylistMutation = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async ({
-      songId,
+      songIds,
       playlistId,
     }: {
-      songId: number;
+      songIds: number[];
       playlistId: number;
     }) => {
-      await invoke("remove_song_from_playlist", { songId, playlistId });
+      await invoke("remove_songs_from_playlist", { songIds, playlistId });
     },
     onSuccess: (_, variables) => {
       toast.success("Song removed from playlist");

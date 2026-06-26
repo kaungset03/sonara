@@ -2,8 +2,11 @@ declare global {
   type Song = {
     id: number;
     title: string;
-    artist: string;
-    album: string;
+    artist_id: number;
+    artist_name: string;
+    album_id: number;
+    album_name: string;
+    album_cover_path: string | null; // file path to the album cover image, if available
     duration: number; // in seconds
     path: string; // file path to the song
     lyrics_path: string | null; // file path to the lyrics, if available
@@ -15,13 +18,16 @@ declare global {
   };
 
   type Artist = {
+    id: number;
     name: string;
-    count: number; // number of songs by the artist
+    image_path: string | null; // file path to the artist image, if available
   };
 
   type Album = {
+    id: number;
     name: string;
-    count: number; // number of songs in the album
+    artist_id: number;
+    cover_path: string | null; // file path to the album cover image, if available
   };
 
   type Playlist = {
@@ -70,10 +76,9 @@ declare global {
   };
 
   type ImportResult = {
-    imported: number; // number of songs imported
-    skipped: number; // number of songs skipped (already exist)
-    failed: number; // number of songs failed to import
-    removed: number; // number of songs removed
+    added: number; // number of files added to the library
+    failed: number; // number of files that failed to be added
+    removed: number; // number of files removed from the library
   };
 
   type ImportedFolder = {

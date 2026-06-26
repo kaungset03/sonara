@@ -43,7 +43,7 @@ function RouteComponent() {
   };
 
   const handleRemoveFromPlaylist = (songId: number) => {
-    mutate({ songId, playlistId: Number(id) });
+    mutate({ songIds: [songId], playlistId: Number(id) });
   };
 
   if (!songs) {

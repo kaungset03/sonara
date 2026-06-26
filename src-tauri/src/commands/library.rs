@@ -55,12 +55,11 @@ pub fn get_app_stats(
     services::library_service::get_app_stats(&app_handle, &conn).map_err(|e| e.to_string())
 }
 
-// search songs, artists, and albums
-// #[tauri::command]
-// pub fn search_library(
-//     db: State<DbState>,
-//     search: String,
-// ) -> Result<crate::models::search::SearchResults, String> {
-//     let conn = db.0.lock().map_err(|e| e.to_string())?;
-//     services::library_service::search_library(&conn, &search).map_err(|e| e.to_string())
-// }
+#[tauri::command]
+pub fn search_library(
+    db: State<DbState>,
+    search: String,
+) -> Result<crate::models::search::SearchResults, String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::library_service::preview_search(&conn, &search).map_err(|e| e.to_string())
+}

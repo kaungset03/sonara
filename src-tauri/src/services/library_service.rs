@@ -1,8 +1,8 @@
 // Library Service
 
 use crate::{
-    models::folder::ImportResult,
-    services::{artwork_service, scan_service},
+    models::{folder::ImportResult, search::SearchResults},
+    services::scan_service,
 };
 
 // insert user selected folder into the database and import its songs
@@ -46,11 +46,11 @@ pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<I
                 )?;
 
                 // Save the embedded artwork to a file and get the path
-                let _ = artwork_service::process_album_artwork(
-                    conn,
-                    metadata.embedded_artwork,
-                    album_id,
-                );
+                // let _ = artwork_service::process_album_artwork(
+                //     conn,
+                //     metadata.embedded_artwork,
+                //     album_id,
+                // );
 
                 added += 1;
             }
@@ -94,6 +94,21 @@ pub fn get_home_data(
     conn: &rusqlite::Connection,
 ) -> rusqlite::Result<crate::models::stats::HomeData> {
     crate::repositories::folder_repository::home_data(conn)
+}
+
+pub fn preview_search(conn: &rusqlite::Connection, search: &str) -> Result<SearchResults, String> {
+    let songs =
+        crate::repositories::song_repository::search(conn, search).map_err(|e| e.to_string())?;
+    let artists =
+        crate::repositories::artist_repository::search(conn, search).map_err(|e| e.to_string())?;
+    let albums =
+        crate::repositories::album_repository::search(conn, search).map_err(|e| e.to_string())?;
+
+    Ok(SearchResults {
+        songs,
+        artists,
+        albums,
+    })
 }
 
 //TODO: Re scan the all folders in the library and update their songs

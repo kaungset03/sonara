@@ -37,6 +37,7 @@ pub fn run() {
             commands::library::add_library_folder,
             commands::library::get_imported_folders,
             commands::library::remove_library_folder,
+            commands::library::search_library,
             commands::library::get_home_data,
             commands::library::get_app_stats,
             commands::song::get_all_songs,
@@ -58,7 +59,7 @@ pub fn run() {
             commands::artist::update_artist_image,
             commands::album::get_all_albums,
             commands::album::get_album_details,
-            commands::album::update_album_artwork,
+            commands::album::update_album_cover,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -5,8 +5,8 @@ const useGetAllAlbumsQuery = () => {
   const { data } = useQuery({
     queryKey: ["albums"],
     queryFn: async () => {
-      const res = await invoke("get_all_albums");
-      return res as Album[];
+      const res = await invoke<Album[]>("get_all_albums");
+      return res;
       // later, there will be more info like album art, etc.
     },
   });

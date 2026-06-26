@@ -5,17 +5,19 @@ import useAppStore from "@/store/app-store";
 import useGetSongsByAlbumQuery from "@/features/albums/api/useGetSongsByAlbumQuery";
 import SongsTable from "@/features/songs/components/SongsTable";
 
-export const Route = createFileRoute("/albums/$name")({
+export const Route = createFileRoute("/albums/$id")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { name } = Route.useParams();
-  const { data: songs } = useGetSongsByAlbumQuery(name);
+  const { id } = Route.useParams();
+  const { data } = useGetSongsByAlbumQuery(parseInt(id));
 
   const playSong = useAppStore((state) => state.playSong);
   const isShuffle = useAppStore((state) => state.isShuffle);
   const setIsShuffle = useAppStore((state) => state.setIsShuffle);
+
+  const songs = data?.songs;
 
   const handleSongClick = (song: Song) => {
     if (songs) {
@@ -43,7 +45,7 @@ function RouteComponent() {
       <div className="flex flex-col gap-6 mb-8 border-b border-muted-foreground/30 pb-8">
         <div>
           <h1 className="text-4xl font-bold font-heading tracking-tight mb-2">
-            {name}
+            {data?.album.name}
           </h1>
           <p className="text-muted-foreground">
             {songs.length} {songs.length === 1 ? "Song" : "Songs"}

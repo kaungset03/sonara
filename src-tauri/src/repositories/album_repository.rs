@@ -10,7 +10,7 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {
             id: row.get("id")?,
             name: row.get("name")?,
             artist_id: row.get("artist_id")?,
-            artwork_path: row.get("artwork_path")?,
+            cover_path: row.get("cover_path")?,
             created_at: row.get("created_at")?,
         })
     })?;
@@ -18,24 +18,6 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {
     let albums = album_iter.collect();
     albums
 }
-
-// create a new album
-// pub fn create(
-//     conn: &Connection,
-//     name: &str,
-//     artist_id: Option<i64>,
-//     artwork_path: Option<&str>,
-// ) -> rusqlite::Result<()> {
-//     let created_at = std::time::SystemTime::now()
-//         .duration_since(std::time::UNIX_EPOCH)
-//         .unwrap()
-//         .as_secs() as i64;
-//     conn.execute(
-//         "INSERT INTO albums (name, artist_id, artwork_path, created_at) VALUES (?1, ?2, ?3, ?4)",
-//         params![name, artist_id, artwork_path, created_at],
-//     )?;
-//     Ok(())
-// }
 
 // find or create an album by name and artist_id
 pub fn find_or_create(conn: &Connection, name: &str, artist_id: i64) -> rusqlite::Result<i64> {
@@ -64,27 +46,27 @@ pub fn get(conn: &Connection, id: i64) -> rusqlite::Result<Album> {
             id: row.get("id")?,
             name: row.get("name")?,
             artist_id: row.get("artist_id")?,
-            artwork_path: row.get("artwork_path")?,
+            cover_path: row.get("cover_path")?,
             created_at: row.get("created_at")?,
         })
     })?;
     Ok(album)
 }
 
-// Update album artwork path by id
-pub fn update_artwork_path(conn: &Connection, id: i64, artwork_path: &str) -> rusqlite::Result<()> {
+// Update album cover path by id
+pub fn update_cover_path(conn: &Connection, id: i64, cover_path: &str) -> rusqlite::Result<()> {
     conn.execute(
-        "UPDATE albums SET artwork_path = ?1 WHERE id = ?2",
-        params![artwork_path, id],
+        "UPDATE albums SET cover_path = ?1 WHERE id = ?2",
+        params![cover_path, id],
     )?;
     Ok(())
 }
 
 // Delete an album by id
-pub fn delete(conn: &Connection, id: i64) -> rusqlite::Result<()> {
-    conn.execute("DELETE FROM albums WHERE id = ?1", params![id])?;
-    Ok(())
-}
+// pub fn delete(conn: &Connection, id: i64) -> rusqlite::Result<()> {
+//     conn.execute("DELETE FROM albums WHERE id = ?1", params![id])?;
+//     Ok(())
+// }
 
 // Search albums by name
 pub fn search(conn: &Connection, name: &str) -> rusqlite::Result<Vec<Album>> {
@@ -94,7 +76,7 @@ pub fn search(conn: &Connection, name: &str) -> rusqlite::Result<Vec<Album>> {
             id: row.get("id")?,
             name: row.get("name")?,
             artist_id: row.get("artist_id")?,
-            artwork_path: row.get("artwork_path")?,
+            cover_path: row.get("cover_path")?,
             created_at: row.get("created_at")?,
         })
     })?;

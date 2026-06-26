@@ -32,10 +32,14 @@ const SongCard = ({ song, handleClick }: SongCardProps) => {
         </button>
       </div>
       <div className="flex-1 min-w-0">
-        <h3 className={`font-medium text-sm truncate ${isCurrentPlayingSong ? "text-primary" : "text-foreground"}`}>
+        <h3
+          className={`font-medium text-sm truncate ${isCurrentPlayingSong ? "text-primary" : "text-foreground"}`}
+        >
           {song.title}
         </h3>
-        <p className="text-xs text-muted-foreground truncate">{song.artist}</p>
+        <p className="text-xs text-muted-foreground truncate">
+          {song.artist_name}
+        </p>
       </div>
       <div className="text-xs text-muted-foreground shrink-0">
         {getFormattedDuration(song.duration)}

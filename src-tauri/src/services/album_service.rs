@@ -26,12 +26,12 @@ pub fn get_album_details(
     })
 }
 
-// update album artwork
-pub fn update_album_artwork(
+// update album cover
+pub fn update_album_cover(
     conn: &rusqlite::Connection,
     album_id: i64,
     image_path: &str,
 ) -> rusqlite::Result<()> {
     // TODO: artwork service to store image and get the image path stored in app data
-    album_repository::update_artwork_path(conn, album_id, image_path)
+    album_repository::update_cover_path(conn, album_id, image_path)
 }

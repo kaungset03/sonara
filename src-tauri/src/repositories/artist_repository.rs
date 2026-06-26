@@ -74,10 +74,10 @@ pub fn update_image_path(conn: &Connection, id: i64, image_path: &str) -> rusqli
 }
 
 // Delete an artist by id
-pub fn delete(conn: &Connection, id: i64) -> rusqlite::Result<()> {
-    conn.execute("DELETE FROM artists WHERE id = ?1", params![id])?;
-    Ok(())
-}
+// pub fn delete(conn: &Connection, id: i64) -> rusqlite::Result<()> {
+//     conn.execute("DELETE FROM artists WHERE id = ?1", params![id])?;
+//     Ok(())
+// }
 
 // Search artists by name
 pub fn search(conn: &Connection, query: &str) -> rusqlite::Result<Vec<Artist>> {

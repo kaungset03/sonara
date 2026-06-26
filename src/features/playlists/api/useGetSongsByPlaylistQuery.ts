@@ -10,7 +10,7 @@ const useGetSongsByPlaylistQuery = (playlistId: number) => {
   return useQuery({
     queryKey: ["songs", "playlist", playlistId],
     queryFn: async () => {
-      const songs = await invoke<PlaylistDetails>("get_songs_by_playlist", {
+      const songs = await invoke<PlaylistDetails>("get_playlist_details", {
         playlistId,
       });
       return songs;

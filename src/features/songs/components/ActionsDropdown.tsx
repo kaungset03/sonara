@@ -43,8 +43,8 @@ const ActionsDropdown = ({ song, children }: ActionsDropdownProps) => {
         <DropdownMenuItem className="text-xs" asChild>
           <Link
             onClick={(e) => e.stopPropagation()}
-            to={"/artists/$name"}
-            params={{ name: song.artist }}
+            to={"/artists/$id"}
+            params={{ id: song.artist_id.toString() }}
           >
             View Artist
           </Link>
@@ -52,8 +52,8 @@ const ActionsDropdown = ({ song, children }: ActionsDropdownProps) => {
         <DropdownMenuItem className="text-xs" asChild>
           <Link
             onClick={(e) => e.stopPropagation()}
-            to={"/albums/$name"}
-            params={{ name: song.album }}
+            to={"/albums/$id"}
+            params={{ id: song.album_id.toString() }}
           >
             View Album
           </Link>

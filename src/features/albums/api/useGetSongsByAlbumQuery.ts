@@ -1,12 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
 
-const useGetSongsByAlbumQuery = (album: string) => {
+type Response = {
+  album: Album;
+  songs: Song[];
+};
+
+const useGetSongsByAlbumQuery = (albumId: number) => {
   const { data } = useQuery({
-    queryKey: ["songs", "album", album],
+    queryKey: ["songs", "album", albumId],
     queryFn: async () => {
-      const res = await invoke("get_songs_by_album", { album });
-      return res as Song[];
+      const res = await invoke<Response>("get_album_details", { albumId });
+      return res;
     },
   });
 

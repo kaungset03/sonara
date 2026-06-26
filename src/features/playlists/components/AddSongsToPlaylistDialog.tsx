@@ -93,7 +93,7 @@ const AddSongsToPlaylist = ({ playlistId }: AddSongsToPlaylistProps) => {
                 <div className="flex-1 min-w-0 space-y-1">
                   <p className="font-medium truncate">{song.title}</p>
                   <p className="text-xs text-muted-foreground truncate">
-                    {song.artist} • {song.album}
+                    {song.artist_name} • {song.album_name}
                   </p>
                 </div>
               </Label>

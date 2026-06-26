@@ -206,7 +206,7 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
             <div className="min-w-0 space-y-0.5">
               <SongTitle text={currentSong.title} />
               <p className="text-xs text-muted-foreground">
-                {currentSong.artist}
+                {currentSong.artist_name}
               </p>
             </div>
           </div>

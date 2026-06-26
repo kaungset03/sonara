@@ -22,14 +22,14 @@ pub fn get_album_details(
     services::album_service::get_album_details(&conn, album_id).map_err(|e| e.to_string())
 }
 
-// update album artwork
+// update album cover
 #[tauri::command]
-pub fn update_album_artwork(
+pub fn update_album_cover(
     db: State<DbState>,
     album_id: i64,
     image_path: &str,
 ) -> Result<(), String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
-    services::album_service::update_album_artwork(&conn, album_id, image_path)
+    services::album_service::update_album_cover(&conn, album_id, image_path)
         .map_err(|e| e.to_string())
 }

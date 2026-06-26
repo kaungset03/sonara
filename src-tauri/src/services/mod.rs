@@ -5,5 +5,4 @@ pub mod library_service;
 pub mod metadata_service;
 pub mod playlist_service;
 pub mod scan_service;
-pub mod search;
 pub mod song_service;

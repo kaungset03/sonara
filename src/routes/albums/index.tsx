@@ -23,9 +23,9 @@ function RouteComponent() {
 
           return (
             <Link
-              to={"/albums/$name"}
-              params={{ name: album.name }}
-              key={album.name}
+              to={"/albums/$id"}
+              params={{ id: album.id.toString() }}
+              key={album.id}
             >
               <Card className="group cursor-pointer">
                 <CardContent className="flex flex-col items-center text-center">
@@ -41,7 +41,7 @@ function RouteComponent() {
                     {album.name}
                   </h3>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {album.count} {album.count === 1 ? "song" : "songs"}
+                    {album.artist_id}
                   </p>
                 </CardContent>
               </Card>

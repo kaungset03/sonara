@@ -30,7 +30,7 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             artist_id INTEGER NOT NULL DEFAULT 1,
-            artwork_path TEXT DEFAULT NULL,
+            cover_path TEXT DEFAULT NULL,
             created_at INTEGER NOT NULL,
             FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE SET DEFAULT,
             UNIQUE(name, artist_id)

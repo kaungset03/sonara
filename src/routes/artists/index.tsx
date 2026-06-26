@@ -24,9 +24,9 @@ function RouteComponent() {
 
           return (
             <Link
-              to={"/artists/$name"}
-              params={{ name: artist.name }}
-              key={artist.name}
+              to={"/artists/$id"}
+              params={{ id: artist.id.toString() }}
+              key={artist.id}
             >
               <Card className="group cursor-pointer">
                 <CardContent className="flex flex-col items-center text-center">
@@ -35,15 +35,9 @@ function RouteComponent() {
                       {initials}
                     </AvatarFallback>
                   </Avatar>
-                  <h3
-                    className="font-semibold w-full truncate leading-tight"
-                    title={artist.name}
-                  >
+                  <h3 className="font-semibold w-full truncate leading-tight">
                     {artist.name}
                   </h3>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {artist.count} {artist.count === 1 ? "song" : "songs"}
-                  </p>
                 </CardContent>
               </Card>
             </Link>

@@ -66,8 +66,10 @@ const SongsTable = ({
               <TableCell className="max-w-50 overflow-hidden truncate">
                 {song.title}
               </TableCell>
-              <TableCell>{song.artist}</TableCell>
-              <TableCell className="max-w-45 overflow-hidden truncate">{song.album}</TableCell>
+              <TableCell>{song.artist_name}</TableCell>
+              <TableCell className="max-w-45 overflow-hidden truncate">
+                {song.album_name}
+              </TableCell>
               <TableCell className="text-center">
                 {getFormattedDuration(song.duration)}
               </TableCell>
