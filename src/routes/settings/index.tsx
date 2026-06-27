@@ -142,7 +142,7 @@ function RouteComponent() {
           <CardContent className="space-y-5">
             <div className="flex items-center gap-4">
               <img
-                src="/128x128.png"
+                src="/128x128@2x.png"
                 alt="Sonara"
                 className="size-16 rounded-xl"
               />

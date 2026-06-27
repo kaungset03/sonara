@@ -47,7 +47,7 @@ const SongCard = ({ song, handleClick }: SongCardProps) => {
           {song.title}
         </h3>
         <p className="text-xs text-muted-foreground truncate">
-          {song.artist_name}
+          {song.artist_name} - {song.album_name}
         </p>
       </div>
       <div className="text-xs text-muted-foreground shrink-0">

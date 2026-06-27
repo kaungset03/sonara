@@ -80,7 +80,7 @@ const OverlayPlayer = ({
         </div>
         <div className="w-full h-[calc(100%-64px)] grid grid-cols-4 ">
           <div className="col-span-2 w-full h-full p-4 flex flex-col justify-center items-center gap-y-6">
-            <div className="size-70 rounded-xl  bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center overflow-hidden">
+            <div className="size-65 rounded-xl bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center overflow-hidden">
               {song.album_cover_path ? (
                 <img
                   src={convertFileSrc(song.album_cover_path)}
@@ -96,6 +96,7 @@ const OverlayPlayer = ({
               <p className="text-muted-foreground text-sm">
                 {song.artist_name}
               </p>
+              <p className="text-muted-foreground text-sm">{song.album_name}</p>
             </div>
             <div className="space-y-6 mt-4">
               {/** Playback Buttons */}

@@ -17,12 +17,12 @@ import { Slider } from "@/components/ui/slider";
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { useEffect, useRef, useState } from "react";
 import { getFormattedDuration } from "@/lib/helpers";
-import SongTitle from "@/features/player/components/SongTitle";
 import useAppStore from "@/store/app-store";
 import useToggleFavoriteMutation from "@/features/songs/api/useToggleFavoriteMutation";
 import PlaybackQueue from "@/features/queue/components/PlaybackQueue";
 import OverlayPlayer from "@/features/player/components/OverlayPlayer";
 import useMediaSession from "@/hooks/useMediaSession";
+import MarqueeText from "@/components/custom/MarqueText";
 
 type AudioPlayerProps = {
   currentSong: Song;
@@ -211,11 +211,15 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
                 <Music className="size-5 text-primary" />
               )}
             </div>
-            <div className="min-w-0 space-y-0.5">
-              <SongTitle text={currentSong.title} />
-              <p className="text-xs text-muted-foreground">
-                {currentSong.artist_name}
-              </p>
+            <div className="min-w-0 space-y-px">
+              <MarqueeText
+                text={currentSong.title}
+                className="text-sm font-medium font-heading"
+              />
+              <MarqueeText
+                text={`${currentSong.artist_name} - ${currentSong.album_name}`}
+                className="text-xs text-muted-foreground"
+              />
             </div>
           </div>
           <div className="col-span-1 flex items-center justify-center gap-x-2 2xl:gap-x-4">
