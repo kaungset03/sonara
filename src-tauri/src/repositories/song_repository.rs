@@ -84,9 +84,40 @@ pub fn get_by_playlist(conn: &Connection, playlist_id: i64) -> rusqlite::Result<
          INNER JOIN playlist_songs ps ON s.id = ps.song_id
          LEFT JOIN artists a ON s.artist_id = a.id
          LEFT JOIN albums al ON s.album_id = al.id
-         WHERE ps.playlist_id = ?1",
+         WHERE ps.playlist_id = ?1
+         ORDER BY ps.created_at ASC
+         ",
     )?;
     let song_iter = stmt.query_map(params![playlist_id], |row| song_from_row(row))?;
+
+    let songs = song_iter.collect();
+    songs
+}
+
+pub struct SongRecord {
+    pub id: i64,
+    pub path: String,
+    pub file_modified_at: i64,
+    pub file_size: i64,
+}
+
+// get songs by folder path
+pub fn get_by_folder(conn: &Connection, folder_id: i64) -> rusqlite::Result<Vec<SongRecord>> {
+    let mut stmt = conn.prepare(
+        "
+    SELECT id, path, file_modified_at, file_size
+    FROM songs
+    WHERE folder_id = ?1
+    ",
+    )?;
+    let song_iter = stmt.query_map(params![folder_id], |row| {
+        Ok(SongRecord {
+            id: row.get(0)?,
+            path: row.get(1)?,
+            file_modified_at: row.get(2)?,
+            file_size: row.get(3)?,
+        })
+    })?;
 
     let songs = song_iter.collect();
     songs
@@ -129,6 +160,33 @@ pub fn create(
         "INSERT INTO songs (title, duration, path, track_number, created_at, folder_id, album_id, artist_id, file_modified_at, file_size) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
         params![title, duration, path, track_number, created_at, folder_id, album_id, artist_id, file_modified_at, file_size],
     )?;
+    Ok(())
+}
+
+// update song
+pub fn update(
+    conn: &Connection,
+    id: i64,
+    title: &str,
+    duration: i64,
+    path: &str,
+    track_number: Option<i32>,
+    folder_id: i64,
+    album_id: i64,
+    artist_id: i64,
+    file_modified_at: i64,
+    file_size: i64,
+) -> rusqlite::Result<()> {
+    conn.execute(
+        "UPDATE songs SET title = ?1, duration = ?2, path = ?3, track_number = ?4, folder_id = ?5, album_id = ?6, artist_id = ?7, file_modified_at = ?8, file_size = ?9 WHERE id = ?10",
+        params![title, duration, path, track_number, folder_id, album_id, artist_id, file_modified_at, file_size, id],
+    )?;
+    Ok(())
+}
+
+// delete song by id
+pub fn delete(conn: &Connection, id: i64) -> rusqlite::Result<()> {
+    conn.execute("DELETE FROM songs WHERE id = ?1", params![id])?;
     Ok(())
 }
 
@@ -209,6 +267,7 @@ pub fn get_favorites(conn: &Connection) -> rusqlite::Result<Vec<SongResponse>> {
     LEFT JOIN artists a ON s.artist_id = a.id
     LEFT JOIN albums al ON s.album_id = al.id
     WHERE s.is_favorite = 1
+    ORDER BY s.favorite_added_at DESC
     ",
     )?;
     let song_iter = stmt.query_map([], |row| song_from_row(row))?;

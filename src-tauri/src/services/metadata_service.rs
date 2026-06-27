@@ -14,6 +14,7 @@ pub struct SongMetadata {
     pub track_number: Option<i32>,
     pub file_modified_at: i64,
     pub file_size: i64,
+    pub path: std::path::PathBuf,
     // pub embedded_artwork: Option<Vec<u8>>,
 }
 
@@ -80,6 +81,7 @@ pub fn extract_metadata(path: &Path) -> Result<SongMetadata, String> {
         track_number,
         file_modified_at: modified,
         file_size,
+        path: path.to_path_buf(),
         // embedded_artwork,
     })
 }

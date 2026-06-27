@@ -10,16 +10,14 @@ const useSyncLibraryFoldersMutation = () => {
       return res;
     },
     onSuccess: (r) => {
-      toast.success(
-        `Imported: ${r.imported} files, skipped: ${r.skipped} files, Removed: ${r.removed} files.`,
-      );
+      toast.success(`Added ${r.added} files,  Removed ${r.removed} files.`);
       queryClient.invalidateQueries({ queryKey: ["songs"] });
       queryClient.refetchQueries({ queryKey: ["importedFolders"] });
       queryClient.refetchQueries({ queryKey: ["homeData"] });
     },
     onError: (error) => {
-      toast.error("Failed to import files.");
-      console.error("Import error:", error);
+      toast.error("Failed to sync library folders.");
+      console.error("Sync error:", error);
     },
   });
 

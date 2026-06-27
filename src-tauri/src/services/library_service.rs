@@ -1,8 +1,7 @@
 // Library Service
-
 use crate::{
     models::{folder::ImportResult, search::SearchResults},
-    services::scan_service,
+    services::{metadata_service::SongMetadata, scan_service},
 };
 
 // insert user selected folder into the database and import its songs
@@ -18,51 +17,24 @@ pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<I
 
     // for each mp3 file, extract its metadata and insert it into the database
     for file in mp3_files {
+        let mut file_failed = false;
         match crate::services::metadata_service::extract_metadata(&file) {
             Ok(metadata) => {
-                // insert into artist table and get artist_id (find or create)
-                let artist_id =
-                    crate::repositories::artist_repository::find_or_create(conn, &metadata.artist)?;
-
-                let album_artist_id = crate::repositories::artist_repository::find_or_create(
-                    conn,
-                    &metadata.album_artist,
-                )?;
-
-                // insert into album table and get album_id (find or create)
-                let album_id = crate::repositories::album_repository::find_or_create(
-                    conn,
-                    &metadata.album,
-                    album_artist_id,
-                )?;
-
-                // insert into song table
-                crate::repositories::song_repository::create(
-                    conn,
-                    &metadata.title,
-                    metadata.duration,
-                    file.to_str().unwrap(),
-                    metadata.track_number,
-                    folder_id,
-                    album_id,
-                    artist_id,
-                    metadata.file_modified_at,
-                    metadata.file_size,
-                )?;
-
-                // Save the embedded artwork to a file and get the path
-                // let _ = artwork_service::process_album_artwork(
-                //     conn,
-                //     metadata.embedded_artwork,
-                //     album_id,
-                // );
-
-                added += 1;
+                if let Err(e) = process_metadata(conn, metadata, folder_id, None) {
+                    eprintln!("Process failed: {}", e);
+                    file_failed = true;
+                }
             }
             Err(e) => {
-                eprintln!("Failed to read metadata from {}: {}", file.display(), e);
-                failed += 1;
+                eprintln!("Metadata failed: {}", e);
+                file_failed = true;
             }
+        }
+
+        if file_failed {
+            failed += 1;
+        } else {
+            added += 1;
         }
     }
 
@@ -70,6 +42,87 @@ pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<I
         added,
         failed,
         removed: 0,
+    })
+}
+
+// Re sync all the folders in the library and update their songs
+pub fn resync_library(conn: &rusqlite::Connection) -> rusqlite::Result<ImportResult> {
+    let mut added = 0;
+    let mut failed = 0;
+    let mut removed = 0;
+
+    let folders = crate::repositories::folder_repository::index(conn)?;
+
+    for folder in folders {
+        let mp3_files = scan_service::scan_for_mp3s(&folder.path);
+
+        // songs in database for this folder
+        let db_songs = crate::repositories::song_repository::get_by_folder(conn, folder.id)?;
+
+        let songs_map = db_songs
+            .into_iter()
+            .map(|s| (s.path.clone(), s))
+            .collect::<std::collections::HashMap<_, _>>();
+
+        let scanned_set: std::collections::HashSet<String> = mp3_files
+            .iter()
+            .map(|f| f.to_string_lossy().to_string())
+            .collect();
+
+        for file in &mp3_files {
+            let path = file.to_string_lossy();
+
+            match songs_map.get(path.as_ref()) {
+                None => match crate::services::metadata_service::extract_metadata(file) {
+                    Ok(metadata) => {
+                        if let Err(e) = process_metadata(conn, metadata, folder.id, None) {
+                            eprintln!("Insert failed: {e}");
+                            failed += 1;
+                        } else {
+                            added += 1;
+                        }
+                    }
+                    Err(e) => {
+                        eprintln!("Metadata failed: {e}");
+                        failed += 1;
+                    }
+                },
+
+                Some(existing) => match crate::services::metadata_service::extract_metadata(file) {
+                    Ok(metadata) => {
+                        if existing.file_modified_at != metadata.file_modified_at
+                            || existing.file_size != metadata.file_size
+                        {
+                            if let Err(e) =
+                                process_metadata(conn, metadata, folder.id, Some(existing.id))
+                            {
+                                eprintln!("Update failed: {e}");
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        eprintln!("Metadata failed: {e}");
+                    }
+                },
+            }
+        }
+
+        // remove songs that are no longer in the folder
+        for (path, existing) in songs_map {
+            if !scanned_set.contains(&path) {
+                if let Err(e) = crate::repositories::song_repository::delete(conn, existing.id) {
+                    eprintln!("Delete failed: {e}");
+                } else {
+                    removed += 1;
+                }
+            }
+        }
+    }
+
+    Ok(ImportResult {
+        added,
+        failed,
+        removed,
     })
 }
 
@@ -116,4 +169,59 @@ pub fn preview_search(conn: &rusqlite::Connection, search: &str) -> Result<Searc
     })
 }
 
-//TODO: Re scan the all folders in the library and update their songs
+fn process_metadata(
+    conn: &rusqlite::Connection,
+    metadata: SongMetadata,
+    folder_id: i64,
+    song_id: Option<i64>,
+) -> Result<(), String> {
+    // insert into artist table and get artist_id (find or create)
+    let artist_id = crate::repositories::artist_repository::find_or_create(conn, &metadata.artist)
+        .map_err(|e| e.to_string())?;
+
+    let album_artist_id =
+        crate::repositories::artist_repository::find_or_create(conn, &metadata.album_artist)
+            .map_err(|e| e.to_string())?;
+
+    // insert into album table and get album_id (find or create)
+    let album_id = crate::repositories::album_repository::find_or_create(
+        conn,
+        &metadata.album,
+        album_artist_id,
+    )
+    .map_err(|e| e.to_string())?;
+
+    if let Some(id) = song_id {
+        crate::repositories::song_repository::update(
+            conn,
+            id,
+            &metadata.title,
+            metadata.duration,
+            metadata.path.to_str().unwrap(),
+            metadata.track_number,
+            folder_id,
+            album_id,
+            artist_id,
+            metadata.file_modified_at,
+            metadata.file_size,
+        )
+        .map_err(|e| e.to_string())?;
+    } else {
+        // insert into song table
+        crate::repositories::song_repository::create(
+            conn,
+            &metadata.title,
+            metadata.duration,
+            metadata.path.to_str().unwrap(),
+            metadata.track_number,
+            folder_id,
+            album_id,
+            artist_id,
+            metadata.file_modified_at,
+            metadata.file_size,
+        )
+        .map_err(|e| e.to_string())?;
+    }
+
+    Ok(())
+}
