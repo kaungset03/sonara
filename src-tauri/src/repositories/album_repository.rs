@@ -4,7 +4,12 @@ use crate::models::album::Album;
 
 // get all albums
 pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {
-    let mut stmt = conn.prepare("SELECT * FROM albums")?;
+    let mut stmt = conn.prepare(
+        "
+        SELECT alb.*, art.name as artist_name FROM albums alb 
+        JOIN artists art ON alb.artist_id = art.id
+        ",
+    )?;
     let album_iter = stmt.query_map([], |row| {
         Ok(crate::models::album::Album {
             id: row.get("id")?,
@@ -12,6 +17,7 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {
             artist_id: row.get("artist_id")?,
             cover_path: row.get("cover_path")?,
             created_at: row.get("created_at")?,
+            artist_name: row.get("artist_name")?,
         })
     })?;
 
@@ -40,7 +46,13 @@ pub fn find_or_create(conn: &Connection, name: &str, artist_id: i64) -> rusqlite
 
 // get an album by id
 pub fn get(conn: &Connection, id: i64) -> rusqlite::Result<Album> {
-    let mut stmt = conn.prepare("SELECT * FROM albums WHERE id = ?1")?;
+    let mut stmt = conn.prepare(
+        "
+        SELECT alb.*, art.name as artist_name FROM albums alb 
+        JOIN artists art ON alb.artist_id = art.id
+        WHERE alb.id = ?1
+    ",
+    )?;
     let album = stmt.query_row(params![id], |row| {
         Ok(crate::models::album::Album {
             id: row.get("id")?,
@@ -48,6 +60,7 @@ pub fn get(conn: &Connection, id: i64) -> rusqlite::Result<Album> {
             artist_id: row.get("artist_id")?,
             cover_path: row.get("cover_path")?,
             created_at: row.get("created_at")?,
+            artist_name: row.get("artist_name")?,
         })
     })?;
     Ok(album)
@@ -70,7 +83,13 @@ pub fn update_cover_path(conn: &Connection, id: i64, cover_path: &str) -> rusqli
 
 // Search albums by name
 pub fn search(conn: &Connection, name: &str) -> rusqlite::Result<Vec<Album>> {
-    let mut stmt = conn.prepare("SELECT * FROM albums WHERE name LIKE ?1")?;
+    let mut stmt = conn.prepare(
+        "
+        SELECT alb.*, art.name as artist_name FROM albums alb 
+        JOIN artists art ON alb.artist_id = art.id
+        WHERE alb.name LIKE ?1
+    ",
+    )?;
     let album_iter = stmt.query_map(params![format!("%{}%", name)], |row| {
         Ok(crate::models::album::Album {
             id: row.get("id")?,
@@ -78,6 +97,7 @@ pub fn search(conn: &Connection, name: &str) -> rusqlite::Result<Vec<Album>> {
             artist_id: row.get("artist_id")?,
             cover_path: row.get("cover_path")?,
             created_at: row.get("created_at")?,
+            artist_name: row.get("artist_name")?,
         })
     })?;
 

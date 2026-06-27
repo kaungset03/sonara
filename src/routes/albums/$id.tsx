@@ -19,6 +19,7 @@ function RouteComponent() {
   const isShuffle = useAppStore((state) => state.isShuffle);
   const setIsShuffle = useAppStore((state) => state.setIsShuffle);
 
+  // order by track number, then by name
   const songs = data?.songs;
 
   const handleSongClick = (song: Song) => {
@@ -46,7 +47,7 @@ function RouteComponent() {
     <div className="h-full overflow-y-auto">
       <div className="flex items-center gap-x-6 border-b border-muted-foreground/30 pb-8 mb-4">
         <div className="relative group">
-          <div className="size-45 rounded-lg overflow-hidden bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center shadow-lg">
+          <div className="size-42 rounded-lg overflow-hidden bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center shadow-lg">
             {data.album.cover_path ? (
               <img
                 src={convertFileSrc(data.album.cover_path)}
@@ -62,10 +63,10 @@ function RouteComponent() {
           <UpdateAlbumCoverButton albumId={data.album.id} />
         </div>
         <div className="flex flex-col gap-y-2">
-          <h1 className="text-4xl font-bold font-heading tracking-tight">
+          <h1 className="text-3xl font-bold font-heading tracking-tight">
             {data.album.name}
           </h1>
-          <p className="text-muted-foreground">by {data.album.artist_id}</p>
+          <p className="text-muted-foreground">by {data.album.artist_name}</p>
           <p className="text-muted-foreground">
             {songs.length} {songs.length === 1 ? "Song" : "Songs"}
           </p>

@@ -4,7 +4,12 @@ use crate::models::artist::Artist;
 
 // Get all artists
 pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Artist>> {
-    let mut stmt = conn.prepare("SELECT * FROM artists")?;
+    let mut stmt = conn.prepare(
+        "
+        SELECT DISTINCT a.*
+        FROM artists a
+        JOIN songs s ON s.artist_id = a.id;",
+    )?;
     let artist_iter = stmt.query_map([], |row| {
         Ok(Artist {
             id: row.get("id")?,

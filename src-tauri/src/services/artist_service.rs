@@ -28,10 +28,21 @@ pub fn get_artist_details(
 
 // update artist image
 pub fn update_artist_image(
+    app: &tauri::AppHandle,
     conn: &rusqlite::Connection,
     artist_id: i64,
     image_path: &str,
 ) -> rusqlite::Result<()> {
-    // TODO: artwork service to store image and get the image path stored in app data
-    artist_repository::update_image_path(conn, artist_id, image_path)
+    let saved_path = crate::services::file_service::save_file_to_app_data(
+        app,
+        image_path.to_string(),
+        format!("artist_{}_image.jpg", artist_id),
+    );
+
+    if let Ok(saved_image_path) = saved_path {
+        artist_repository::update_image_path(conn, artist_id, &saved_image_path)?;
+        Ok(())
+    } else {
+        Err(rusqlite::Error::InvalidQuery)
+    }
 }

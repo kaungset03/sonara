@@ -51,6 +51,7 @@ pub fn get_by_album(conn: &Connection, album_id: i64) -> rusqlite::Result<Vec<So
     LEFT JOIN artists a ON s.artist_id = a.id
     LEFT JOIN albums al ON s.album_id = al.id
     WHERE s.album_id = ?1
+    ORDER BY s.track_number ASC, s.title ASC
     ",
     )?;
     let song_iter = stmt.query_map(params![album_id], |row| song_from_row(row))?;

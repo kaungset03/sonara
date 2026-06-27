@@ -11,7 +11,7 @@ function RouteComponent() {
   return (
     <div>
       <h1 className="text-3xl font-bold font-heading mb-4">Albums</h1>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-6">
         {albums?.map((album) => {
           const initials = album.name
             .split(" ")
@@ -25,14 +25,14 @@ function RouteComponent() {
               to={"/albums/$id"}
               params={{ id: album.id.toString() }}
               key={album.id}
-              className="group flex flex-col gap-4 rounded-lg border border-border bg-card p-4 hover:bg-primary/20 ease-in-out duration-300 transition-colors"
+              className="group flex flex-col gap-4"
             >
               <div className="relative w-full aspect-square shrink-0 bg-linear-to-br from-primary/30 to-primary/10 rounded-lg flex items-center justify-center overflow-hidden">
                 {album.cover_path ? (
                   <img
                     src={convertFileSrc(album.cover_path)}
                     alt={album.name}
-                    className="w-full h-full object-cover object-center scale-115 group-hover:scale-100 transition-transform ease-in-out duration-350"
+                    className="w-full h-full object-cover object-center scale-110 group-hover:scale-100 transition-transform ease-in-out duration-350"
                   />
                 ) : (
                   <span className="text-4xl font-bold text-muted-foreground">
@@ -42,11 +42,11 @@ function RouteComponent() {
               </div>
 
               <div className="space-y-1 flex-1">
-                <h3 className="font-semibold group-hover:text-primary transition-colors line-clamp-2">
+                <h3 className="font-semibold group-hover:text-primary transition-colors text-ellipsis overflow-hidden whitespace-nowrap ">
                   {album.name}
                 </h3>
-                <p className="text-xs text-muted-foreground line-clamp-1">
-                  {album.artist_id}
+                <p className="text-xs text-muted-foreground  text-ellipsis overflow-hidden whitespace-nowrap ">
+                  {album.artist_name}
                 </p>
               </div>
             </Link>

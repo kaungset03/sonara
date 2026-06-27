@@ -25,11 +25,12 @@ pub fn get_artist_details(
 // update profile picture
 #[tauri::command]
 pub fn update_artist_image(
+    app: tauri::AppHandle,
     db: State<DbState>,
     artist_id: i64,
     image_path: &str,
 ) -> Result<(), String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
-    services::artist_service::update_artist_image(&conn, artist_id, image_path)
+    services::artist_service::update_artist_image(&app, &conn, artist_id, image_path)
         .map_err(|e| e.to_string())
 }

@@ -28,10 +28,21 @@ pub fn get_album_details(
 
 // update album cover
 pub fn update_album_cover(
+    app: &tauri::AppHandle,
     conn: &rusqlite::Connection,
     album_id: i64,
     image_path: &str,
 ) -> rusqlite::Result<()> {
-    // TODO: artwork service to store image and get the image path stored in app data
-    album_repository::update_cover_path(conn, album_id, image_path)
+    let saved_path = crate::services::file_service::save_file_to_app_data(
+        app,
+        image_path.to_string(),
+        format!("album_{}_cover.jpg", album_id),
+    );
+
+    if let Ok(saved_image_path) = saved_path {
+        album_repository::update_cover_path(conn, album_id, &saved_image_path)?;
+        Ok(())
+    } else {
+        Err(rusqlite::Error::InvalidQuery)
+    }
 }

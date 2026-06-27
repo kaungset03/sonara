@@ -8,6 +8,7 @@ declare global {
     album_name: string;
     album_cover_path: string | null; // file path to the album cover image, if available
     duration: number; // in seconds
+    track_number: number; // track number in the album
     path: string; // file path to the song
     lyrics_path: string | null; // file path to the lyrics, if available
     is_favorite: boolean; // whether the song is marked as favorite
@@ -27,6 +28,7 @@ declare global {
     id: number;
     name: string;
     artist_id: number;
+    artist_name: string;
     cover_path: string | null; // file path to the album cover image, if available
   };
 

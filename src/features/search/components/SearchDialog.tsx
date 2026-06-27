@@ -129,7 +129,7 @@ const SearchDialog = () => {
                   <SearchResultItem
                     key={album.name}
                     title={album.name}
-                    description={`${album.artist_id}`}
+                    description={`${album.artist_name}`}
                     icon={
                       <BookImage size={20} className="text-muted-foreground" />
                     }

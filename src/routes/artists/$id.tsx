@@ -46,7 +46,7 @@ function RouteComponent() {
     <div className="h-full overflow-y-auto">
       <div className="flex items-center gap-x-6 border-b border-muted-foreground/30 pb-8 mb-4">
         <div className="relative group">
-          <div className="size-45 rounded-full overflow-hidden bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center shadow-lg">
+          <div className="size-42 rounded-full overflow-hidden bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center shadow-lg">
             {data.artist.image_path ? (
               <img
                 src={convertFileSrc(data.artist.image_path)}
@@ -62,7 +62,7 @@ function RouteComponent() {
           <UpdateArtistImageButton artistId={data.artist.id} />
         </div>
         <div className="flex flex-col gap-y-2">
-          <h1 className="text-4xl font-bold font-heading tracking-tight">
+          <h1 className="text-3xl font-bold font-heading tracking-tight">
             {data.artist.name}
           </h1>
           <p className="text-muted-foreground">

@@ -10,8 +10,15 @@ const useLyrics = ({ filePath }: UseLyricsProps) => {
   const { data: lyricsLines } = useQuery({
     queryKey: ["lyrics", filePath],
     queryFn: async () => {
-      const contents = await readTextFile(filePath);
-      return parseLRC(contents);
+      // const contents = await readTextFile(filePath);
+      // return parseLRC(contents);
+      try {
+        const contents = await readTextFile(filePath);
+        return parseLRC(contents);
+      } catch (e) {
+        console.error("Error reading lyrics file:", e);
+        return [];
+      }
     },
     enabled: !!filePath,
   });

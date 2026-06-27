@@ -24,11 +24,16 @@ pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<I
                 let artist_id =
                     crate::repositories::artist_repository::find_or_create(conn, &metadata.artist)?;
 
+                let album_artist_id = crate::repositories::artist_repository::find_or_create(
+                    conn,
+                    &metadata.album_artist,
+                )?;
+
                 // insert into album table and get album_id (find or create)
                 let album_id = crate::repositories::album_repository::find_or_create(
                     conn,
                     &metadata.album,
-                    artist_id,
+                    album_artist_id,
                 )?;
 
                 // insert into song table

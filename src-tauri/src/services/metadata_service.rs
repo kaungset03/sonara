@@ -9,6 +9,7 @@ pub struct SongMetadata {
     pub title: String,
     pub artist: String,
     pub album: String,
+    pub album_artist: String,
     pub duration: i64,
     pub track_number: Option<i32>,
     pub file_modified_at: i64,
@@ -59,6 +60,11 @@ pub fn extract_metadata(path: &Path) -> Result<SongMetadata, String> {
         .map(|s| s.to_string())
         .unwrap_or_else(|| "Unknown Album".to_string());
 
+    let album_artist = tag
+        .and_then(|t| t.get_string(lofty::tag::ItemKey::AlbumArtist))
+        .map(|s| s.to_string())
+        .unwrap_or_else(|| "Unknown Artist".to_string());
+
     let track_number = tag.and_then(|t| t.track()).map(|n| n as i32);
 
     // let embedded_artwork = tag
@@ -69,6 +75,7 @@ pub fn extract_metadata(path: &Path) -> Result<SongMetadata, String> {
         title,
         artist,
         album,
+        album_artist,
         duration,
         track_number,
         file_modified_at: modified,

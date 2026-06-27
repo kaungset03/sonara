@@ -12,7 +12,7 @@ function RouteComponent() {
   return (
     <div>
       <h1 className="text-3xl font-bold font-heading mb-4">Artists</h1>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-6">
         {artists?.map((artist) => {
           const initials = artist.name
             .split(" ")
@@ -26,9 +26,9 @@ function RouteComponent() {
               to={"/artists/$id"}
               params={{ id: artist.id.toString() }}
               key={artist.id}
-              className="group flex flex-col justify-center items-center gap-4 rounded-lg p-4 hover:bg-primary/10 ease-in-out duration-300 transition-colors"
+              className="group flex flex-col justify-center items-center gap-y-4 p-4"
             >
-              <div className="relative w-4/5 aspect-square rounded-full shrink-0 bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center overflow-hidden">
+              <div className="relative w-full aspect-square rounded-full shrink-0 bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center overflow-hidden">
                 {artist.image_path ? (
                   <img
                     src={convertFileSrc(artist.image_path)}
@@ -42,7 +42,7 @@ function RouteComponent() {
                 )}
               </div>
 
-              <h3 className="font-semibold group-hover:text-primary transition-colors truncate">
+              <h3 className="font-semibold group-hover:text-primary transition-colors text-ellipsis overflow-hidden whitespace-nowrap w-full text-center">
                 {artist.name}
               </h3>
             </Link>
