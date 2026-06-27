@@ -1,3 +1,4 @@
+import { convertFileSrc } from "@tauri-apps/api/core";
 import { useEffect } from "react";
 
 type useMediaSessionProps = {
@@ -23,20 +24,19 @@ const useMediaSession = ({
   onPrevious,
   onSeek,
 }: useMediaSessionProps) => {
+  const artworkPath = song?.album_cover_path
+    ? convertFileSrc(song.album_cover_path)
+    : "/128x128@2x.png";
+
   useEffect(() => {
     if ("mediaSession" in navigator && song) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: song.title || "Unknown Title",
-        artist: song.artist || "Unknown Artist",
-        album: song.album || "Unknown Album",
+        artist: song.artist_name || "Unknown Artist",
+        album: song.album_name || "Unknown Album",
         artwork: [
           {
-            src: "/128x128.png",
-            sizes: "128x128",
-            type: "image/png",
-          },
-          {
-            src: "/128x128@2x.png",
+            src: artworkPath,
             sizes: "256x256",
             type: "image/png",
           },

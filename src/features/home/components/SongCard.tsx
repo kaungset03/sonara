@@ -1,3 +1,4 @@
+import { convertFileSrc } from "@tauri-apps/api/core";
 import { Music, Play } from "lucide-react";
 import { getFormattedDuration } from "@/lib/helpers";
 import useAppStore from "@/store/app-store";
@@ -21,7 +22,15 @@ const SongCard = ({ song, handleClick }: SongCardProps) => {
   }`}
     >
       <div className="relative w-12 h-12 rounded-md bg-linear-to-br from-primary/30 to-primary/10 shrink-0 flex items-center justify-center overflow-hidden">
-        <Music className="size-5 text-primary/50" />
+        {song.album_cover_path ? (
+          <img
+            src={convertFileSrc(song.album_cover_path)}
+            alt={song.title}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <Music className="size-5 text-primary/50" />
+        )}
         <button
           className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/50"
           onClick={() => handleClick(song)}

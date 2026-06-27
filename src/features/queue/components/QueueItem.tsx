@@ -32,7 +32,7 @@ const QueueItem = ({ queueItem, isCurrentPlaying }: QueueItemProps) => {
           )}
         </button>
       </div>
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 space-y-1">
         <h3
           className={`font-medium text-sm truncate transition-colors
   ${
@@ -43,7 +43,9 @@ const QueueItem = ({ queueItem, isCurrentPlaying }: QueueItemProps) => {
         >
           {song?.title}
         </h3>
-        <p className="text-xs text-muted-foreground truncate">{song?.artist}</p>
+        <p className="text-xs text-muted-foreground truncate">
+          {song?.artist_name} - {song?.album_name}
+        </p>
       </div>
       <div className="text-xs text-muted-foreground shrink-0">
         {song && getFormattedDuration(song.duration)}

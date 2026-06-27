@@ -1,3 +1,4 @@
+import { convertFileSrc } from "@tauri-apps/api/core";
 import { Button } from "@/components/ui/button";
 import {
   ChevronDown,
@@ -58,9 +59,9 @@ const OverlayPlayer = ({
   const setMuted = useAppStore((state) => state.setMuted);
 
   return (
-    <section className="fixed inset-0 z-50 pointer-events-none rounded-3xl">
+    <section className="fixed inset-0 z-50 pointer-events-none ">
       <div
-        className={`absolute rounded-3xl inset-0 bg-background backdrop-blur-md transition-opacity duration-350 ease-in ${isExpanded ? "opacity-100" : "opacity-0"}`}
+        className={`absolute inset-0 bg-background transition-opacity duration-350 ease-in ${isExpanded ? "opacity-100" : "opacity-0"}`}
         onClick={collapse}
       />
       <div
@@ -79,12 +80,22 @@ const OverlayPlayer = ({
         </div>
         <div className="w-full h-[calc(100%-64px)] grid grid-cols-4 ">
           <div className="col-span-2 w-full h-full p-4 flex flex-col justify-center items-center gap-y-6">
-            <div className="size-60 rounded-2xl bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center overflow-hidden">
-              <Music className="size-22 text-primary" />
+            <div className="size-70 rounded-xl  bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center overflow-hidden">
+              {song.album_cover_path ? (
+                <img
+                  src={convertFileSrc(song.album_cover_path)}
+                  alt={song.title}
+                  className="w-full h-full object-cover object-center"
+                />
+              ) : (
+                <Music className="size-22 text-primary" />
+              )}
             </div>
             <div className="space-y-1 text-center font-heading">
               <h3 className="font-semibold">{song.title}</h3>
-              <p className="text-muted-foreground text-sm">{song.artist}</p>
+              <p className="text-muted-foreground text-sm">
+                {song.artist_name}
+              </p>
             </div>
             <div className="space-y-6 mt-4">
               {/** Playback Buttons */}

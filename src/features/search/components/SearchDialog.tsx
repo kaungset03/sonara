@@ -89,11 +89,11 @@ const SearchDialog = () => {
                   <SearchResultItem
                     key={song.id}
                     title={song.title}
-                    description={`${song.artist} • ${song.album}`}
-                    icon={<Music size={16} className="text-muted-foreground" />}
+                    description={`${song.artist_name} • ${song.album_name}`}
+                    icon={<Music size={20} className="text-muted-foreground" />}
                     handleClick={() => {
                       playSong(song, data.songs);
-                      closeDialog()
+                      closeDialog();
                     }}
                   />
                 ))}
@@ -108,12 +108,11 @@ const SearchDialog = () => {
                   <SearchResultItem
                     key={artist.name}
                     title={artist.name}
-                    description={`${artist.count} songs`}
-                    icon={<User size={16} className="text-muted-foreground" />}
+                    icon={<User size={20} className="text-muted-foreground" />}
                     handleClick={() => {
                       navigate({
-                        to: "/artists/$name",
-                        params: { name: artist.name },
+                        to: "/artists/$id",
+                        params: { id: artist.id.toString() },
                       });
                       closeDialog();
                     }}
@@ -130,14 +129,14 @@ const SearchDialog = () => {
                   <SearchResultItem
                     key={album.name}
                     title={album.name}
-                    description={`${album.count} songs`}
+                    description={`${album.artist_id}`}
                     icon={
-                      <BookImage size={16} className="text-muted-foreground" />
+                      <BookImage size={20} className="text-muted-foreground" />
                     }
                     handleClick={() => {
                       navigate({
-                        to: "/albums/$name",
-                        params: { name: album.name },
+                        to: "/albums/$id",
+                        params: { id: album.id.toString() },
                       });
                       closeDialog();
                     }}

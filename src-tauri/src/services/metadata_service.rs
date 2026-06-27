@@ -13,7 +13,7 @@ pub struct SongMetadata {
     pub track_number: Option<i32>,
     pub file_modified_at: i64,
     pub file_size: i64,
-    pub embedded_artwork: Option<Vec<u8>>,
+    // pub embedded_artwork: Option<Vec<u8>>,
 }
 
 pub fn extract_metadata(path: &Path) -> Result<SongMetadata, String> {
@@ -61,9 +61,9 @@ pub fn extract_metadata(path: &Path) -> Result<SongMetadata, String> {
 
     let track_number = tag.and_then(|t| t.track()).map(|n| n as i32);
 
-    let embedded_artwork = tag
-        .and_then(|t| t.pictures().first())
-        .map(|pic| pic.data().to_vec());
+    // let embedded_artwork = tag
+    //     .and_then(|t| t.pictures().first())
+    //     .map(|pic| pic.data().to_vec());
 
     Ok(SongMetadata {
         title,
@@ -73,6 +73,6 @@ pub fn extract_metadata(path: &Path) -> Result<SongMetadata, String> {
         track_number,
         file_modified_at: modified,
         file_size,
-        embedded_artwork,
+        // embedded_artwork,
     })
 }

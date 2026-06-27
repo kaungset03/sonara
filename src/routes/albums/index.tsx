@@ -1,6 +1,5 @@
+import { convertFileSrc } from "@tauri-apps/api/core";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import useGetAllAlbumsQuery from "@/features/albums/api/useGetAllAlbumsQuery";
 
 export const Route = createFileRoute("/albums/")({
@@ -12,7 +11,7 @@ function RouteComponent() {
   return (
     <div>
       <h1 className="text-3xl font-bold font-heading mb-4">Albums</h1>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
         {albums?.map((album) => {
           const initials = album.name
             .split(" ")
@@ -26,25 +25,30 @@ function RouteComponent() {
               to={"/albums/$id"}
               params={{ id: album.id.toString() }}
               key={album.id}
+              className="group flex flex-col gap-4 rounded-lg border border-border bg-card p-4 hover:bg-primary/20 ease-in-out duration-300 transition-colors"
             >
-              <Card className="group cursor-pointer">
-                <CardContent className="flex flex-col items-center text-center">
-                  <Avatar className="w-24 h-24 mb-3 shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all duration-300">
-                    <AvatarFallback className="text-2xl font-bold bg-muted border">
-                      {initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <h3
-                    className="font-semibold w-full truncate leading-tight"
-                    title={album.name}
-                  >
-                    {album.name}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {album.artist_id}
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="relative w-full aspect-square shrink-0 bg-linear-to-br from-primary/30 to-primary/10 rounded-lg flex items-center justify-center overflow-hidden">
+                {album.cover_path ? (
+                  <img
+                    src={convertFileSrc(album.cover_path)}
+                    alt={album.name}
+                    className="w-full h-full object-cover object-center scale-115 group-hover:scale-100 transition-transform ease-in-out duration-350"
+                  />
+                ) : (
+                  <span className="text-4xl font-bold text-muted-foreground">
+                    {initials}
+                  </span>
+                )}
+              </div>
+
+              <div className="space-y-1 flex-1">
+                <h3 className="font-semibold group-hover:text-primary transition-colors line-clamp-2">
+                  {album.name}
+                </h3>
+                <p className="text-xs text-muted-foreground line-clamp-1">
+                  {album.artist_id}
+                </p>
+              </div>
             </Link>
           );
         })}

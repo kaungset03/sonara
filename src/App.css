@@ -447,7 +447,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    @apply select-none cursor-default
+    @apply select-none cursor-default;
   }
   button:not(:disabled),
   [role="button"]:not(:disabled) {
@@ -460,6 +460,13 @@
   input,
   textarea {
     @apply select-text cursor-text;
+  }
+
+  img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
   }
 }
 

@@ -64,7 +64,7 @@ const AddSongsToPlaylist = ({ playlistId }: AddSongsToPlaylistProps) => {
           Add Songs
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md" showCloseButton={false}>
+      <DialogContent className="min-w-fit" showCloseButton={false}>
         <form onSubmit={handleSubmit} id={`add-songs-form-${playlistId}`}>
           <DialogHeader className="pb-4 space-y-1">
             <DialogTitle>Add Songs to Playlist</DialogTitle>
@@ -77,7 +77,6 @@ const AddSongsToPlaylist = ({ playlistId }: AddSongsToPlaylistProps) => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </DialogHeader>
-
           <div className="space-y-2 no-scrollbar max-h-[50vh] overflow-y-auto">
             {filteredSongs?.map((song) => (
               <Label
@@ -88,18 +87,17 @@ const AddSongsToPlaylist = ({ playlistId }: AddSongsToPlaylistProps) => {
                   type="checkbox"
                   checked={selectedIds.includes(song.id)}
                   onChange={() => toggleSelection(song.id)}
-                  className="h-4 w-4 rounded-full border-border"
+                  className="size-4 rounded-full border-border"
                 />
                 <div className="flex-1 min-w-0 space-y-1">
-                  <p className="font-medium truncate">{song.title}</p>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {song.artist_name} • {song.album_name}
+                  <p className="font-medium">{song.title}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {song.artist_name} - {song.album_name}
                   </p>
                 </div>
               </Label>
             ))}
           </div>
-
           <DialogFooter className="pt-4">
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
@@ -119,3 +117,7 @@ const AddSongsToPlaylist = ({ playlistId }: AddSongsToPlaylistProps) => {
   );
 };
 export default AddSongsToPlaylist;
+
+// <form onSubmit={handleSubmit} id={`add-songs-form-${playlistId}`}>
+
+//       </form>

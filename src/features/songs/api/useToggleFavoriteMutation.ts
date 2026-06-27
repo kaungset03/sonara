@@ -11,15 +11,16 @@ type ToggleFavoriteInput = {
 const useToggleFavoriteMutation = () => {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<void, Error, ToggleFavoriteInput>({
+  const mutation = useMutation<string, Error, ToggleFavoriteInput>({
     mutationFn: async ({ songId, isFavorite }) => {
-      await invoke("set_favorite_song", {
+      const res = await invoke<string>("set_favorite_song", {
         songId,
         isFavorite,
       });
+      return res;
     },
-    onSuccess: () => {
-      toast.success("Favorite status updated");
+    onSuccess: (message) => {
+      toast.success(message);
       queryClient.invalidateQueries({ queryKey: ["songs"], exact: false });
     },
     onError: (err) => {
