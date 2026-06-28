@@ -13,7 +13,6 @@ pub fn get_lyrics_by_song_id(conn: &Connection, song_id: i64) -> rusqlite::Resul
             song_id: row.get("song_id")?,
             path: row.get("path")?,
             status: row.get("status")?,
-            created_at: row.get("created_at")?,
         };
         Ok(Some(lyrics))
     } else {

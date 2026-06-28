@@ -79,7 +79,6 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
             song_id INTEGER NOT NULL UNIQUE,
             path TEXT NOT NULL,
             status TEXT CHECK (status IN ('not_checked', 'found', 'not_found')) NOT NULL DEFAULT 'not_checked',
-            created_at INTEGER NOT NULL,
             FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE CASCADE
         )",
         [],

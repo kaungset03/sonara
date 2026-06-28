@@ -8,8 +8,6 @@ pub fn get_song_lyrics(
 ) -> rusqlite::Result<Option<String>> {
     let lyrics = lyrics_repository::get_lyrics_by_song_id(conn, song_id)?;
 
-    // lyrics row exists, and lyrics path is not empty, return lyrics path
-    // else -> check lyrics status, if status == "not_found", return None
     if let Some(lyrics) = lyrics {
         if !lyrics.path.is_empty() {
             return Ok(Some(lyrics.path));
@@ -17,9 +15,7 @@ pub fn get_song_lyrics(
             return Ok(None);
         }
     }
-    // go file_service to get lyrics from api,
-    // create file and save, update lyrics_path and lyrics_status, return lyrics_path
-    // get song info
+
     let song = crate::repositories::song_repository::get(conn, song_id)?;
 
     let lyrics_path = crate::services::file_service::ensure_song_lyrics(app, conn, &song)

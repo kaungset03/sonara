@@ -32,7 +32,7 @@ const UpdateSongLyricsButton = ({ songId }: UpdateSongLyricsButtonProps) => {
       size="sm"
       className="text-xs border border-muted-foreground/30"
     >
-      Upload .lrc File
+      Upload lrc file
     </Button>
   );
 };

@@ -6,5 +6,4 @@ pub struct Lyrics {
     pub song_id: i64,
     pub path: String,
     pub status: String,
-    pub created_at: i64,
 }

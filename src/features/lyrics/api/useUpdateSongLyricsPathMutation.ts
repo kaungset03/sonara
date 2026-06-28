@@ -13,11 +13,22 @@ const useUpdateSongLyricsPathMutation = () => {
     mutationFn: async ({ songId, lyricsPath }: UpdateLyricsPathInput) => {
       await invoke("update_song_lyrics", { songId, lyricsPath });
     },
+    onMutate: async ({ songId, lyricsPath }) => {
+      queryClient.setQueryData(["lyrics", songId], lyricsPath);
+    },
     onSuccess: (_, { songId }) => {
       toast.success("Successfully updated lyrics.");
-      queryClient.invalidateQueries({ queryKey: ["lyrics", songId] });
+      queryClient.invalidateQueries({
+        queryKey: ["lyrics", songId],
+        refetchType: "active",
+      });
     },
     onError: (err) => {
+      // Fall back to the previous lyrics path if the mutation fails
+      queryClient.invalidateQueries({
+        queryKey: ["lyrics"],
+        refetchType: "active",
+      });
       toast.error("Sorry, failed to update lyrics.");
       console.error(err);
     },

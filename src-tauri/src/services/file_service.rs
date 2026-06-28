@@ -250,9 +250,20 @@ pub fn ensure_song_lyrics(
 
     let dest = app_data_dir.join(&file_name);
 
-    fs::write(&dest, &lyrics).map_err(|e| e.to_string())?;
+    match fs::write(&dest, &lyrics) {
+        Ok(_) => println!("Lyrics saved successfully"),
+        Err(e) => {
+            println!("Write failed: {}", e);
+            return Err(e.to_string());
+        }
+    }
 
     let saved_path = dest.to_string_lossy().to_string();
+
+    println!(
+        "Updating lyrics path in database for song {}: {}",
+        song.title, saved_path
+    );
 
     crate::repositories::lyrics_repository::update_lyrics_path(conn, song.id, &saved_path, "found")
         .map_err(|e| e.to_string())?;
