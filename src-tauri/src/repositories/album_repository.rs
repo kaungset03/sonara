@@ -17,6 +17,7 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {
             name: row.get("name")?,
             artist_id: row.get("artist_id")?,
             cover_path: row.get("cover_path")?,
+            cover_status: row.get("cover_status")?,
             created_at: row.get("created_at")?,
             artist_name: row.get("artist_name")?,
         })
@@ -60,6 +61,7 @@ pub fn get(conn: &Connection, id: i64) -> rusqlite::Result<Album> {
             name: row.get("name")?,
             artist_id: row.get("artist_id")?,
             cover_path: row.get("cover_path")?,
+            cover_status: row.get("cover_status")?,
             created_at: row.get("created_at")?,
             artist_name: row.get("artist_name")?,
         })
@@ -72,6 +74,15 @@ pub fn update_cover_path(conn: &Connection, id: i64, cover_path: &str) -> rusqli
     conn.execute(
         "UPDATE albums SET cover_path = ?1 WHERE id = ?2",
         params![cover_path, id],
+    )?;
+    Ok(())
+}
+
+// Update album cover status by id
+pub fn update_cover_status(conn: &Connection, id: i64, cover_status: &str) -> rusqlite::Result<()> {
+    conn.execute(
+        "UPDATE albums SET cover_status = ?1 WHERE id = ?2",
+        params![cover_status, id],
     )?;
     Ok(())
 }
@@ -97,6 +108,7 @@ pub fn search(conn: &Connection, name: &str) -> rusqlite::Result<Vec<Album>> {
             name: row.get("name")?,
             artist_id: row.get("artist_id")?,
             cover_path: row.get("cover_path")?,
+            cover_status: row.get("cover_status")?,
             created_at: row.get("created_at")?,
             artist_name: row.get("artist_name")?,
         })

@@ -36,7 +36,6 @@ pub struct SongResponse {
     pub track_number: Option<i32>,
     pub last_played_at: Option<i64>,
     pub play_count: i32,
-    pub lyrics_path: Option<String>,
     pub created_at: i64,
     pub file_modified_at: i64,
     pub file_size: i64,

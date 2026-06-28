@@ -15,6 +15,7 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Artist>> {
             id: row.get("id")?,
             name: row.get("name")?,
             image_path: row.get("image_path")?,
+            image_status: row.get("image_status")?,
             created_at: row.get("created_at")?,
         })
     })?;
@@ -63,6 +64,7 @@ pub fn get(conn: &Connection, id: i64) -> rusqlite::Result<Artist> {
             id: row.get("id")?,
             name: row.get("name")?,
             image_path: row.get("image_path")?,
+            image_status: row.get("image_status")?,
             created_at: row.get("created_at")?,
         })
     })?;
@@ -74,6 +76,15 @@ pub fn update_image_path(conn: &Connection, id: i64, image_path: &str) -> rusqli
     conn.execute(
         "UPDATE artists SET image_path = ?1 WHERE id = ?2",
         params![image_path, id],
+    )?;
+    Ok(())
+}
+
+// Update image status of an artist by id
+pub fn update_image_status(conn: &Connection, id: i64, image_status: &str) -> rusqlite::Result<()> {
+    conn.execute(
+        "UPDATE artists SET image_status = ?1 WHERE id = ?2",
+        params![image_status, id],
     )?;
     Ok(())
 }
@@ -92,6 +103,7 @@ pub fn search(conn: &Connection, query: &str) -> rusqlite::Result<Vec<Artist>> {
             id: row.get("id")?,
             name: row.get("name")?,
             image_path: row.get("image_path")?,
+            image_status: row.get("image_status")?,
             created_at: row.get("created_at")?,
         })
     })?;

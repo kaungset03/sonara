@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import useReadFile from "@/features/player/hooks/useLyrics";
+import useReadFile from "@/features/lyrics/hooks/useLyrics";
 
-type SongLyricsProps = {
+type RenderLyricsViewProps = {
   path: string;
   audioCurrentTime: number;
 };
 
-const SongLyrics = ({ path, audioCurrentTime }: SongLyricsProps) => {
+const RenderLyricsView = ({
+  path,
+  audioCurrentTime,
+}: RenderLyricsViewProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const { lyricsLines } = useReadFile({ filePath: path });
@@ -75,4 +78,4 @@ const SongLyrics = ({ path, audioCurrentTime }: SongLyricsProps) => {
     </div>
   );
 };
-export default SongLyrics;
+export default RenderLyricsView;

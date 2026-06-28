@@ -13,9 +13,9 @@ const useUpdateSongLyricsPathMutation = () => {
     mutationFn: async ({ songId, lyricsPath }: UpdateLyricsPathInput) => {
       await invoke("update_song_lyrics", { songId, lyricsPath });
     },
-    onSuccess: () => {
+    onSuccess: (_, { songId }) => {
       toast.success("Successfully updated lyrics.");
-      queryClient.invalidateQueries({ queryKey: ["songs"], exact: false });
+      queryClient.invalidateQueries({ queryKey: ["lyrics", songId] });
     },
     onError: (err) => {
       toast.error("Sorry, failed to update lyrics.");

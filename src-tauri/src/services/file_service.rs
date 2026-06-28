@@ -3,6 +3,8 @@ use serde_json::Value;
 use std::fs;
 use tauri::{AppHandle, Manager};
 
+use crate::models::{album::Album, artist::Artist, song::SongResponse};
+
 // save user selected local file to app data
 pub fn save_file_to_app_data(
     app_handle: &AppHandle,
@@ -90,8 +92,36 @@ fn get_artist_image_from_audio_db(artist: &str) -> Result<String, String> {
     Ok(image_url.to_string())
 }
 
-// download and save image to app data
-fn download_and_save_image(
+pub fn get_song_lyrics_from_lrclib(song: &SongResponse) -> Result<String, String> {
+    // Implementation for fetching lyrics from LRCLib
+    let client = Client::new();
+
+    let url = format!(
+        "https://lrclib.net/api/get?artist_name={}&track_name={}&album_name={}&duration={}",
+        urlencoding::encode(&song.artist_name),
+        urlencoding::encode(&song.title),
+        urlencoding::encode(&song.album_name),
+        song.duration
+    );
+
+    let lrclib_json: Value = client
+        .get(&url)
+        .send()
+        .map_err(|e| e.to_string())?
+        .error_for_status()
+        .map_err(|e| e.to_string())?
+        .json()
+        .map_err(|e| e.to_string())?;
+
+    let lyrics = lrclib_json["syncedLyrics"]
+        .as_str()
+        .ok_or("No valid lyrics found")?;
+
+    Ok(lyrics.to_string())
+}
+
+// download and save file to app data
+fn download_and_save_file(
     url: &str,
     file_name: String,
     app_handle: &AppHandle,
@@ -127,10 +157,12 @@ fn download_and_save_image(
 pub fn ensure_album_cover(
     conn: &rusqlite::Connection,
     app_handle: &AppHandle,
-    album_id: i64,
+    album: Album,
 ) -> Result<Option<String>, String> {
-    let album =
-        crate::repositories::album_repository::get(conn, album_id).map_err(|e| e.to_string())?;
+    // if cover_status == "not_found", return None
+    if album.cover_status == "not_found" {
+        return Ok(None);
+    }
 
     if let Some(path) = &album.cover_path {
         return Ok(Some(path.clone()));
@@ -138,13 +170,20 @@ pub fn ensure_album_cover(
 
     let cover_url = get_cover_art_from_music_brainz(&album.artist_name, &album.name)?;
 
-    let saved_path = download_and_save_image(
+    // if cover_url is empty, update cover_status to "not_found" and return None
+    if cover_url.is_empty() {
+        crate::repositories::album_repository::update_cover_status(conn, album.id, "not_found")
+            .map_err(|e| e.to_string())?;
+        return Ok(None);
+    }
+
+    let saved_path = download_and_save_file(
         &cover_url,
-        format!("album_{}_cover.jpg", album_id),
+        format!("album_{}_cover.jpg", album.id),
         app_handle,
     )?;
 
-    crate::repositories::album_repository::update_cover_path(conn, album_id, &saved_path)
+    crate::repositories::album_repository::update_cover_path(conn, album.id, &saved_path)
         .map_err(|e| e.to_string())?;
 
     Ok(Some(saved_path))
@@ -153,10 +192,12 @@ pub fn ensure_album_cover(
 pub fn ensure_artist_image(
     conn: &rusqlite::Connection,
     app_handle: &AppHandle,
-    artist_id: i64,
+    artist: Artist,
 ) -> Result<Option<String>, String> {
-    let artist =
-        crate::repositories::artist_repository::get(conn, artist_id).map_err(|e| e.to_string())?;
+    // if image_status == "not_found", return None
+    if artist.image_status == "not_found" {
+        return Ok(None);
+    }
 
     if let Some(path) = &artist.image_path {
         return Ok(Some(path.clone()));
@@ -164,13 +205,56 @@ pub fn ensure_artist_image(
 
     let image_url = get_artist_image_from_audio_db(&artist.name)?;
 
-    let saved_path = download_and_save_image(
+    if image_url.is_empty() {
+        crate::repositories::artist_repository::update_image_status(conn, artist.id, "not_found")
+            .map_err(|e| e.to_string())?;
+        return Ok(None);
+    }
+
+    let saved_path = download_and_save_file(
         &image_url,
-        format!("artist_{}_image.jpg", artist_id),
+        format!("artist_{}_image.jpg", artist.id),
         app_handle,
     )?;
 
-    crate::repositories::artist_repository::update_image_path(conn, artist_id, &saved_path)
+    crate::repositories::artist_repository::update_image_path(conn, artist.id, &saved_path)
+        .map_err(|e| e.to_string())?;
+
+    Ok(Some(saved_path))
+}
+
+pub fn ensure_song_lyrics(
+    app_handle: &AppHandle,
+    conn: &rusqlite::Connection,
+    song: &SongResponse,
+) -> Result<Option<String>, String> {
+    let lyrics = get_song_lyrics_from_lrclib(&song)?;
+
+    if lyrics.is_empty() {
+        crate::repositories::lyrics_repository::update_lyrics_status(conn, song.id, "not_found")
+            .map_err(|e| e.to_string())?;
+        return Ok(None);
+    }
+
+    let file_name = format!("song_{}_lyrics.lrc", song.id);
+
+    let app_data_dir = app_handle
+        .path()
+        .app_data_dir()
+        .map_err(|e| format!("Failed to get AppData directory: {}", e))?;
+
+    if !app_data_dir.exists() {
+        fs::create_dir_all(&app_data_dir)
+            .map_err(|e| format!("Failed to create AppData directory: {}", e))?;
+    }
+
+    let dest = app_data_dir.join(&file_name);
+
+    fs::write(&dest, &lyrics).map_err(|e| e.to_string())?;
+
+    let saved_path = dest.to_string_lossy().to_string();
+
+    crate::repositories::lyrics_repository::update_lyrics_path(conn, song.id, &saved_path, "found")
         .map_err(|e| e.to_string())?;
 
     Ok(Some(saved_path))

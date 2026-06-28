@@ -1,6 +1,6 @@
 import { open } from "@tauri-apps/plugin-dialog";
 import { Button } from "@/components/ui/button";
-import useUpdateSongLyricsPathMutation from "@/features/songs/api/useUpdateSongLyricsPathMutation";
+import useUpdateSongLyricsPathMutation from "@/features/lyrics/api/useUpdateSongLyricsPathMutation";
 
 type UpdateSongLyricsButtonProps = {
   songId: number;
@@ -32,7 +32,7 @@ const UpdateSongLyricsButton = ({ songId }: UpdateSongLyricsButtonProps) => {
       size="sm"
       className="text-xs border border-muted-foreground/30"
     >
-      Update Lyrics
+      Upload .lrc File
     </Button>
   );
 };

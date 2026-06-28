@@ -13,7 +13,6 @@ fn song_from_row(row: &rusqlite::Row) -> rusqlite::Result<SongResponse> {
         track_number: row.get("track_number")?,
         last_played_at: row.get("last_played_at")?,
         play_count: row.get("play_count")?,
-        lyrics_path: row.get("lyrics_path")?,
         created_at: row.get("created_at")?,
         file_modified_at: row.get("file_modified_at")?,
         file_size: row.get("file_size")?,
@@ -235,14 +234,18 @@ pub fn update_favorite_status(
     })
 }
 
-// update lyrics path of a song by id
-pub fn update_lyrics_path(conn: &Connection, id: i64, lyrics_path: &str) -> rusqlite::Result<()> {
-    conn.execute(
-        "UPDATE songs SET lyrics_path = ?1 WHERE id = ?2",
-        params![lyrics_path, id],
-    )?;
-    Ok(())
-}
+// get lyrics by song id
+// pub fn get_lyrics(conn: &Connection, id: i64) -> rusqlite::Result<Option<String>> {
+//     // get song by id
+//     // check if lyrics_path, return lyrics_path if exists,
+//     // else check lyrics_status, status == "not_found", return null
+//     // else go file_service to get lyrics from api, create file and save, update lyrics_path and lyrics_status, return lyrics_path
+//     let song: SongResponse = song_repository::get(conn, id)?;
+
+//     if let Some(path) = song.lyrics_path {
+//         return Ok(Some(path));
+//     }
+// }
 
 // update last played at and play count of a song by id
 pub fn record_play(conn: &Connection, id: i64) -> rusqlite::Result<()> {

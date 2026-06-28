@@ -16,9 +16,9 @@ import {
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { getFormattedDuration } from "@/lib/helpers";
-import SongLyrics from "@/features/player/components/SongLyrics";
+import SongLyrics from "@/features/lyrics/components/SongLyrics";
 import useAppStore from "@/store/app-store";
-import UpdateSongLyricsButton from "@/features/player/components/UpdateSongLyricsButton";
+import UpdateSongLyricsButton from "@/features/lyrics/components/UpdateSongLyricsButton";
 import PlaybackQueue from "@/features/queue/components/PlaybackQueue";
 
 type OverlayPlayerProps = {
@@ -191,16 +191,7 @@ const OverlayPlayer = ({
             </div>
           </div>
           <div className="col-span-2 w-full h-full p-4 flex flex-col justify-center items-center gap-y-8">
-            {song.lyrics_path ? (
-              <SongLyrics audioCurrentTime={position} path={song.lyrics_path} />
-            ) : (
-              <div className="h-85 w-full flex justify-center items-center text-center">
-                <p className="font-heading font-medium text-muted-foreground mb-4">
-                  No lyrics available for this song. <br /> You can add lyrics
-                  by clicking the button below.
-                </p>
-              </div>
-            )}
+            <SongLyrics songId={song.id} audioCurrentTime={position} />
             <UpdateSongLyricsButton songId={song.id} />
           </div>
         </div>

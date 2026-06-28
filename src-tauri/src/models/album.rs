@@ -1,12 +1,13 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Album {
     pub id: i64,
     pub name: String,
     pub artist_id: i64,
     pub artist_name: String,
     pub cover_path: Option<String>,
+    pub cover_status: String,
     pub created_at: i64,
 }
 

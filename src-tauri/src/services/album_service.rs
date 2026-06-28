@@ -16,17 +16,21 @@ pub fn get_album_details(
     conn: &rusqlite::Connection,
     album_id: i64,
 ) -> rusqlite::Result<AlbumDetails> {
+    let album =
+        album_repository::get(conn, album_id).map_err(|_| rusqlite::Error::QueryReturnedNoRows)?;
+
+    let album_clone = album.clone();
     let app_handle = app.clone();
 
     tauri::async_runtime::spawn_blocking(move || {
         if let Ok(bg_conn) = crate::db::connection::get_connection(&app_handle) {
-            let _ =
-                crate::services::file_service::ensure_album_cover(&bg_conn, &app_handle, album_id);
+            let _ = crate::services::file_service::ensure_album_cover(
+                &bg_conn,
+                &app_handle,
+                album_clone,
+            );
         }
     });
-
-    let album =
-        album_repository::get(conn, album_id).map_err(|_| rusqlite::Error::QueryReturnedNoRows)?;
 
     let songs = song_repository::get_by_album(conn, album_id)?;
     Ok(AlbumDetails {

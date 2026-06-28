@@ -10,7 +10,6 @@ declare global {
     duration: number; // in seconds
     track_number: number; // track number in the album
     path: string; // file path to the song
-    lyrics_path: string | null; // file path to the lyrics, if available
     is_favorite: boolean; // whether the song is marked as favorite
     favorite_added_at: number | null; // timestamp when the song was marked as favorite
     last_played_at: number | null; // timestamp when the song was last played

@@ -18,6 +18,7 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL UNIQUE,
             image_path TEXT DEFAULT NULL,
+            image_status TEXT CHECK (image_status IN ('not_checked', 'found', 'not_found')) NOT NULL DEFAULT 'not_checked',
             created_at INTEGER NOT NULL
         )",
         [],
@@ -31,6 +32,7 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
             name TEXT NOT NULL,
             artist_id INTEGER NOT NULL DEFAULT 1,
             cover_path TEXT DEFAULT NULL,
+            cover_status TEXT CHECK (cover_status IN ('not_checked', 'found', 'not_found')) NOT NULL DEFAULT 'not_checked',
             created_at INTEGER NOT NULL,
             FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE SET DEFAULT,
             UNIQUE(name, artist_id)
@@ -53,8 +55,6 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
             last_played_at INTEGER,
             play_count INTEGER NOT NULL DEFAULT 0,
 
-            lyrics_path TEXT,
-
             created_at INTEGER NOT NULL,
             file_modified_at INTEGER NOT NULL,
             file_size INTEGER NOT NULL,
@@ -67,6 +67,20 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
             FOREIGN KEY (album_id) REFERENCES albums(id) ON DELETE SET DEFAULT,
             FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE SET DEFAULT,
             FOREIGN KEY (folder_id) REFERENCES library_folders(id) ON DELETE CASCADE
+        )",
+        [],
+    )?;
+
+    // Create lyrics table
+    conn.execute(
+        "
+            CREATE TABLE IF NOT EXISTS lyrics (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            song_id INTEGER NOT NULL UNIQUE,
+            path TEXT NOT NULL,
+            status TEXT CHECK (status IN ('not_checked', 'found', 'not_found')) NOT NULL DEFAULT 'not_checked',
+            created_at INTEGER NOT NULL,
+            FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE CASCADE
         )",
         [],
     )?;
