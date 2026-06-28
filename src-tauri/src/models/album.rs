@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 pub struct Album {
     pub id: i64,
     pub name: String,
-    pub artist_id: Option<i64>,
-    pub artist_name: Option<String>,
+    pub artist_id: i64,
+    pub artist_name: String,
     pub cover_path: Option<String>,
     pub created_at: i64,
 }

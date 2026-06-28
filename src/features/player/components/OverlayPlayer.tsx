@@ -91,12 +91,20 @@ const OverlayPlayer = ({
                 <Music className="size-22 text-primary" />
               )}
             </div>
-            <div className="space-y-1 text-center font-heading">
-              <h3 className="font-semibold">{song.title}</h3>
-              <p className="text-muted-foreground text-sm">
-                {song.artist_name}
-              </p>
-              <p className="text-muted-foreground text-sm">{song.album_name}</p>
+            <div className="space-y-2 text-center">
+              <h3 className="text-lg font-semibold leading-tight font-heading truncate">
+                {song.title}
+              </h3>
+
+              <div className="flex flex-col items-center gap-0.5">
+                <p className="text-sm text-muted-foreground font-medium truncate">
+                  {song.artist_name}
+                </p>
+
+                <p className="text-xs text-muted-foreground/70 truncate">
+                  {song.album_name}
+                </p>
+              </div>
             </div>
             <div className="space-y-6 mt-4">
               {/** Playback Buttons */}

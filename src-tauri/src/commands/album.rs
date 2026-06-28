@@ -15,11 +15,12 @@ pub fn get_all_albums(db: State<DbState>) -> Result<Vec<crate::models::album::Al
 // get album details (info + songs)
 #[tauri::command]
 pub fn get_album_details(
+    app: tauri::AppHandle,
     db: State<DbState>,
     album_id: i64,
 ) -> Result<crate::models::album::AlbumDetails, String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
-    services::album_service::get_album_details(&conn, album_id).map_err(|e| e.to_string())
+    services::album_service::get_album_details(&app, &conn, album_id).map_err(|e| e.to_string())
 }
 
 // update album cover
