@@ -3,7 +3,7 @@ use serde_json::Value;
 use std::fs;
 use tauri::{AppHandle, Manager};
 
-// save file to app data
+// save user selected local file to app data
 pub fn save_file_to_app_data(
     app_handle: &AppHandle,
     source_path: String,
@@ -62,8 +62,36 @@ fn get_cover_art_from_music_brainz(artist: &str, album: &str) -> Result<String, 
     ))
 }
 
-// download and save cover art to app data
-fn download_and_save_cover(
+// get artist image from audio db api
+fn get_artist_image_from_audio_db(artist: &str) -> Result<String, String> {
+    let client = Client::new();
+
+    let url = format!(
+        "https://theaudiodb.com/api/v1/json/2/search.php?s={}",
+        urlencoding::encode(artist)
+    );
+
+    let audio_db_json: Value = client
+        .get(&url)
+        .send()
+        .map_err(|e| e.to_string())?
+        .error_for_status()
+        .map_err(|e| e.to_string())?
+        .json()
+        .map_err(|e| e.to_string())?;
+
+    let image_url = audio_db_json["artists"]
+        .as_array()
+        .and_then(|artists| artists.first())
+        .and_then(|artist| artist.get("strArtistThumb"))
+        .and_then(|thumb| thumb.as_str())
+        .ok_or("No valid artist image found")?;
+
+    Ok(image_url.to_string())
+}
+
+// download and save image to app data
+fn download_and_save_image(
     url: &str,
     file_name: String,
     app_handle: &AppHandle,
@@ -110,13 +138,39 @@ pub fn ensure_album_cover(
 
     let cover_url = get_cover_art_from_music_brainz(&album.artist_name, &album.name)?;
 
-    let saved_path = download_and_save_cover(
+    let saved_path = download_and_save_image(
         &cover_url,
         format!("album_{}_cover.jpg", album_id),
         app_handle,
     )?;
 
     crate::repositories::album_repository::update_cover_path(conn, album_id, &saved_path)
+        .map_err(|e| e.to_string())?;
+
+    Ok(Some(saved_path))
+}
+
+pub fn ensure_artist_image(
+    conn: &rusqlite::Connection,
+    app_handle: &AppHandle,
+    artist_id: i64,
+) -> Result<Option<String>, String> {
+    let artist =
+        crate::repositories::artist_repository::get(conn, artist_id).map_err(|e| e.to_string())?;
+
+    if let Some(path) = &artist.image_path {
+        return Ok(Some(path.clone()));
+    }
+
+    let image_url = get_artist_image_from_audio_db(&artist.name)?;
+
+    let saved_path = download_and_save_image(
+        &image_url,
+        format!("artist_{}_image.jpg", artist_id),
+        app_handle,
+    )?;
+
+    crate::repositories::artist_repository::update_image_path(conn, artist_id, &saved_path)
         .map_err(|e| e.to_string())?;
 
     Ok(Some(saved_path))

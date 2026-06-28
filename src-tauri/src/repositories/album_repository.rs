@@ -8,6 +8,7 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {
         "
         SELECT alb.*, art.name as artist_name FROM albums alb 
         JOIN artists art ON alb.artist_id = art.id
+        ORDER BY alb.name ASC
         ",
     )?;
     let album_iter = stmt.query_map([], |row| {

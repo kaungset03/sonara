@@ -12,18 +12,27 @@ pub fn get_all_artists(
 
 // get artist details (info and songs)
 pub fn get_artist_details(
+    app: &tauri::AppHandle,
     conn: &rusqlite::Connection,
     artist_id: i64,
 ) -> rusqlite::Result<ArtistDetails> {
-    let artist = artist_repository::get(conn, artist_id);
-    if artist.is_err() {
-        return Err(rusqlite::Error::QueryReturnedNoRows);
-    }
+    let app_handle = app.clone();
+
+    tauri::async_runtime::spawn_blocking(move || {
+        if let Ok(bg_conn) = crate::db::connection::get_connection(&app_handle) {
+            let _ = crate::services::file_service::ensure_artist_image(
+                &bg_conn,
+                &app_handle,
+                artist_id,
+            );
+        }
+    });
+
+    let artist = artist_repository::get(conn, artist_id)
+        .map_err(|_| rusqlite::Error::QueryReturnedNoRows)?;
+
     let songs = song_repository::get_by_artist(conn, artist_id)?;
-    Ok(ArtistDetails {
-        artist: artist.unwrap(),
-        songs,
-    })
+    Ok(ArtistDetails { artist, songs })
 }
 
 // update artist image

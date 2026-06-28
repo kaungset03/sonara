@@ -15,11 +15,12 @@ pub fn get_all_artists(db: State<DbState>) -> Result<Vec<crate::models::artist::
 // get artist details (info + songs)
 #[tauri::command]
 pub fn get_artist_details(
+    app: tauri::AppHandle,
     db: State<DbState>,
     artist_id: i64,
 ) -> Result<crate::models::artist::ArtistDetails, String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
-    services::artist_service::get_artist_details(&conn, artist_id).map_err(|e| e.to_string())
+    services::artist_service::get_artist_details(&app, &conn, artist_id).map_err(|e| e.to_string())
 }
 
 // update profile picture
