@@ -23,6 +23,16 @@ pub fn get_album_details(
     services::album_service::get_album_details(&app, &conn, album_id).map_err(|e| e.to_string())
 }
 
+// search albums by name
+#[tauri::command]
+pub fn search_albums(
+    db: State<DbState>,
+    search: &str,
+) -> Result<Vec<crate::models::search::LiveSearchResult>, String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::album_service::search_albums(&conn, search).map_err(|e| e.to_string())
+}
+
 // update album cover
 #[tauri::command]
 pub fn update_album_cover(

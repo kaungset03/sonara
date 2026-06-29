@@ -23,6 +23,16 @@ pub fn get_artist_details(
     services::artist_service::get_artist_details(&app, &conn, artist_id).map_err(|e| e.to_string())
 }
 
+// search artists by name
+#[tauri::command]
+pub fn search_artists(
+    db: State<DbState>,
+    search: &str,
+) -> Result<Vec<crate::models::search::LiveSearchResult>, String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::artist_service::search_artists(&conn, search).map_err(|e| e.to_string())
+}
+
 // update profile picture
 #[tauri::command]
 pub fn update_artist_image(

@@ -73,7 +73,7 @@ const SongsTable = ({
               </TableCell>
               <TableCell
                 onClick={() => handleSongClick(song)}
-                className="min-w-35 max-w-50 overflow-hidden truncate cursor-pointer"
+                className="min-w-40 max-w-50 overflow-hidden truncate cursor-pointer"
               >
                 {song.title}
               </TableCell>

@@ -13,7 +13,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import useEditSongInfoMutation from "../api/useEditSongInfoMutation";
+import useEditSongInfoMutation from "@/features/songs/api/useEditSongInfoMutation";
+import InputCombobox from "@/features/songs/components/InputCombobox";
+import useSearchArtistsQuery from "@/features/artists/api/useSearchArtistsQuery";
+import useSearchAlbumsQuery from "@/features/albums/api/useSearchAlbumsQuery";
+import useDebounce from "@/hooks/useDebounce";
 
 // title, artist_name, album_name, album_artist, track_number
 type EditSongInfoDialogProps = {
@@ -40,6 +44,30 @@ const EditSongInfoDialog = ({
   const [albumArtistInput, setAlbumArtistInput] = useState(album_artist);
   const [trackNumberInput, setTrackNumberInput] = useState(track_number);
 
+  // getting suggestions for artist input
+  const debouncedArtistInput = useDebounce({
+    value: artistInput,
+    timeout: 350,
+  });
+  const { data: artistSuggestions } =
+    useSearchArtistsQuery(debouncedArtistInput);
+
+  // getting suggestions for album input
+  const debouncedAlbumInput = useDebounce({
+    value: albumInput,
+    timeout: 350,
+  });
+  const { data: albumSuggestions } = useSearchAlbumsQuery(debouncedAlbumInput);
+
+  // getting suggestions for album artist input
+  const debouncedAlbumArtistInput = useDebounce({
+    value: albumArtistInput,
+    timeout: 350,
+  });
+  const { data: albumArtistSuggestions } = useSearchArtistsQuery(
+    debouncedAlbumArtistInput,
+  );
+
   const closeDialog = () => {
     setOpen(false);
   };
@@ -64,30 +92,31 @@ const EditSongInfoDialog = ({
         <DropdownMenuItem
           className="text-xs"
           onSelect={(e) => e.preventDefault()}
-          onClick={(e) => e.stopPropagation()}
         >
           Edit Song Info
         </DropdownMenuItem>
       </DialogTrigger>
-      <DialogContent
-        onPointerDown={(e) => e.stopPropagation()}
-        onClick={(e) => e.stopPropagation()}
-        className="min-w-fit"
-        showCloseButton={false}
-      >
-        <form onSubmit={handleSubmit} id="edit-song-info-form">
-          <DialogHeader>
-            <DialogTitle>Edit Song Info</DialogTitle>
-            <DialogDescription>
-              Enter the updated information for the song.
+
+      <DialogContent className="w-full max-w-lg p-6">
+        <form
+          onSubmit={handleSubmit}
+          id={`edit-song-info-form-${id}`}
+          className="space-y-6"
+        >
+          {/* Header */}
+          <DialogHeader className="space-y-1">
+            <DialogTitle className="text-base">Edit song details</DialogTitle>
+            <DialogDescription className="text-xs">
+              Update metadata for this track. Changes will be reflected in your
+              library.
             </DialogDescription>
           </DialogHeader>
-          <div className="w-full space-y-6 p-2 my-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label
-                htmlFor="title"
-                className="text-right text-xs text-muted-foreground"
-              >
+
+          {/* Body */}
+          <div className="space-y-5">
+            {/* Title */}
+            <div className="space-y-1">
+              <Label htmlFor="title" className="text-xs text-muted-foreground">
                 Title
               </Label>
               <Input
@@ -95,77 +124,69 @@ const EditSongInfoDialog = ({
                 name="title"
                 value={titleInput}
                 onChange={(e) => setTitleInput(e.target.value)}
-                className="col-span-3 h-8 text-xs"
+                className="h-9 text-xs"
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label
-                htmlFor="artist"
-                className="text-right text-xs text-muted-foreground"
-              >
-                Artist
-              </Label>
-              <Input
-                id="artist"
-                name="artist"
-                value={artistInput}
-                onChange={(e) => setArtistInput(e.target.value)}
-                className="col-span-3 h-8 text-xs"
-              />
-            </div>
+            {/* Artist */}
+            <InputCombobox
+              label="Artist"
+              value={artistInput}
+              onChange={setArtistInput}
+              suggestions={artistSuggestions}
+            />
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label
-                htmlFor="album"
-                className="text-right text-xs text-muted-foreground"
-              >
-                Album
-              </Label>
-              <Input
-                id="album"
-                name="album"
-                value={albumInput}
-                onChange={(e) => setAlbumInput(e.target.value)}
-                className="col-span-3 h-8 text-xs"
-              />
-            </div>
+            {/* Album */}
+            <InputCombobox
+              label="Album"
+              value={albumInput}
+              onChange={setAlbumInput}
+              suggestions={albumSuggestions}
+            />
 
-            <div className="grid grid-cols-4 gap-4 items-center">
-              <Label
-                htmlFor="album_artist"
-                className="text-right text-xs text-muted-foreground"
-              >
-                Album Artist
-              </Label>
-              <div className="col-span-3 grid grid-cols-3 gap-2">
-                <Input
-                  id="album_artist"
-                  name="album_artist"
+            {/* Album Artist + Track Number */}
+            <div className="grid grid-cols-3 gap-3 items-end">
+              {/* Album Artist */}
+              <div className="col-span-2">
+                <InputCombobox
+                  label="Album Artist"
                   value={albumArtistInput}
-                  onChange={(e) => setAlbumArtistInput(e.target.value)}
-                  className="col-span-2 h-8 text-xs"
+                  onChange={setAlbumArtistInput}
+                  suggestions={albumArtistSuggestions}
                 />
+              </div>
+
+              {/* Track Number */}
+              <div className="space-y-1">
+                <Label
+                  htmlFor="track_number"
+                  className="text-xs text-muted-foreground"
+                >
+                  Track Number
+                </Label>
                 <Input
                   id="track_number"
                   name="track_number"
-                  min={0}
-                  defaultValue={0}
                   type="number"
+                  min={0}
                   value={trackNumberInput}
                   onChange={(e) => setTrackNumberInput(Number(e.target.value))}
-                  className="h-8 text-xs text-center"
-                  placeholder="Track #"
+                  className="h-9 text-xs text-center"
                 />
               </div>
             </div>
           </div>
-          <DialogFooter>
+
+          {/* Footer */}
+          <DialogFooter className="gap-2 pt-2">
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" type="button">
+                Cancel
+              </Button>
             </DialogClose>
-            <Button type="submit" form="edit-song-info-form">
-              Save
+
+            <Button type="submit" form={`edit-song-info-form-${id}`}>
+              Save changes
             </Button>
           </DialogFooter>
         </form>

@@ -24,7 +24,7 @@ const useEditSongInfoMutation = ({ closeDialog }: EditSongInfoProps) => {
     onSuccess: () => {
       toast.success("Song info updated");
       closeDialog();
-      queryClient.invalidateQueries({
+      return queryClient.invalidateQueries({
         queryKey: ["songs", "artists", "albums"],
         refetchType: "active",
       });

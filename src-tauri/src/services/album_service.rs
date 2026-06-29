@@ -39,6 +39,14 @@ pub fn get_album_details(
     })
 }
 
+// search albums by name
+pub fn search_albums(
+    conn: &rusqlite::Connection,
+    query: &str,
+) -> rusqlite::Result<Vec<crate::models::search::LiveSearchResult>> {
+    album_repository::search_by_name(conn, query)
+}
+
 // update album cover
 pub fn update_album_cover(
     app: &tauri::AppHandle,

@@ -113,3 +113,20 @@ pub fn search(conn: &Connection, query: &str) -> rusqlite::Result<Vec<Artist>> {
     let artists = artist_iter.collect();
     artists
 }
+
+// lightweight search for artists by name, returning only id and name
+pub fn search_by_name(
+    conn: &Connection,
+    query: &str,
+) -> rusqlite::Result<Vec<crate::models::search::LiveSearchResult>> {
+    let mut stmt = conn.prepare("SELECT id, name FROM artists WHERE name LIKE ?1")?;
+    let artist_iter = stmt.query_map(params![format!("%{}%", query)], |row| {
+        Ok(crate::models::search::LiveSearchResult {
+            id: row.get("id")?,
+            name: row.get("name")?,
+        })
+    })?;
+
+    let artists = artist_iter.collect();
+    artists
+}

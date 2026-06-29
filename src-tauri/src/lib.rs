@@ -59,9 +59,11 @@ pub fn run() {
             commands::playlist::remove_songs_from_playlist,
             commands::artist::get_all_artists,
             commands::artist::get_artist_details,
+            commands::artist::search_artists,
             commands::artist::update_artist_image,
             commands::album::get_all_albums,
             commands::album::get_album_details,
+            commands::album::search_albums,
             commands::album::update_album_cover,
         ])
         .run(tauri::generate_context!())

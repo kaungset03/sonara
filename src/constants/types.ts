@@ -1,6 +1,4 @@
 declare global {
-  // editable song info in dialog
-  // title, artist_name, album_name, track_number
   type Song = {
     id: number;
     title: string;

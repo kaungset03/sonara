@@ -36,6 +36,13 @@ pub fn get_artist_details(
     Ok(ArtistDetails { artist, songs })
 }
 
+pub fn search_artists(
+    conn: &rusqlite::Connection,
+    query: &str,
+) -> rusqlite::Result<Vec<crate::models::search::LiveSearchResult>> {
+    artist_repository::search_by_name(conn, query)
+}
+
 // update artist image
 pub fn update_artist_image(
     app: &tauri::AppHandle,
