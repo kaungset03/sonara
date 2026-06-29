@@ -29,7 +29,6 @@ pub fn delete_playlist(conn: &rusqlite::Connection, playlist_id: i64) -> rusqlit
     playlist_repository::delete(conn, playlist_id)
 }
 
-
 pub fn get_playlist_details(
     conn: &rusqlite::Connection,
     playlist_id: i64,

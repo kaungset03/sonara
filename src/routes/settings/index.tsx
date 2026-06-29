@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { openUrl } from "@tauri-apps/plugin-opener";
 import { Settings } from "lucide-react";
 import { useTheme } from "@/components/custom/ThemeProvider";
 import {
@@ -9,9 +10,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { colorOptions, themeOptions } from "@/constants/constants";
+import { checkForAppUpdates } from "@/utils/updater";
 import LibraryManagement from "@/features/settings/components/LibraryManagement";
 import useGetAppStatsQuery from "@/features/settings/api/useGetAppStatsQuery";
 import useAppStore from "@/store/app-store";
@@ -29,6 +32,10 @@ function RouteComponent() {
   const setRepeatModeConfig = useAppStore((state) => state.setRepeatModeConfig);
 
   const { data } = useGetAppStatsQuery();
+
+  const handleViewOnGitHub = async () => {
+    await openUrl("https://github.com/kaungset03/sonara");
+  };
 
   return (
     <div className="space-y-8">
@@ -167,6 +174,23 @@ function RouteComponent() {
               <span className="text-right">{data?.total_albums}</span>
               <span className="text-muted-foreground">📁 Folders</span>
               <span className="text-right">{data?.total_folders}</span>
+            </div>
+            <Separator />
+            <div className="flex flex-col items-center justify-center gap-4">
+              <Button
+                variant={"secondary"}
+                className="text-xs rounded-full"
+                onClick={() => checkForAppUpdates({ showNoUpdate: true })}
+              >
+                Check for Updates
+              </Button>
+              <Button
+                variant={"outline"}
+                className="text-xs rounded-full"
+                onClick={handleViewOnGitHub}
+              >
+                View on GitHub
+              </Button>
             </div>
             <Separator />
             <p className="text-xs text-muted-foreground text-center">
