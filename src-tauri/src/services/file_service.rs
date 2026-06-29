@@ -31,7 +31,7 @@ pub fn save_file_to_app_data(
 }
 
 // get cover art from music brain api
-fn get_cover_art_from_music_brainz(artist: &str, album: &str) -> Result<String, String> {
+fn get_cover_art_from_music_brainz(artist: &str, album: &str) -> Result<Option<String>, String> {
     let client = Client::new();
 
     let query = format!("artist:\"{}\" AND release:\"{}\"", artist, album);
@@ -54,21 +54,21 @@ fn get_cover_art_from_music_brainz(artist: &str, album: &str) -> Result<String, 
         .json()
         .map_err(|e| e.to_string())?;
 
-    let mbid = mb_json["releases"]
+    let Some(mbid) = mb_json["releases"]
         .as_array()
         .and_then(|releases| releases.first())
         .and_then(|release| release.get("id"))
         .and_then(|id| id.as_str())
-        .ok_or("No valid release MBID found")?;
+    else {
+        return Ok(None);
+    };
 
-    Ok(format!(
-        "https://coverartarchive.org/release/{}/front-250",
-        mbid
-    ))
+    let cover_art_url = format!("https://coverartarchive.org/release/{}/front", mbid);
+    Ok(Some(cover_art_url))
 }
 
 // get artist image from audio db api
-fn get_artist_image_from_audio_db(artist: &str) -> Result<String, String> {
+fn get_artist_image_from_audio_db(artist: &str) -> Result<Option<String>, String> {
     let client = Client::new();
 
     let url = format!(
@@ -85,17 +85,19 @@ fn get_artist_image_from_audio_db(artist: &str) -> Result<String, String> {
         .json()
         .map_err(|e| e.to_string())?;
 
-    let image_url = audio_db_json["artists"]
+    let Some(image_url) = audio_db_json["artists"]
         .as_array()
         .and_then(|artists| artists.first())
         .and_then(|artist| artist.get("strArtistThumb"))
         .and_then(|thumb| thumb.as_str())
-        .ok_or("No valid artist image found")?;
+    else {
+        return Ok(None);
+    };
 
-    Ok(image_url.to_string())
+    Ok(Some(image_url.to_string()))
 }
 
-pub fn get_song_lyrics_from_lrclib(song: &SongResponse) -> Result<String, String> {
+pub fn get_song_lyrics_from_lrclib(song: &SongResponse) -> Result<Option<String>, String> {
     // Implementation for fetching lyrics from LRCLib
     let client = Client::new();
 
@@ -107,24 +109,21 @@ pub fn get_song_lyrics_from_lrclib(song: &SongResponse) -> Result<String, String
         song.duration
     );
 
-    let lrclib_json: Value = client
-        .get(&url)
-        .header(
-            "User-Agent",
-            "Sonara/0.1.0 (https://github.com/kaungset03/sonara)",
-        )
-        .send()
-        .map_err(|e| e.to_string())?
-        .error_for_status()
-        .map_err(|e| e.to_string())?
-        .json()
-        .map_err(|e| e.to_string())?;
+    let response = client.get(&url).send().map_err(|e| e.to_string())?;
 
-    let lyrics = lrclib_json["syncedLyrics"]
-        .as_str()
-        .ok_or("No valid lyrics found")?;
+    if response.status() == reqwest::StatusCode::NOT_FOUND {
+        return Ok(None);
+    }
 
-    Ok(lyrics.to_string())
+    let response = response.error_for_status().map_err(|e| e.to_string())?;
+
+    let lrclib_json: Value = response.json().map_err(|e| e.to_string())?;
+
+    let Some(lyrics) = lrclib_json["syncedLyrics"].as_str() else {
+        return Ok(None);
+    };
+
+    Ok(Some(lyrics.to_string()))
 }
 
 // download and save file to app data
@@ -166,34 +165,42 @@ pub fn ensure_album_cover(
     app_handle: &AppHandle,
     album: Album,
 ) -> Result<Option<String>, String> {
-    // if cover_status == "not_found", return None
+    // if cover_path exists, return it
+    if album.cover_path.is_some() {
+        return Ok(album.cover_path);
+    }
+
+    // already tried to fetch and not found, return None
     if album.cover_status == "not_found" {
         return Ok(None);
     }
 
-    if let Some(path) = &album.cover_path {
-        return Ok(Some(path.clone()));
-    }
+    match get_cover_art_from_music_brainz(&album.artist_name, &album.name) {
+        Ok(Some(url)) => {
+            // Download and save
+            let saved_path =
+                download_and_save_file(&url, format!("album_{}_cover.jpg", album.id), app_handle)?;
 
-    let cover_url = get_cover_art_from_music_brainz(&album.artist_name, &album.name)?;
-
-    // if cover_url is empty, update cover_status to "not_found" and return None
-    if cover_url.is_empty() {
-        crate::repositories::album_repository::update_cover_status(conn, album.id, "not_found")
+            crate::repositories::album_repository::update_cover_path(
+                conn,
+                album.id,
+                &saved_path,
+                "found",
+            )
             .map_err(|e| e.to_string())?;
-        return Ok(None);
+
+            return Ok(Some(saved_path));
+        }
+        Ok(None) => {
+            crate::repositories::album_repository::update_cover_status(conn, album.id, "not_found")
+                .map_err(|e| e.to_string())?;
+            return Ok(None);
+        }
+        Err(err) => {
+            // Network error or other error, log and return error
+            return Err(err);
+        }
     }
-
-    let saved_path = download_and_save_file(
-        &cover_url,
-        format!("album_{}_cover.jpg", album.id),
-        app_handle,
-    )?;
-
-    crate::repositories::album_repository::update_cover_path(conn, album.id, &saved_path)
-        .map_err(|e| e.to_string())?;
-
-    Ok(Some(saved_path))
 }
 
 pub fn ensure_artist_image(
@@ -201,33 +208,41 @@ pub fn ensure_artist_image(
     app_handle: &AppHandle,
     artist: Artist,
 ) -> Result<Option<String>, String> {
+    if let Some(path) = &artist.image_path {
+        return Ok(Some(path.clone()));
+    }
+
     // if image_status == "not_found", return None
     if artist.image_status == "not_found" {
         return Ok(None);
     }
 
-    if let Some(path) = &artist.image_path {
-        return Ok(Some(path.clone()));
-    }
-
-    let image_url = get_artist_image_from_audio_db(&artist.name)?;
-
-    if image_url.is_empty() {
-        crate::repositories::artist_repository::update_image_status(conn, artist.id, "not_found")
+    match get_artist_image_from_audio_db(&artist.name) {
+        Ok(Some(url)) => {
+            // Download and save
+            let saved_path = download_and_save_file(
+                &url,
+                format!("artist_{}_image.jpg", artist.id),
+                app_handle,
+            )?;
+            crate::repositories::artist_repository::update_image_path(conn, artist.id, &saved_path)
+                .map_err(|e| e.to_string())?;
+            return Ok(Some(saved_path));
+        }
+        Ok(None) => {
+            crate::repositories::artist_repository::update_image_status(
+                conn,
+                artist.id,
+                "not_found",
+            )
             .map_err(|e| e.to_string())?;
-        return Ok(None);
+            return Ok(None);
+        }
+        Err(err) => {
+            // Error occurred
+            return Err(err);
+        }
     }
-
-    let saved_path = download_and_save_file(
-        &image_url,
-        format!("artist_{}_image.jpg", artist.id),
-        app_handle,
-    )?;
-
-    crate::repositories::artist_repository::update_image_path(conn, artist.id, &saved_path)
-        .map_err(|e| e.to_string())?;
-
-    Ok(Some(saved_path))
 }
 
 pub fn ensure_song_lyrics(
@@ -235,39 +250,52 @@ pub fn ensure_song_lyrics(
     conn: &rusqlite::Connection,
     song: &SongResponse,
 ) -> Result<Option<String>, String> {
-    let lyrics = get_song_lyrics_from_lrclib(&song)?;
+    match get_song_lyrics_from_lrclib(&song) {
+        Ok(Some(lyrics)) => {
+            let file_name = format!("song_{}_lyrics.lrc", song.id);
 
-    if lyrics.is_empty() {
-        crate::repositories::lyrics_repository::update_lyrics_status(conn, song.id, "not_found")
+            let app_data_dir = app_handle
+                .path()
+                .app_data_dir()
+                .map_err(|e| format!("Failed to get AppData directory: {}", e))?;
+
+            if !app_data_dir.exists() {
+                fs::create_dir_all(&app_data_dir)
+                    .map_err(|e| format!("Failed to create AppData directory: {}", e))?;
+            }
+
+            let dest = app_data_dir.join(&file_name);
+
+            match fs::write(&dest, &lyrics) {
+                Ok(_) => {}
+                Err(e) => {
+                    return Err(e.to_string());
+                }
+            }
+
+            let saved_path = dest.to_string_lossy().to_string();
+
+            crate::repositories::lyrics_repository::update_lyrics_path(
+                conn,
+                song.id,
+                &saved_path,
+                "found",
+            )
             .map_err(|e| e.to_string())?;
-        return Ok(None);
-    }
 
-    let file_name = format!("song_{}_lyrics.lrc", song.id);
-
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| format!("Failed to get AppData directory: {}", e))?;
-
-    if !app_data_dir.exists() {
-        fs::create_dir_all(&app_data_dir)
-            .map_err(|e| format!("Failed to create AppData directory: {}", e))?;
-    }
-
-    let dest = app_data_dir.join(&file_name);
-
-    match fs::write(&dest, &lyrics) {
-        Ok(_) => {}
-        Err(e) => {
-            return Err(e.to_string());
+            return Ok(Some(saved_path));
+        }
+        Ok(None) => {
+            crate::repositories::lyrics_repository::update_lyrics_status(
+                conn,
+                song.id,
+                "not_found",
+            )
+            .map_err(|e| e.to_string())?;
+            return Ok(None);
+        }
+        Err(err) => {
+            return Err(err);
         }
     }
-
-    let saved_path = dest.to_string_lossy().to_string();
-
-    crate::repositories::lyrics_repository::update_lyrics_path(conn, song.id, &saved_path, "found")
-        .map_err(|e| e.to_string())?;
-
-    Ok(Some(saved_path))
 }

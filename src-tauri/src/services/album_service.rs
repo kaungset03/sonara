@@ -53,7 +53,7 @@ pub fn update_album_cover(
     );
 
     if let Ok(saved_image_path) = saved_path {
-        album_repository::update_cover_path(conn, album_id, &saved_image_path)?;
+        album_repository::update_cover_path(conn, album_id, &saved_image_path, "found")?;
         Ok(())
     } else {
         Err(rusqlite::Error::InvalidQuery)

@@ -75,10 +75,15 @@ pub fn get(conn: &Connection, id: i64) -> rusqlite::Result<Album> {
 }
 
 // Update album cover path by id
-pub fn update_cover_path(conn: &Connection, id: i64, cover_path: &str) -> rusqlite::Result<()> {
+pub fn update_cover_path(
+    conn: &Connection,
+    id: i64,
+    cover_path: &str,
+    cover_status: &str,
+) -> rusqlite::Result<()> {
     conn.execute(
-        "UPDATE albums SET cover_path = ?1 WHERE id = ?2",
-        params![cover_path, id],
+        "UPDATE albums SET cover_path = ?1, cover_status = ?2 WHERE id = ?3",
+        params![cover_path, cover_status, id],
     )?;
     Ok(())
 }
