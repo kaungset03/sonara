@@ -20,6 +20,47 @@ pub fn get_songs_by_search(
     song_repository::search(conn, query)
 }
 
+pub fn update_song_info(
+    conn: &mut rusqlite::Connection,
+    id: i64,
+    title: &str,
+    album_name: &str,
+    artist_name: &str,
+    album_artist_name: &str,
+    track_number: Option<i32>,
+) -> rusqlite::Result<()> {
+    let tx = conn.transaction()?;
+
+    let title = title.trim();
+    let artist_name = artist_name.trim();
+    let album_name = album_name.trim();
+    let album_artist_name = album_artist_name.trim();
+
+    let artist_id = crate::repositories::artist_repository::find_or_create(&tx, artist_name)?;
+
+    let album_artist_id = if album_artist_name == artist_name {
+        artist_id
+    } else {
+        crate::repositories::artist_repository::find_or_create(&tx, album_artist_name)?
+    };
+
+    let album_id =
+        crate::repositories::album_repository::find_or_create(&tx, album_name, album_artist_id)?;
+
+    crate::repositories::song_repository::update_info(
+        &tx,
+        id,
+        title,
+        album_id,
+        artist_id,
+        track_number,
+    )?;
+
+    tx.commit()?;
+
+    Ok(())
+}
+
 pub fn set_favorite_song(
     conn: &rusqlite::Connection,
     song_id: i64,

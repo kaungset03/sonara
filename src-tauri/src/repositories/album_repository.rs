@@ -6,9 +6,14 @@ use crate::models::album::Album;
 pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {
     let mut stmt = conn.prepare(
         "
-        SELECT alb.*, art.name as artist_name FROM albums alb 
+        SELECT alb.*, art.name AS artist_name FROM albums alb
         JOIN artists art ON alb.artist_id = art.id
-        ORDER BY alb.name ASC
+        WHERE EXISTS (
+            SELECT 1
+            FROM songs s
+            WHERE s.album_id = alb.id
+        )
+        ORDER BY alb.created_at DESC;
         ",
     )?;
     let album_iter = stmt.query_map([], |row| {

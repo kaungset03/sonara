@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Heart, Music2 } from "lucide-react";
+import { Heart, Music2, Play } from "lucide-react";
 import { getFormattedDuration } from "@/lib/helpers";
 import useToggleFavoriteMutation from "@/features/songs/api/useToggleFavoriteMutation";
 import ActionsDropdown from "@/features/songs/components/ActionsDropdown";
@@ -53,17 +53,28 @@ const SongsTable = ({
           return (
             <TableRow
               key={song.id}
-              className={`cursor-pointer ${
-                isActive ? "text-primary" : "hover:bg-primary/10"
-              }`}
-              onClick={() => {
-                handleSongClick(song);
-              }}
+              className={`group ${isActive ? "text-primary" : "hover:bg-primary/10"}`}
             >
-              <TableCell className="w-10 text-center">
-                {isActive ? <Music2 size={14} /> : index + 1}
+              <TableCell
+                className="w-10 text-center cursor-pointer"
+                onClick={() => handleSongClick(song)}
+              >
+                <div className="flex items-center justify-center">
+                  {isActive ? (
+                    <Music2 size={14} />
+                  ) : (
+                    <>
+                      <span className="group-hover:hidden">{index + 1}</span>
+
+                      <Play size={14} className="hidden group-hover:block" />
+                    </>
+                  )}
+                </div>
               </TableCell>
-              <TableCell className="max-w-50 overflow-hidden truncate">
+              <TableCell
+                onClick={() => handleSongClick(song)}
+                className="min-w-35 max-w-50 overflow-hidden truncate cursor-pointer"
+              >
                 {song.title}
               </TableCell>
               <TableCell>{song.artist_name}</TableCell>

@@ -25,7 +25,7 @@ function RouteComponent() {
               to={"/albums/$id"}
               params={{ id: album.id.toString() }}
               key={album.id}
-              className="group flex flex-col gap-4"
+              className="group flex flex-col gap-1"
             >
               <div className="relative w-full aspect-square shrink-0 bg-linear-to-br from-primary/30 to-primary/10 rounded-lg flex items-center justify-center overflow-hidden">
                 {album.cover_path ? (
@@ -45,7 +45,7 @@ function RouteComponent() {
                 <h3 className="font-semibold group-hover:text-primary transition-colors text-ellipsis overflow-hidden whitespace-nowrap ">
                   {album.name}
                 </h3>
-                <p className="text-xs text-muted-foreground  text-ellipsis overflow-hidden whitespace-nowrap ">
+                <p className="text-xs text-muted-foreground group-hover:text-primary transition-colors text-ellipsis overflow-hidden whitespace-nowrap ">
                   {album.artist_name}
                 </p>
               </div>

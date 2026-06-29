@@ -43,7 +43,10 @@ fn get_cover_art_from_music_brainz(artist: &str, album: &str) -> Result<String, 
 
     let mb_json: Value = client
         .get(&url)
-        .header("User-Agent", "Sonara/0.1.0 (kset2299@gmail.com)")
+        .header(
+            "User-Agent",
+            "Sonara/0.1.0 (https://github.com/kaungset03/sonara)",
+        )
         .send()
         .map_err(|e| e.to_string())?
         .error_for_status()
@@ -106,6 +109,10 @@ pub fn get_song_lyrics_from_lrclib(song: &SongResponse) -> Result<String, String
 
     let lrclib_json: Value = client
         .get(&url)
+        .header(
+            "User-Agent",
+            "Sonara/0.1.0 (https://github.com/kaungset03/sonara)",
+        )
         .send()
         .map_err(|e| e.to_string())?
         .error_for_status()
@@ -251,19 +258,13 @@ pub fn ensure_song_lyrics(
     let dest = app_data_dir.join(&file_name);
 
     match fs::write(&dest, &lyrics) {
-        Ok(_) => println!("Lyrics saved successfully"),
+        Ok(_) => {}
         Err(e) => {
-            println!("Write failed: {}", e);
             return Err(e.to_string());
         }
     }
 
     let saved_path = dest.to_string_lossy().to_string();
-
-    println!(
-        "Updating lyrics path in database for song {}: {}",
-        song.title, saved_path
-    );
 
     crate::repositories::lyrics_repository::update_lyrics_path(conn, song.id, &saved_path, "found")
         .map_err(|e| e.to_string())?;

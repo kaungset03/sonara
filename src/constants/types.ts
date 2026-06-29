@@ -1,4 +1,6 @@
 declare global {
+  // editable song info in dialog
+  // title, artist_name, album_name, track_number
   type Song = {
     id: number;
     title: string;
@@ -7,6 +9,7 @@ declare global {
     album_id: number;
     album_name: string;
     album_cover_path: string | null; // file path to the album cover image, if available
+    album_artist_name: string; // artist of the album, can be different from the song artist
     duration: number; // in seconds
     track_number: number; // track number in the album
     path: string; // file path to the song

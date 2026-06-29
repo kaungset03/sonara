@@ -33,6 +33,30 @@ pub fn get_songs_by_search(
     services::song_service::get_songs_by_search(&conn, &query).map_err(|e| e.to_string())
 }
 
+// update song metadata
+#[tauri::command]
+pub fn update_song_metadata(
+    db: State<DbState>,
+    id: i64,
+    title: &str,
+    album_name: &str,
+    artist_name: &str,
+    album_artist_name: &str,
+    track_number: Option<i32>,
+) -> Result<(), String> {
+    let mut conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::song_service::update_song_info(
+        &mut conn,
+        id,
+        title,
+        album_name,
+        artist_name,
+        album_artist_name,
+        track_number,
+    )
+    .map_err(|e| e.to_string())
+}
+
 // get favorite songs
 #[tauri::command]
 pub fn get_favorite_songs(

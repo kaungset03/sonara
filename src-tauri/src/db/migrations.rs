@@ -77,7 +77,7 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
             CREATE TABLE IF NOT EXISTS lyrics (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             song_id INTEGER NOT NULL UNIQUE,
-            path TEXT NOT NULL,
+            path TEXT DEFAULT NULL,
             status TEXT CHECK (status IN ('not_checked', 'found', 'not_found')) NOT NULL DEFAULT 'not_checked',
             FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE CASCADE
         )",

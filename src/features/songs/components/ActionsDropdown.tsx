@@ -8,6 +8,7 @@ import {
 import { Link } from "@tanstack/react-router";
 import { EllipsisVertical } from "lucide-react";
 import useAppStore from "@/store/app-store";
+import EditSongInfoDialog from "@/features/songs/components/EditSongInfoDialog";
 
 type ActionsDropdownProps = {
   song: Song;
@@ -31,6 +32,14 @@ const ActionsDropdown = ({ song, children }: ActionsDropdownProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {children}
+        <EditSongInfoDialog
+          id={song.id}
+          title={song.title}
+          artist_name={song.artist_name}
+          album_name={song.album_name}
+          album_artist={song.album_artist_name}
+          track_number={song.track_number}
+        />
         <DropdownMenuItem
           className="text-xs"
           onClick={(e) => {

@@ -29,6 +29,7 @@ pub struct SongResponse {
     pub album_id: i64,
     pub album_name: String,
     pub album_cover_path: Option<String>,
+    pub album_artist_name: String,
     pub duration: i64,
     pub path: String,
     pub is_favorite: bool,

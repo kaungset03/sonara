@@ -8,7 +8,9 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Artist>> {
         "
         SELECT DISTINCT a.*
         FROM artists a
-        JOIN songs s ON s.artist_id = a.id;",
+        JOIN songs s ON s.artist_id = a.id
+        ORDER BY a.name ASC
+        ",
     )?;
     let artist_iter = stmt.query_map([], |row| {
         Ok(Artist {

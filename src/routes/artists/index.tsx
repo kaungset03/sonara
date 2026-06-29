@@ -26,7 +26,7 @@ function RouteComponent() {
               to={"/artists/$id"}
               params={{ id: artist.id.toString() }}
               key={artist.id}
-              className="group flex flex-col justify-center items-center gap-y-4 p-4"
+              className="group flex flex-col justify-center items-center gap-y-4 p-2"
             >
               <div className="relative w-full aspect-square rounded-full shrink-0 bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center overflow-hidden">
                 {artist.image_path ? (

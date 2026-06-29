@@ -22,6 +22,7 @@ fn song_from_row(row: &rusqlite::Row) -> rusqlite::Result<SongResponse> {
         artist_name: row.get("artist_name")?,
         album_name: row.get("album_name")?,
         album_cover_path: row.get("album_cover_path")?,
+        album_artist_name: row.get("album_artist_name")?,
     })
 }
 
@@ -29,10 +30,17 @@ fn song_from_row(row: &rusqlite::Row) -> rusqlite::Result<SongResponse> {
 pub fn index(conn: &Connection) -> rusqlite::Result<Vec<SongResponse>> {
     let mut stmt = conn.prepare(
         "
-    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path
-    FROM songs s
-    LEFT JOIN artists a ON s.artist_id = a.id
-    LEFT JOIN albums al ON s.album_id = al.id
+            SELECT 
+                s.*,
+                a.name AS artist_name,
+                al.name AS album_name,
+                al.cover_path AS album_cover_path,
+                aa.name AS album_artist_name
+            FROM songs s
+            LEFT JOIN artists a ON s.artist_id = a.id
+            LEFT JOIN albums al ON s.album_id = al.id
+            LEFT JOIN artists aa ON al.artist_id = aa.id
+            ORDER BY s.created_at DESC;
     ",
     )?;
     let song_iter = stmt.query_map([], |row| song_from_row(row))?;
@@ -45,10 +53,11 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<SongResponse>> {
 pub fn get_by_album(conn: &Connection, album_id: i64) -> rusqlite::Result<Vec<SongResponse>> {
     let mut stmt = conn.prepare(
         "
-    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path
+    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path, aa.name as album_artist_name
     FROM songs s
     LEFT JOIN artists a ON s.artist_id = a.id
     LEFT JOIN albums al ON s.album_id = al.id
+    LEFT JOIN artists aa ON al.artist_id = aa.id
     WHERE s.album_id = ?1
     ORDER BY s.track_number ASC, s.title ASC
     ",
@@ -63,10 +72,11 @@ pub fn get_by_album(conn: &Connection, album_id: i64) -> rusqlite::Result<Vec<So
 pub fn get_by_artist(conn: &Connection, artist_id: i64) -> rusqlite::Result<Vec<SongResponse>> {
     let mut stmt = conn.prepare(
         "
-    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path
+    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path, aa.name as album_artist_name
     FROM songs s
     LEFT JOIN artists a ON s.artist_id = a.id
     LEFT JOIN albums al ON s.album_id = al.id
+    LEFT JOIN artists aa ON al.artist_id = aa.id
     WHERE s.artist_id = ?1
     ",
     )?;
@@ -79,10 +89,11 @@ pub fn get_by_artist(conn: &Connection, artist_id: i64) -> rusqlite::Result<Vec<
 // get songs by playlist id
 pub fn get_by_playlist(conn: &Connection, playlist_id: i64) -> rusqlite::Result<Vec<SongResponse>> {
     let mut stmt = conn.prepare(
-        "SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path FROM songs s
+        "SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path, aa.name as album_artist_name FROM songs s
          INNER JOIN playlist_songs ps ON s.id = ps.song_id
          LEFT JOIN artists a ON s.artist_id = a.id
          LEFT JOIN albums al ON s.album_id = al.id
+         LEFT JOIN artists aa ON al.artist_id = aa.id
          WHERE ps.playlist_id = ?1
          ORDER BY ps.created_at ASC
          ",
@@ -126,10 +137,11 @@ pub fn get_by_folder(conn: &Connection, folder_id: i64) -> rusqlite::Result<Vec<
 pub fn get(conn: &Connection, id: i64) -> rusqlite::Result<SongResponse> {
     let mut stmt = conn.prepare(
         "
-    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path
+    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path, aa.name as album_artist_name
     FROM songs s
     LEFT JOIN artists a ON s.artist_id = a.id
     LEFT JOIN albums al ON s.album_id = al.id
+    LEFT JOIN artists aa ON al.artist_id = aa.id
     WHERE s.id = ?1
     ",
     )?;
@@ -183,6 +195,22 @@ pub fn update(
     Ok(())
 }
 
+// Update song information by id
+pub fn update_info(
+    conn: &Connection,
+    id: i64,
+    title: &str,
+    album_id: i64,
+    artist_id: i64,
+    track_number: Option<i32>,
+) -> rusqlite::Result<()> {
+    conn.execute(
+        "UPDATE songs SET title = ?1, album_id = ?2, artist_id = ?3, track_number = ?4 WHERE id = ?5",
+        params![title, album_id, artist_id, track_number, id],
+    )?;
+    Ok(())
+}
+
 // delete song by id
 pub fn delete(conn: &Connection, id: i64) -> rusqlite::Result<()> {
     conn.execute("DELETE FROM songs WHERE id = ?1", params![id])?;
@@ -193,10 +221,11 @@ pub fn delete(conn: &Connection, id: i64) -> rusqlite::Result<()> {
 pub fn search(conn: &Connection, query: &str) -> rusqlite::Result<Vec<SongResponse>> {
     let mut stmt = conn.prepare(
         "
-    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path
+    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path, aa.name as album_artist_name
     FROM songs s
     LEFT JOIN artists a ON s.artist_id = a.id
     LEFT JOIN albums al ON s.album_id = al.id
+    LEFT JOIN artists aa ON al.artist_id = aa.id
     WHERE s.title LIKE ?1
     ",
     )?;
@@ -265,10 +294,11 @@ pub fn record_play(conn: &Connection, id: i64) -> rusqlite::Result<()> {
 pub fn get_favorites(conn: &Connection) -> rusqlite::Result<Vec<SongResponse>> {
     let mut stmt = conn.prepare(
         "
-    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path
+    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path, aa.name as album_artist_name
     FROM songs s
     LEFT JOIN artists a ON s.artist_id = a.id
     LEFT JOIN albums al ON s.album_id = al.id
+    LEFT JOIN artists aa ON al.artist_id = aa.id
     WHERE s.is_favorite = 1
     ORDER BY s.favorite_added_at DESC
     ",
@@ -283,10 +313,11 @@ pub fn get_favorites(conn: &Connection) -> rusqlite::Result<Vec<SongResponse>> {
 pub fn get_recently_played(conn: &Connection, limit: usize) -> rusqlite::Result<Vec<SongResponse>> {
     let mut stmt = conn.prepare(
         "
-    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path
+    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path, aa.name as album_artist_name
     FROM songs s
     LEFT JOIN artists a ON s.artist_id = a.id
     LEFT JOIN albums al ON s.album_id = al.id
+    LEFT JOIN artists aa ON al.artist_id = aa.id
     WHERE s.last_played_at IS NOT NULL
     ORDER BY s.last_played_at DESC
     LIMIT ?1
@@ -302,10 +333,11 @@ pub fn get_recently_played(conn: &Connection, limit: usize) -> rusqlite::Result<
 pub fn get_recently_added(conn: &Connection, limit: usize) -> rusqlite::Result<Vec<SongResponse>> {
     let mut stmt = conn.prepare(
         "
-    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path
+    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path, aa.name as album_artist_name
     FROM songs s
     LEFT JOIN artists a ON s.artist_id = a.id
     LEFT JOIN albums al ON s.album_id = al.id
+    LEFT JOIN artists aa ON al.artist_id = aa.id
     ORDER BY s.created_at DESC
     LIMIT ?1
     ",
@@ -320,10 +352,11 @@ pub fn get_recently_added(conn: &Connection, limit: usize) -> rusqlite::Result<V
 pub fn get_most_played(conn: &Connection, limit: usize) -> rusqlite::Result<Vec<SongResponse>> {
     let mut stmt = conn.prepare(
         "
-    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path
+    SELECT s.*, a.name as artist_name, al.name as album_name, al.cover_path as album_cover_path, aa.name as album_artist_name
     FROM songs s
     LEFT JOIN artists a ON s.artist_id = a.id
     LEFT JOIN albums al ON s.album_id = al.id
+    LEFT JOIN artists aa ON al.artist_id = aa.id
     WHERE s.play_count > 0
     ORDER BY s.play_count DESC, s.last_played_at DESC
     LIMIT ?1

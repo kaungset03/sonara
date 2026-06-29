@@ -45,6 +45,7 @@ pub fn run() {
             commands::song::get_song_by_id,
             commands::song::get_songs_by_search,
             commands::song::get_favorite_songs,
+            commands::song::update_song_metadata,
             commands::song::set_favorite_song,
             commands::song::record_song_play,
             commands::lyrics::get_song_lyrics,

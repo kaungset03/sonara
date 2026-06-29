@@ -13,7 +13,7 @@ const useImportFilesMutation = () => {
     },
     onSuccess: (r) => {
       toast.success("Imported: " + r.added + " files, failed: " + r.failed + ", removed: " + r.removed);
-      queryClient.invalidateQueries({ queryKey: ["songs"] });
+      queryClient.invalidateQueries({ queryKey: ["songs", "albums", "artists"] });
       queryClient.refetchQueries({ queryKey: ["importedFolders"] });
       queryClient.refetchQueries({ queryKey: ["homeData"] });
     },
