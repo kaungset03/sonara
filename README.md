@@ -1,97 +1,123 @@
 <p align="center">
-<img src="https://i.ibb.co/0RtJb89c/64x64.png" alt="Sonara">
+  <img src="https://i.ibb.co/0RtJb89c/64x64.png" alt="Sonara Logo" width="120" />
 </p>
+
 <h1 align="center">Sonara</h1>
+
 <p align="center">
-  A sleek, lightweight desktop music player built with <b>Tauri + React</b>.<br/>
-  Designed for fast local playback, beautiful UI, and a distraction-free listening experience.
+  <b>A sleek, lightweight desktop music player built with Tauri + React</b>
 </p>
 
-<br/>
+<p align="center">
+  Fast. Local-first. Distraction-free.
+</p>
 
-## ✨ Experience Music the Way It Should Be
+<p align="center">
+  <a href="https://github.com/kaungset03/sonara/releases">
+    <img src="https://img.shields.io/github/v/release/kaungset03/sonara?style=for-the-badge" />
+  </a>
+  <a href="https://github.com/kaungset03/sonara/stargazers">
+    <img src="https://img.shields.io/github/stars/kaungset03/sonara?style=for-the-badge" />
+  </a>
+  <a href="https://github.com/kaungset03/sonara/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/kaungset03/sonara?style=for-the-badge" />
+  </a>
+</p>
 
-Sonara is built for focus and simplicity. No clutter. No noise. Just your music, beautifully organized and instantly accessible.
+---
 
-<br/>
+## ✨ A better way to experience your music
 
-## 🎧 Key Features
+Sonara is designed for people who want **speed, simplicity, and full control over their local music library**.
 
-### 🎵 Pure Local Playback
-Instantly scan and play music from your local folders with zero setup.
+No streaming clutter. No ads. Just your music.
 
-### 🎶 Smart Playlists
-Create and manage playlists effortlessly with a clean, intuitive interface.
+---
 
-### 📝 Synced Lyrics Support
-Supports `.lrc` files with timestamp-based lyric synchronization.
+## 🎧 Features
 
-### ⚡ Lightweight Performance
-Built with Tauri for near-native performance and minimal resource usage.
+### ⚡ Lightning Fast Playback
 
+Instantly scan and play your local music folders with near-native performance.
 
-<br/>
+### 🎨 Beautiful Album & Artist Art
 
-## 🛠️ Tech Stack
+- Auto-fetch artwork from APIs
+- Or upload your own custom images
+- Fully local-first and editable
+
+### 📝 Lyrics Support
+
+- Fetch lyrics from external APIs
+- Or upload your own lrc file
+- Smooth integration with playback
+
+### ✏️ Safe Metadata Editing
+
+- Edit song metadata inside the app
+- Stored in local database only
+- Your original files are never modified
+
+### 📁 Smart Library Management
+
+- Auto-organized library view
+- Albums, artists, folders all indexed locally
+
+---
+
+## Download
+
+Choose the correct version for your system:
+
+| Operating System      | File                                                 |
+| --------------------- | ---------------------------------------------------- |
+| macOS (Apple Silicon) | `Sonara_*_aarch64.dmg`                               |
+| macOS (Intel)         | `Sonara_*_x64.dmg`                                   |
+| Windows               | `Sonara_*_x64-setup.exe` or `Sonara_*_x64_en-US.msi` |
+| Linux (Debian/Ubuntu) | `Sonara_*_amd64.deb`                                 |
+| Linux (Universal)     | `Sonara_*_amd64.AppImage`                            |
+
+👉 Latest release:  
+https://github.com/kaungset03/sonara/releases
+
+---
+
+## Tech Stack
 
 - **Frontend:** React (Vite)
-- **Desktop Runtime:** Tauri (Rust backend)
-- **Styling and UI:** Tailwind CSS / ShadCN UI
-- **Database and Storage:** SQLite and local storage
+- **Backend:** Rust (Tauri)
+- **UI:** Tailwind CSS + shadcn/ui
+- **Database:** SQLite (local-first)
 - **Audio Engine:** Native system audio / HTML5 Audio API
 
-<br/>
+---
 
-## 📦 Installation
-### Prerequisites
+## How It Works
 
-Make sure you have installed:
+- Your music folders are scanned locally
+- Metadata is stored in SQLite (not your files)
+- React handles UI + playback state
+- Rust (Tauri) handles system-level performance
+- Optional APIs enhance artwork + lyrics
 
-- Node.js
-- pnpm (recommended)
-- Rust (for Tauri)
-- Tauri system dependencies
+---
 
-### Setup
+## Philosophy
 
-```bash
-# Clone the repo
-git clone https://github.com/kaungset03/sonara.git
-cd sonara
+> “Your music should belong to you — not a platform.”
 
-# Install dependencies
-pnpm install
+Sonara is built around **local-first, privacy-focused music playback**.
 
-# Run in Development
-pnpm tauri dev
+No accounts. No tracking. No ads.
 
-# Build for Production
-pnpm tauri build
-```
-<br/>
-
-## 🧠 How It Works
-
-Sonara keeps everything local and fast:
-
-- Your music folder is scanned on demand
-- Metadata is extracted and stored in SQLite
-- React manages playback state and UI
-- Tauri handles file system and native performance
-- `.lrc` files are parsed for real-time lyric syncing
-
-<br/>
-
-## 🚀 Roadmap
-
-- Advanced metadata editor (tags, artwork, album info)
-- LRC download via external APIs
-- Built-in audio equalizer
-- Audio visualizer (spectrum / waveform)
-- Mini-player mode
-
-<br/>
+---
 
 ## 📄 License
 
 MIT License © 2026 Sonara
+
+---
+
+<p align="center">
+  Made with ❤️ using Rust + Tauri + React
+</p>
