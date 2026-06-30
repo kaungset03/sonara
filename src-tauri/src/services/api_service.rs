@@ -21,7 +21,7 @@ pub fn get_cover_art_from_music_brainz(
         .get(&url)
         .header(
             "User-Agent",
-            "Sonara/0.1.0 (https://github.com/kaungset03/sonara)",
+            "Sonara/0.2.1 (https://github.com/kaungset03/sonara)",
         )
         .send()
         .map_err(|e| e.to_string())?
@@ -54,6 +54,10 @@ pub fn get_artist_image_from_audio_db(artist: &str) -> Result<Option<String>, St
 
     let audio_db_json: Value = client
         .get(&url)
+        .header(
+            "User-Agent",
+            "Sonara/0.2.1 (https://github.com/kaungset03/sonara)",
+        )
         .send()
         .map_err(|e| e.to_string())?
         .error_for_status()
@@ -85,7 +89,14 @@ pub fn get_song_lyrics_from_lrclib(song: &SongResponse) -> Result<Option<String>
         song.duration
     );
 
-    let response = client.get(&url).send().map_err(|e| e.to_string())?;
+    let response = client
+        .get(&url)
+        .header(
+            "User-Agent",
+            "Sonara/0.2.1 (https://github.com/kaungset03/sonara)",
+        )
+        .send()
+        .map_err(|e| e.to_string())?;
 
     if response.status() == reqwest::StatusCode::NOT_FOUND {
         return Ok(None);
