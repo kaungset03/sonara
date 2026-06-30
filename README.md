@@ -24,7 +24,7 @@
   </a>
 </p>
 
----
+<br />
 
 ## ✨ A better way to experience your music
 
@@ -32,7 +32,7 @@ Sonara is designed for people who want **speed, simplicity, and full control ove
 
 No streaming clutter. No ads. Just your music.
 
----
+<br />
 
 ## 🎧 Features
 
@@ -63,7 +63,39 @@ Instantly scan and play your local music folders with near-native performance.
 - Auto-organized library view
 - Albums, artists, folders all indexed locally
 
----
+<br />
+
+## 📦 Run Locally (Development Setup)
+
+For those who want to run Sonara on their local machine.
+
+### Prerequisites
+
+Make sure you have installed:
+
+- Node.js
+- pnpm (recommended)
+- Rust (for Tauri)
+
+### Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/kaungset03/sonara.git
+cd sonara
+
+# Install dependencies
+pnpm install
+
+# Run in development mode
+pnpm tauri dev
+
+# Build for production (local build)
+pnpm tauri build
+
+```
+
+<br/>
 
 ## Download
 
@@ -80,7 +112,7 @@ Choose the correct version for your system:
 👉 Latest release:  
 https://github.com/kaungset03/sonara/releases
 
----
+<br/>
 
 ## Tech Stack
 
@@ -90,7 +122,7 @@ https://github.com/kaungset03/sonara/releases
 - **Database:** SQLite (local-first)
 - **Audio Engine:** Native system audio / HTML5 Audio API
 
----
+<br />
 
 ## How It Works
 
@@ -100,9 +132,7 @@ https://github.com/kaungset03/sonara/releases
 - Rust (Tauri) handles system-level performance
 - Optional APIs enhance artwork + lyrics
 
----
-
-## Philosophy
+<br/>
 
 > “Your music should belong to you — not a platform.”
 
@@ -110,7 +140,7 @@ Sonara is built around **local-first, privacy-focused music playback**.
 
 No accounts. No tracking. No ads.
 
----
+<br/>
 
 ## 📄 License
 
