@@ -22,13 +22,16 @@ const useAddSongsToPlaylistMutation = ({
     },
     onSuccess: (_, variables) => {
       toast.success("Songs added to playlist");
-      closeDialog();
       queryClient.invalidateQueries({
         queryKey: ["songs", "playlist", variables.playlistId],
+        exact: false,
       });
     },
     onError: (err) => {
       toast.error(`Failed to add songs to playlist: ${err.message}`);
+    },
+    onSettled: () => {
+      closeDialog();
     },
   });
   return mutation;

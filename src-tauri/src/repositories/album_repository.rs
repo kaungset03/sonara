@@ -8,11 +8,6 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {
         "
         SELECT alb.*, art.name AS artist_name FROM albums alb
         JOIN artists art ON alb.artist_id = art.id
-        WHERE EXISTS (
-            SELECT 1
-            FROM songs s
-            WHERE s.album_id = alb.id
-        )
         ORDER BY alb.created_at DESC;
         ",
     )?;
@@ -34,6 +29,7 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {
 
 // find or create an album by name and artist_id
 pub fn find_or_create(conn: &Connection, name: &str, artist_id: i64) -> rusqlite::Result<i64> {
+    let name = name.trim();
     let created_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
@@ -97,11 +93,14 @@ pub fn update_cover_status(conn: &Connection, id: i64, cover_status: &str) -> ru
     Ok(())
 }
 
-// Delete an album by id
-// pub fn delete(conn: &Connection, id: i64) -> rusqlite::Result<()> {
-//     conn.execute("DELETE FROM albums WHERE id = ?1", params![id])?;
-//     Ok(())
-// }
+// Delete albums without songs attached to them
+pub fn delete_empty_albums(conn: &Connection) -> rusqlite::Result<usize> {
+    let deleted = conn.execute(
+        "DELETE FROM albums WHERE id NOT IN (SELECT DISTINCT album_id FROM songs) AND name <> 'Unknown Album'",
+        params![],
+    )?;
+    Ok(deleted)
+}
 
 // Search albums by name
 pub fn search(conn: &Connection, name: &str) -> rusqlite::Result<Vec<Album>> {

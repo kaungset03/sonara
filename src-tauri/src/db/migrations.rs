@@ -108,6 +108,5 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
         )",
         [],
     )?;
-
     Ok(())
 }

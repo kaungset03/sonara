@@ -7,11 +7,11 @@ pub fn get_song_lyrics(
     song_id: i64,
 ) -> rusqlite::Result<Option<String>> {
     let lyrics = lyrics_repository::get_lyrics_by_song_id(conn, song_id)?;
-
     if let Some(lyrics) = lyrics {
-        if !lyrics.path.is_empty() {
-            return Ok(Some(lyrics.path));
-        } else if lyrics.status == "not_found" {
+        if !lyrics.path.is_none() {
+            return Ok(lyrics.path);
+        }
+        if lyrics.status == "not_found" {
             return Ok(None);
         }
     }

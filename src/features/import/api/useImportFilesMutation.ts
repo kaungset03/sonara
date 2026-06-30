@@ -12,14 +12,25 @@ const useImportFilesMutation = () => {
       return result;
     },
     onSuccess: (r) => {
-      toast.success("Imported: " + r.added + " files, failed: " + r.failed + ", removed: " + r.removed);
-      queryClient.invalidateQueries({ queryKey: ["songs", "albums", "artists"] });
-      queryClient.refetchQueries({ queryKey: ["importedFolders"] });
-      queryClient.refetchQueries({ queryKey: ["homeData"] });
+      toast.success(
+        "Imported: " +
+          r.added +
+          " files, failed: " +
+          r.failed +
+          ", removed: " +
+          r.removed,
+      );
     },
     onError: (error) => {
       toast.error("Failed to import files.");
       console.error("Import error:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["songs", "albums", "artists"],
+      });
+      queryClient.refetchQueries({ queryKey: ["importedFolders"] });
+      queryClient.refetchQueries({ queryKey: ["homeData"] });
     },
   });
   return mutation;

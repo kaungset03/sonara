@@ -64,7 +64,7 @@ pub fn extract_metadata(path: &Path) -> Result<SongMetadata, String> {
     let album_artist = tag
         .and_then(|t| t.get_string(lofty::tag::ItemKey::AlbumArtist))
         .map(|s| s.to_string())
-        .unwrap_or_else(|| "Unknown Artist".to_string());
+        .unwrap_or_else(|| artist.clone());
 
     let track_number = tag.and_then(|t| t.track()).map(|n| n as i32);
 

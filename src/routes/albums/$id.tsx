@@ -47,7 +47,7 @@ function RouteComponent() {
     <div className="h-full overflow-y-auto">
       <div className="flex items-center gap-x-6 border-b border-muted-foreground/30 pb-8 mb-4">
         <div className="relative group">
-          <div className="size-42 rounded-lg overflow-hidden bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center shadow-lg">
+          <div className="size-50 rounded-lg overflow-hidden bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center shadow-lg">
             {data.album.cover_path ? (
               <img
                 src={convertFileSrc(data.album.cover_path)}

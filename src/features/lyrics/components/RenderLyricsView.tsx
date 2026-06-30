@@ -51,7 +51,7 @@ const RenderLyricsView = ({
     return (
       <div
         ref={containerRef}
-        className="h-85 w-full overflow-y-auto space-y-4 p-4 text-center scrollbar-none mask-fade-y"
+        className="h-90 w-full overflow-y-auto space-y-4 p-4 text-center scrollbar-none mask-fade-y"
       >
         {lyricsLines.map((line, index) => (
           <p
@@ -70,7 +70,7 @@ const RenderLyricsView = ({
   }
 
   return (
-    <div className="h-85 w-full flex justify-center items-center text-center">
+    <div className="h-90 w-full flex justify-center items-center text-center">
       <p className="font-heading font-medium text-muted-foreground mb-4">
         Error in loading lyrics.
         <br /> Please make sure the lyrics file exists and is accessible.

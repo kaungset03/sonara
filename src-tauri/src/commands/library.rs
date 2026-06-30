@@ -63,3 +63,10 @@ pub fn search_library(
     let conn = db.0.lock().map_err(|e| e.to_string())?;
     services::library_service::preview_search(&conn, &search).map_err(|e| e.to_string())
 }
+
+// clean up library by removing empty artists and albums
+#[tauri::command]
+pub fn cleanup_library(db: State<DbState>) -> Result<String, String> {
+    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::library_service::cleanup_library(&conn).map_err(|e| e.to_string())
+}

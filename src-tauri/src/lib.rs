@@ -40,6 +40,7 @@ pub fn run() {
             commands::library::sync_library_folders,
             commands::library::get_imported_folders,
             commands::library::remove_library_folder,
+            commands::library::cleanup_library,
             commands::library::search_library,
             commands::library::get_home_data,
             commands::library::get_app_stats,

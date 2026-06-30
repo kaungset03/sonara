@@ -34,11 +34,12 @@ const InputCombobox = ({
           value={value}
           onChange={handleInputChange}
           onFocus={() => setShowDropdown(true)}
+          onBlur={() => setShowDropdown(false)}
           className="h-9 text-xs"
         />
       </div>
       {showDropdown && suggestions && suggestions.length > 0 && (
-        <div className="absolute z-50 w-full bg-background rounded-xl max-h-48 overflow-auto">
+        <div className="absolute z-50 w-full bg-background rounded-xl scrollbar-none max-h-48 overflow-auto">
           {suggestions.map((suggestion: any) => (
             <div
               key={suggestion.id}

@@ -11,7 +11,7 @@ const SongLyrics = ({ songId, audioCurrentTime }: SongLyricsProps) => {
 
   if (isLoading) {
     return (
-      <div className="h-85 w-full flex justify-center items-center text-center">
+      <div className="h-90 w-full flex justify-center items-center text-center">
         <p className="font-heading font-medium text-muted-foreground mb-4">
           Loading lyrics...
         </p>
@@ -26,7 +26,7 @@ const SongLyrics = ({ songId, audioCurrentTime }: SongLyricsProps) => {
   }
 
   return (
-    <div className="h-85 w-full flex justify-center items-center text-center">
+    <div className="h-90 w-full flex justify-center items-center text-center">
       <p className="font-heading font-medium text-muted-foreground mb-4">
         No lyrics available for this song. <br /> You can add your own lyrics by
         clicking the button below.

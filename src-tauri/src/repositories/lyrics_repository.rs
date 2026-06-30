@@ -27,6 +27,7 @@ pub fn update_lyrics_path(
     path: &str,
     status: &str,
 ) -> rusqlite::Result<()> {
+    let path = if path.trim() == "" { None } else { Some(path) };
     conn.execute(
         "INSERT INTO lyrics (song_id, path, status) VALUES (?1, ?2, ?3)
          ON CONFLICT(song_id) DO UPDATE SET path=excluded.path, status=excluded.status",

@@ -169,6 +169,21 @@ pub fn preview_search(conn: &rusqlite::Connection, search: &str) -> Result<Searc
     })
 }
 
+// Clean up the library by removing empty artists and albums
+pub fn cleanup_library(conn: &rusqlite::Connection) -> rusqlite::Result<String> {
+    let deleted_albums = crate::repositories::album_repository::delete_empty_albums(conn)?;
+    let deleted_artists = crate::repositories::artist_repository::delete_empty_artists(conn)?;
+    let message = if deleted_albums == 0 && deleted_artists == 0 {
+        "Nothing to clean.".to_string()
+    } else {
+        format!(
+            "Removed {} unused albums and {} unused artists",
+            deleted_albums, deleted_artists
+        )
+    };
+    Ok(message)
+}
+
 fn process_metadata(
     conn: &rusqlite::Connection,
     metadata: SongMetadata,

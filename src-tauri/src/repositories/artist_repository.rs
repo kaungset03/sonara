@@ -8,7 +8,6 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Artist>> {
         "
         SELECT DISTINCT a.*
         FROM artists a
-        JOIN songs s ON s.artist_id = a.id
         ORDER BY a.name ASC
         ",
     )?;
@@ -41,6 +40,7 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Artist>> {
 // }
 
 pub fn find_or_create(conn: &Connection, name: &str) -> rusqlite::Result<i64> {
+    let name = name.trim();
     let created_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
@@ -91,11 +91,19 @@ pub fn update_image_status(conn: &Connection, id: i64, image_status: &str) -> ru
     Ok(())
 }
 
-// Delete an artist by id
-// pub fn delete(conn: &Connection, id: i64) -> rusqlite::Result<()> {
-//     conn.execute("DELETE FROM artists WHERE id = ?1", params![id])?;
-//     Ok(())
-// }
+// Delete artists with no associated songs and no associated albums
+pub fn delete_empty_artists(conn: &Connection) -> rusqlite::Result<usize> {
+    let deleted = conn.execute(
+        "
+        DELETE FROM artists
+        WHERE id NOT IN (SELECT DISTINCT artist_id FROM songs)
+        AND id NOT IN (SELECT DISTINCT artist_id FROM albums)
+        AND name <> 'Unknown Artist'
+    ",
+        [],
+    )?;
+    Ok(deleted)
+}
 
 // Search artists by name
 pub fn search(conn: &Connection, query: &str) -> rusqlite::Result<Vec<Artist>> {
