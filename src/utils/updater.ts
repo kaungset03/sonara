@@ -12,7 +12,6 @@ export async function checkForAppUpdates({
   const update = await check();
 
   if (!update) {
-    console.log("No update available");
     if (showNoUpdate) {
       // Handle no update available logic here
       await message("You are on the latest version.", {
@@ -32,9 +31,17 @@ export async function checkForAppUpdates({
   });
 
   if (!yes) {
+    console.log("User chose not to update");
     return;
   }
 
-  await update.downloadAndInstall();
+  await update
+    .downloadAndInstall()
+    .then(() => {
+      console.log("Update downloaded and installed successfully.");
+    })
+    .catch((error) => {
+      console.error("Error downloading or installing the update:", error);
+    });
   await relaunch();
 }

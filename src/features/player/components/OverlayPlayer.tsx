@@ -1,4 +1,5 @@
 import { convertFileSrc } from "@tauri-apps/api/core";
+import { platform } from "@tauri-apps/plugin-os";
 import { Button } from "@/components/ui/button";
 import {
   ChevronDown,
@@ -58,6 +59,9 @@ const OverlayPlayer = ({
   const muted = useAppStore((state) => state.muted);
   const setMuted = useAppStore((state) => state.setMuted);
 
+  const currentPlatform = platform();
+  const isMacOS = currentPlatform === "macos";
+
   return (
     <section className="fixed inset-0 z-50 pointer-events-none ">
       <div
@@ -68,8 +72,8 @@ const OverlayPlayer = ({
         className={`absolute top-0 left-0 w-full h-full  ${isExpanded ? "translate-y-0" : "translate-y-full"} transition-transform duration-350 ease-in pointer-events-auto`}
       >
         <div
+          data-tauri-drag-region={isMacOS}
           className="w-full h-16 flex items-center justify-end py-2 px-4"
-          data-tauri-drag-region
         >
           <div className="flex items-center gap-x-4">
             <Button variant="ghost" size="icon" onClick={collapse}>
