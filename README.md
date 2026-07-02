@@ -24,6 +24,15 @@
   </a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/kaungset03/sonara">
+    <img src="https://img.shields.io/github/downloads/kaungset03/sonara/total?style=for-the-badge" />
+  </a>
+   <a href="https://github.com/kaungset03/sonara/releases/latest">
+    <img src="https://img.shields.io/github/downloads/kaungset03/sonara/latest/total?style=for-the-badge" />
+  </a>
+</p>
+
 <br />
 
 ## ✨ A modern, local-first music experience
@@ -34,9 +43,7 @@ No streaming clutter. No ads. Just your music.
 
 <br/>
 
-## App Experience
-
-Instead of pages, Sonara is designed as a **music flow experience**.
+## Preview & Screenshots
 
 ### 🎧 Library (Home)
 
@@ -110,6 +117,83 @@ Edit your music metadata directly inside the app.
 
 <br/>
 
+## 📥 Download
+
+Get the latest version of **Sonara** from the GitHub Releases page.
+
+<p align="center">
+  <a href="https://github.com/kaungset03/sonara/releases/latest">
+    <img src="https://img.shields.io/badge/Download-Latest%20Release-2ea44f?style=for-the-badge&logo=github" alt="Download Sonara" />
+  </a>
+</p>
+
+### Available Downloads
+
+| Platform              | Installer                 |
+| --------------------- | ------------------------- |
+| macOS (Apple Silicon) | `sonara_*_aarch64.dmg`    |
+| macOS (Intel)         | `sonara_*_x64.dmg`        |
+| Windows (64-bit)      | `sonara_*_x64-setup.exe`  |
+| Debian / Ubuntu       | `sonara_*_amd64.deb`      |
+| Linux (Universal)     | `sonara_*_amd64.AppImage` |
+
+### Installation
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+1. Download the **Windows Installer** (`.exe`).
+2. Run the installer.
+3. Launch Sonara from the Start Menu.
+
+> **Note:** Windows SmartScreen may display a warning because Sonara is not code-signed yet. Click **More info → Run anyway** to continue.
+
+</details>
+
+<details>
+<summary><strong>macOS</strong></summary>
+
+1. Download the correct `.dmg` for your Mac.
+2. Open the disk image.
+3. Drag **Sonara** into the **Applications** folder.
+4. Launch Sonara from Applications.
+
+> On first launch, macOS may ask for confirmation since the app isn't notarized yet.
+
+</details>
+
+<details>
+<summary><strong>Debian / Ubuntu</strong></summary>
+
+```bash
+sudo dpkg -i sonara_*_amd64.deb
+```
+
+If any dependencies are missing:
+
+```bash
+sudo apt --fix-broken install
+```
+
+</details>
+
+<details>
+<summary><strong>AppImage</strong></summary>
+
+Make the AppImage executable:
+
+```bash
+chmod +x sonara_*_amd64.AppImage
+```
+
+Run it:
+
+```bash
+./sonara_*_amd64.AppImage
+```
+
+</details>
+
 ## ✨ Features
 
 - ⚡ Lightning fast local music scanning
@@ -149,5 +233,3 @@ Sonara is built around **local-first, privacy-focused music playback**. No accou
 ## 📄 License
 
 MIT License © 2026 Sonara
-
-<p align="center"> Made with ❤️ using Rust + Tauri + React </p>
