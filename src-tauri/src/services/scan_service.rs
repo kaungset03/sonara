@@ -22,7 +22,7 @@ fn is_audio_file(path: &Path) -> bool {
     match path.extension().and_then(|s| s.to_str()) {
         Some(ext) => matches!(
             ext.to_lowercase().as_str(),
-            "mp3" | "m4a" | "flac" | "wav" | "ogg"
+            "mp3" | "m4a" | "flac" | "wav" | "ogg" | "webm"
         ),
         None => false,
     }
