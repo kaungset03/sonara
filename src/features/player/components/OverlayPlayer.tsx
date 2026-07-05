@@ -21,6 +21,7 @@ import SongLyrics from "@/features/lyrics/components/SongLyrics";
 import useAppStore from "@/store/app-store";
 import UpdateSongLyricsButton from "@/features/lyrics/components/UpdateSongLyricsButton";
 import PlaybackQueue from "@/features/queue/components/PlaybackQueue";
+import MarqueeText from "../../../components/custom/MarqueText";
 
 type OverlayPlayerProps = {
   isExpanded: boolean;
@@ -82,8 +83,8 @@ const OverlayPlayer = ({
             <PlaybackQueue />
           </div>
         </div>
-        <div className="w-full h-[calc(100%-64px)] grid grid-cols-4 ">
-          <div className="col-span-2 w-full h-full p-4 flex flex-col justify-center items-center gap-y-6">
+        <div className="max-w-[95%] mx-auto h-[calc(100%-64px)] grid grid-cols-2">
+          <div className="w-full h-full p-4 flex flex-col justify-center items-center gap-y-6">
             <div className="size-70 rounded-xl bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center overflow-hidden">
               {song.album_cover_path ? (
                 <img
@@ -95,19 +96,22 @@ const OverlayPlayer = ({
                 <Music className="size-22 text-primary" />
               )}
             </div>
-            <div className="space-y-2 text-center">
-              <h3 className="text-lg font-semibold leading-tight font-heading truncate">
-                {song.title}
-              </h3>
+            <div className="space-y-2 text-center max-w-sm">
+              <MarqueeText
+                text={song.title}
+                className="text-lg font-semibold leading-tight font-heading"
+              />
 
               <div className="flex flex-col items-center gap-0.5">
-                <p className="text-sm text-muted-foreground font-medium truncate">
-                  {song.artist_name}
-                </p>
+                <MarqueeText
+                  text={song.artist_name}
+                  className="text-sm text-muted-foreground font-medium"
+                />
 
-                <p className="text-xs text-muted-foreground/70 truncate">
-                  {song.album_name}
-                </p>
+                <MarqueeText
+                  text={song.album_name}
+                  className="text-xs text-muted-foreground/70"
+                />
               </div>
             </div>
             <div className="space-y-6 mt-4">
@@ -194,7 +198,7 @@ const OverlayPlayer = ({
               </div>
             </div>
           </div>
-          <div className="col-span-2 w-full h-full p-4 flex flex-col justify-center items-center gap-y-8">
+          <div className="w-full h-full p-4 flex flex-col justify-center items-center gap-y-8">
             <SongLyrics songId={song.id} audioCurrentTime={position} />
             <UpdateSongLyricsButton songId={song.id} />
           </div>

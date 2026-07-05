@@ -1,18 +1,18 @@
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
-pub fn scan_for_mp3s<P: AsRef<Path>>(path: P) -> Vec<PathBuf> {
-    let mut mp3_files = Vec::new();
+pub fn scan_for_audio_files<P: AsRef<Path>>(path: P) -> Vec<PathBuf> {
+    let mut audio_files = Vec::new();
 
     for entry in WalkDir::new(path).into_iter().filter_map(|e| e.ok()) {
         let entry_path = entry.path();
 
         if is_audio_file(entry_path) {
-            mp3_files.push(entry_path.to_path_buf());
+            audio_files.push(entry_path.to_path_buf());
         }
     }
 
-    mp3_files
+    audio_files
 }
 
 fn is_audio_file(path: &Path) -> bool {

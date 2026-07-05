@@ -16,12 +16,19 @@ const MarqueeText = ({ text, className, ...props }: MarqueeTextProps) => {
   }, [text]);
 
   return (
-    <div className="min-w-0 overflow-hidden">
+    <div
+      className={cn(
+        "min-w-0 overflow-hidden",
+        overflow
+          ? " mask-[linear-gradient(to_right,transparent,black_10%,black_95%,transparent)]"
+          : "",
+      )}
+    >
       <div
         ref={ref}
         className={cn(
           "whitespace-nowrap",
-          overflow ? "animate-marquee inline-block hover:paused" : "truncate",
+          overflow ? "animate-marquee inline-block hover:paused " : "truncate",
           className,
         )}
         {...props}

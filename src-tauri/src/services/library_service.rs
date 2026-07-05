@@ -5,19 +5,20 @@ use crate::{
 };
 
 // insert user selected folder into the database and import its songs
-// This function will scan the folder for mp3 files, extract their metadata, and insert them into the database
+// This function will scan the folder for audio files, extract their metadata, and insert them into the database
 pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<ImportResult> {
     let mut added = 0;
     let mut failed = 0;
     // insert the folder into the database
     let folder_id = crate::repositories::folder_repository::insert(conn, path)?;
 
-    // scan the folder for mp3 files
-    let mp3_files = scan_service::scan_for_mp3s(path);
+    // scan the folder for audio files
+    let audio_files = scan_service::scan_for_audio_files(path);
 
-    // for each mp3 file, extract its metadata and insert it into the database
-    for file in mp3_files {
+    // for each audio file, extract its metadata and insert it into the database
+    for file in audio_files {
         let mut file_failed = false;
+
         match crate::services::metadata_service::extract_metadata(&file) {
             Ok(metadata) => {
                 if let Err(e) = process_metadata(conn, metadata, folder_id, None) {
@@ -54,7 +55,7 @@ pub fn resync_library(conn: &rusqlite::Connection) -> rusqlite::Result<ImportRes
     let folders = crate::repositories::folder_repository::index(conn)?;
 
     for folder in folders {
-        let mp3_files = scan_service::scan_for_mp3s(&folder.path);
+        let audio_files = scan_service::scan_for_audio_files(&folder.path);
 
         // songs in database for this folder
         let db_songs = crate::repositories::song_repository::get_by_folder(conn, folder.id)?;
@@ -64,12 +65,12 @@ pub fn resync_library(conn: &rusqlite::Connection) -> rusqlite::Result<ImportRes
             .map(|s| (s.path.clone(), s))
             .collect::<std::collections::HashMap<_, _>>();
 
-        let scanned_set: std::collections::HashSet<String> = mp3_files
+        let scanned_set: std::collections::HashSet<String> = audio_files
             .iter()
             .map(|f| f.to_string_lossy().to_string())
             .collect();
 
-        for file in &mp3_files {
+        for file in &audio_files {
             let path = file.to_string_lossy();
 
             match songs_map.get(path.as_ref()) {
