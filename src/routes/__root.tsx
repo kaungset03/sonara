@@ -22,7 +22,7 @@ const RootLayout = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       void checkForAppUpdates();
-    }, 5000);
+    }, 3500);
 
     return () => clearTimeout(timer);
   }, []);

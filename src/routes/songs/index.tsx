@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import useGetAllSongsQuery from "@/features/songs/api/useGetAllSongsQuery";
 import useAppStore from "@/store/app-store";
 import SongsTable from "@/features/songs/components/SongsTable";
+import EmptySongAlert from "@/components/custom/EmptySongAlert";
 
 export const Route = createFileRoute("/songs/")({
   component: RouteComponent,
@@ -18,13 +19,15 @@ function RouteComponent() {
     playSong(song, data);
   };
 
-  // No data, show loading
-  // data and length is 0, show empty state
-  // if data exists, show table
-
-  return (
-    <div>
-      {data && <SongsTable songs={data} handleSongClick={handleSongSelect} />}
-    </div>
-  );
+  if (data) {
+    return (
+      <div>
+        {data?.length === 0 ? (
+          <EmptySongAlert />
+        ) : (
+          <SongsTable songs={data} handleSongClick={handleSongSelect} />
+        )}
+      </div>
+    );
+  }
 }

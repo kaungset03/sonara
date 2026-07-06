@@ -9,18 +9,10 @@ import {
   Sparkle,
   User,
 } from "lucide-react";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
+import EmptySongAlert from "@/components/custom/EmptySongAlert";
 import SongCard from "@/features/home/components/SongCard";
 import StatsCard from "@/features/home/components/StatsCard";
 import useGetHomeDataQuery from "@/features/home/api/useGetHomeDataQuery";
-import ImportButton from "@/features/import/components/ImportButton";
 import useAppStore from "@/store/app-store";
 
 export const Route = createFileRoute("/")({
@@ -156,21 +148,5 @@ function Index() {
     );
   }
 
-  return (
-    <Empty className="mt-20">
-      <EmptyHeader>
-        <EmptyMedia variant="icon">
-          <Music size={48} className="text-muted-foreground" />
-        </EmptyMedia>
-        <EmptyTitle>No Songs Yet</EmptyTitle>
-        <EmptyDescription>
-          You haven&apos;t added any songs yet. Get started by importing some
-          music.
-        </EmptyDescription>
-      </EmptyHeader>
-      <EmptyContent>
-        <ImportButton />
-      </EmptyContent>
-    </Empty>
-  );
+  return <EmptySongAlert />;
 }

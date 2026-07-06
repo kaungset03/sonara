@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="/src-tauri/icons/128x128.png" alt="Sonara Logo" width="120" />
+  <img src="./src-tauri/icons/128x128.png" alt="Sonara Logo" width="120" />
 </p>
 
 <h1 align="center">Sonara</h1>
