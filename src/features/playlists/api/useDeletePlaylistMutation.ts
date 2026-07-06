@@ -16,13 +16,16 @@ const useDeletePlaylistMutation = () => {
     },
     onSuccess: (_, playlistId) => {
       toast.success("Playlist deleted");
-      queryClient.invalidateQueries({ queryKey: ["playlists"] });
+
       if (pathname === `/playlists/${playlistId}`) {
         navigate({ to: "/songs" });
       }
     },
     onError: (err) => {
       toast.error(`Failed to delete playlist: ${err.message}`);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["playlists"] });
     },
   });
 

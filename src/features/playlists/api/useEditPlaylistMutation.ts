@@ -18,15 +18,22 @@ const useEditPlaylistMutation = ({ closeDialog }: EditPlaylistProps) => {
     }) => {
       await invoke("edit_playlist", { playlistId, newName });
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (_, { playlistId }) => {
       toast.success("Playlist updated");
-      closeDialog();
       queryClient.invalidateQueries({
-        queryKey: ["songs", "playlist", variables.playlistId],
+        queryKey: ["songs", "playlist", playlistId],
+        exact: false,
       });
     },
     onError: (err) => {
       toast.error(`Failed to update playlist: ${err.message}`);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["playlists"],
+        exact: true,
+      });
+      closeDialog();
     },
   });
   return mutation;

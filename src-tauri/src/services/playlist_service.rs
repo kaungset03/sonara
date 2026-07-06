@@ -49,7 +49,7 @@ pub fn add_songs_to_playlist(
     conn: &mut rusqlite::Connection,
     playlist_id: i64,
     song_ids: &[i64],
-) -> rusqlite::Result<()> {
+) -> rusqlite::Result<crate::models::playlist::AddSongsResult> {
     playlist_repository::add_songs_to_playlist_query(conn, playlist_id, song_ids)
 }
 

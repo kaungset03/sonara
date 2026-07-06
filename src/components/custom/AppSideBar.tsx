@@ -66,7 +66,7 @@ const AppSidebar = () => {
                     <Link
                       to={"/playlists/$id"}
                       params={{ id: playlist.id.toString() }}
-                      className="w-full h-full text-xs font-medium px-6 flex items-center"
+                      className="w-full h-full text-xs font-medium px-6 flex items-center truncate"
                       activeProps={{
                         className: "text-primary-foreground bg-primary",
                       }}

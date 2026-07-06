@@ -22,6 +22,8 @@ import useAppStore from "@/store/app-store";
 import UpdateSongLyricsButton from "@/features/lyrics/components/UpdateSongLyricsButton";
 import PlaybackQueue from "@/features/queue/components/PlaybackQueue";
 import MarqueeText from "../../../components/custom/MarqueText";
+import ActionsDropdown from "../../songs/components/ActionsDropdown";
+import AddToPlaylistDialog from "../../playlists/components/AddToPlaylistDialog";
 
 type OverlayPlayerProps = {
   isExpanded: boolean;
@@ -85,16 +87,24 @@ const OverlayPlayer = ({
         </div>
         <div className="max-w-[95%] mx-auto h-[calc(100%-64px)] grid grid-cols-2">
           <div className="w-full h-full p-4 flex flex-col justify-center items-center gap-y-6">
-            <div className="size-70 rounded-xl bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center overflow-hidden">
-              {song.album_cover_path ? (
-                <img
-                  src={convertFileSrc(song.album_cover_path)}
-                  alt={song.title}
-                  className="w-full h-full object-cover object-center"
-                />
-              ) : (
-                <Music className="size-22 text-primary" />
-              )}
+            <div className="min-w-sm flex flex-col items-center">
+              <div className="w-fit flex justify-center items-center rounded-full p-1 border border-border ml-auto">
+                <ActionsDropdown song={song}>
+                  <AddToPlaylistDialog song={song} />
+                </ActionsDropdown>
+              </div>
+
+              <div className="size-65 rounded-xl bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center overflow-hidden">
+                {song.album_cover_path ? (
+                  <img
+                    src={convertFileSrc(song.album_cover_path)}
+                    alt={song.title}
+                    className="w-full h-full object-cover object-center"
+                  />
+                ) : (
+                  <Music className="size-22 text-primary" />
+                )}
+              </div>
             </div>
             <div className="space-y-2 text-center max-w-sm">
               <MarqueeText

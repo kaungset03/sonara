@@ -19,6 +19,10 @@ const CreatePlaylistDialog = () => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
 
+  const isValidName = (name: string) => {
+    return name.length >= 1 && name.length <= 50;
+  };
+
   const closeDialog = () => {
     setOpen(false);
     setName("");
@@ -28,7 +32,14 @@ const CreatePlaylistDialog = () => {
 
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutate(name);
+    if (isValidName(name)) {
+      mutate(name);
+    } else {
+      // Handle invalid name case, e.g., show an error message
+      console.error(
+        "Invalid playlist name. Must be between 1 and 50 characters.",
+      );
+    }
   };
 
   return (
@@ -43,7 +54,10 @@ const CreatePlaylistDialog = () => {
           <DialogHeader>
             <DialogTitle>Create a new playlist</DialogTitle>
             <DialogDescription>
-              Enter a name for your new playlist.
+              Enter a name for your new playlist.{" "}
+              <span className="text-xs text-muted-foreground">
+                (1-50 characters)
+              </span>
             </DialogDescription>
           </DialogHeader>
           <Label htmlFor="name">Name</Label>
@@ -51,6 +65,9 @@ const CreatePlaylistDialog = () => {
             id="name"
             name="name"
             placeholder="Classical Music"
+            minLength={1}
+            maxLength={50}
+            required
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -58,7 +75,11 @@ const CreatePlaylistDialog = () => {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit" form="create-playlist-form">
+            <Button
+              type="submit"
+              form="create-playlist-form"
+              disabled={!isValidName(name)}
+            >
               Create
             </Button>
           </DialogFooter>

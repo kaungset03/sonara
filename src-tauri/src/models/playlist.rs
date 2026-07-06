@@ -14,3 +14,9 @@ pub struct PlaylistDetails {
     pub playlist: Playlist,
     pub songs: Vec<SongResponse>,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct AddSongsResult {
+    pub added: usize,
+    pub skipped: usize,
+}

@@ -1,3 +1,5 @@
+use crate::models::playlist::AddSongsResult;
+
 // get all playlists
 pub fn index(
     conn: &rusqlite::Connection,
@@ -63,20 +65,32 @@ pub fn add_songs_to_playlist_query(
     conn: &mut rusqlite::Connection,
     playlist_id: i64,
     song_ids: &[i64],
-) -> rusqlite::Result<()> {
+) -> rusqlite::Result<AddSongsResult> {
     let created_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
         .as_secs() as i64;
     let tx = conn.transaction()?;
+
+    let mut stmt = tx.prepare(
+        "INSERT OR IGNORE INTO playlist_songs (playlist_id, song_id, created_at) VALUES (?1, ?2, ?3)",
+    )?;
+
+    let mut added: usize = 0;
+    let mut skipped: usize = 0;
+
     for &song_id in song_ids {
-        tx.execute(
-            "INSERT INTO playlist_songs (playlist_id, song_id, created_at) VALUES (?1, ?2, ?3)",
-            rusqlite::params![playlist_id, song_id, created_at],
-        )?;
+        let changes = stmt.execute(rusqlite::params![playlist_id, song_id, created_at])?;
+        if changes > 0 {
+            added += 1;
+        } else {
+            skipped += 1;
+        }
     }
+
+    drop(stmt);
     tx.commit()?;
-    Ok(())
+    Ok(AddSongsResult { added, skipped })
 }
 
 // remove songs from playlist
@@ -86,12 +100,15 @@ pub fn remove_songs_from_playlist_query(
     song_ids: &[i64],
 ) -> rusqlite::Result<()> {
     let tx = conn.transaction()?;
+
+    let mut stmt =
+        tx.prepare("DELETE FROM playlist_songs WHERE playlist_id = ?1 AND song_id = ?2")?;
+
     for &song_id in song_ids {
-        tx.execute(
-            "DELETE FROM playlist_songs WHERE playlist_id = ?1 AND song_id = ?2",
-            rusqlite::params![playlist_id, song_id],
-        )?;
+        stmt.execute(rusqlite::params![playlist_id, song_id])?;
     }
+
+    drop(stmt);
     tx.commit()?;
     Ok(())
 }

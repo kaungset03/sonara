@@ -17,12 +17,14 @@ const useCreatePlaylistMutation = ({ closeDialog }: CreatePlaylistProps) => {
     },
     onSuccess: (playlistId: number) => {
       toast.success("New playlist created");
-      closeDialog();
       queryClient.invalidateQueries({ queryKey: ["playlists"] });
       navigate({ to: "/playlists/$id", params: { id: playlistId.toString() } });
     },
     onError: (err) => {
       toast.error(`Failed to create playlist: ${err.message}`);
+    },
+    onSettled: () => {
+      closeDialog();
     },
   });
 

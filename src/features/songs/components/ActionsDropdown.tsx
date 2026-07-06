@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link } from "@tanstack/react-router";
-import { EllipsisVertical } from "lucide-react";
+import { Ellipsis } from "lucide-react";
 import useAppStore from "@/store/app-store";
 import EditSongInfoDialog from "@/features/songs/components/EditSongInfoDialog";
 
@@ -26,7 +26,7 @@ const ActionsDropdown = ({ song, children }: ActionsDropdownProps) => {
           size="icon"
           className="size-4 hover:text-primary"
         >
-          <EllipsisVertical size={14} />
+          <Ellipsis size={14} />
           <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>

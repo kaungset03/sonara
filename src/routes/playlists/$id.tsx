@@ -57,18 +57,16 @@ function RouteComponent() {
   return (
     <div className="h-full overflow-y-auto">
       <div className="flex flex-col gap-6 mb-8 border-b border-muted-foreground/30 pb-8">
-        <div>
-          <div className="flex items-center gap-x-12">
-            <h1 className="text-4xl font-bold font-heading tracking-tight mb-2">
-              {data?.playlist.name}
-            </h1>
-            <div className="flex items-center gap-2">
-              <EditPlaylistDialog playlist={data?.playlist} />
-              <DeletePlaylistAlert playlistId={Number(id)} />
-            </div>
+        <div className="flex flex-col gap-4">
+          <h1 className="text-4xl font-bold font-heading tracking-tight mb-2">
+            {data?.playlist.name}
+          </h1>
+          <div className="flex items-center gap-2">
+            <EditPlaylistDialog playlist={data?.playlist} />
+            <DeletePlaylistAlert playlistId={Number(id)} />
           </div>
 
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mt-1">
             {songs.length} {songs.length === 1 ? "Song" : "Songs"}
           </p>
         </div>

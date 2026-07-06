@@ -20,7 +20,7 @@ type AddSongsToPlaylistProps = {
   playlistId: number;
 };
 
-const AddSongsToPlaylist = ({ playlistId }: AddSongsToPlaylistProps) => {
+const AddSongsToPlaylistDialog = ({ playlistId }: AddSongsToPlaylistProps) => {
   const [open, setOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
@@ -64,59 +64,63 @@ const AddSongsToPlaylist = ({ playlistId }: AddSongsToPlaylistProps) => {
           Add Songs
         </Button>
       </DialogTrigger>
-      <DialogContent className="min-w-fit" showCloseButton={false}>
-        <form onSubmit={handleSubmit} id={`add-songs-form-${playlistId}`}>
-          <DialogHeader className="pb-4 space-y-1">
-            <DialogTitle>Add Songs to Playlist</DialogTitle>
-            <DialogDescription>
-              Select songs to add from your library
-            </DialogDescription>
-            <Input
-              placeholder="Search songs to add into playlist..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </DialogHeader>
-          <div className="space-y-2 no-scrollbar max-h-[50vh] overflow-y-auto">
-            {filteredSongs?.map((song) => (
-              <Label
-                key={song.id}
-                className="w-full rounded-2xl flex items-center gap-3 p-3 border border-border cursor-pointer transition-colors hover:bg-muted/50"
-              >
-                <Input
-                  type="checkbox"
-                  checked={selectedIds.includes(song.id)}
-                  onChange={() => toggleSelection(song.id)}
-                  className="size-4 rounded-full border-border"
-                />
-                <div className="flex-1 min-w-0 space-y-1">
-                  <p className="font-medium">{song.title}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {song.artist_name} - {song.album_name}
-                  </p>
-                </div>
-              </Label>
-            ))}
-          </div>
-          <DialogFooter className="pt-4">
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button
-              type="submit"
-              form={`add-songs-form-${playlistId}`}
-              disabled={selectedIds.length === 0}
+      <DialogContent className="w-full max-w-xl" showCloseButton={false}>
+        <DialogHeader className="pb-4 space-y-1">
+          <DialogTitle>Add Songs to Playlist</DialogTitle>
+          <DialogDescription>
+            Select songs to add from your library
+          </DialogDescription>
+          <Input
+            placeholder="Search songs to add into playlist..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </DialogHeader>
+
+        <form
+          onSubmit={handleSubmit}
+          id={`add-songs-form-${playlistId}`}
+          className="space-y-2 no-scrollbar max-h-[50vh] overflow-y-auto"
+        >
+          {filteredSongs?.map((song) => (
+            <Label
+              key={song.id}
+              className="w-full rounded-2xl flex items-center gap-3 p-3 border border-border cursor-pointer transition-colors hover:bg-muted/50"
             >
-              <Check size={16} />
-              Add {selectedIds.length > 0 && `${selectedIds.length}`}
-            </Button>
-          </DialogFooter>
+              <Input
+                type="checkbox"
+                checked={selectedIds.includes(song.id)}
+                onChange={() => toggleSelection(song.id)}
+                className="size-4 rounded-full border-border"
+              />
+              <div className="flex-1 min-w-0 space-y-1">
+                <p className="font-medium truncate">{song.title}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {song.artist_name} - {song.album_name}
+                </p>
+              </div>
+            </Label>
+          ))}
         </form>
+
+        <DialogFooter className="pt-4">
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button
+            type="submit"
+            form={`add-songs-form-${playlistId}`}
+            disabled={selectedIds.length === 0}
+          >
+            <Check size={16} />
+            Add {selectedIds.length > 0 && `${selectedIds.length}`}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 };
-export default AddSongsToPlaylist;
+export default AddSongsToPlaylistDialog;
 
 // <form onSubmit={handleSubmit} id={`add-songs-form-${playlistId}`}>
 

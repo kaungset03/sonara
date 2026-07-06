@@ -48,7 +48,7 @@ const SearchDialog = () => {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent showCloseButton={false} className="sm:max-w-lg">
+      <DialogContent showCloseButton={false} className="w-full max-w-xl">
         <DialogHeader>
           <DialogTitle hidden>
             <span className="text-hidden">Search Library</span>
@@ -79,7 +79,6 @@ const SearchDialog = () => {
           </div>
         ) : data ? (
           <div className="space-y-6 w-full max-h-[70vh] overflow-y-auto no-scrollbar">
-            {/** render search results for each category */}
             <div className="space-y-2">
               <h3 className="text-xs font-semibold uppercase text-muted-foreground">
                 SONGS ({data.songs.length})
@@ -90,7 +89,12 @@ const SearchDialog = () => {
                     key={song.id}
                     title={song.title}
                     description={`${song.artist_name} • ${song.album_name}`}
-                    icon={<Music size={20} className="text-muted-foreground" />}
+                    icon={
+                      <Music
+                        size={20}
+                        className="text-muted-foreground shrink-0"
+                      />
+                    }
                     handleClick={() => {
                       playSong(song, data.songs);
                       closeDialog();
@@ -108,7 +112,12 @@ const SearchDialog = () => {
                   <SearchResultItem
                     key={artist.name}
                     title={artist.name}
-                    icon={<User size={20} className="text-muted-foreground" />}
+                    icon={
+                      <User
+                        size={20}
+                        className="text-muted-foreground shrink-0"
+                      />
+                    }
                     handleClick={() => {
                       navigate({
                         to: "/artists/$id",
@@ -131,7 +140,10 @@ const SearchDialog = () => {
                     title={album.name}
                     description={`${album.artist_name}`}
                     icon={
-                      <BookImage size={20} className="text-muted-foreground" />
+                      <BookImage
+                        size={20}
+                        className="text-muted-foreground shrink-0"
+                      />
                     }
                     handleClick={() => {
                       navigate({

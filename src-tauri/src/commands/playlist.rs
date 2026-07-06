@@ -52,10 +52,12 @@ pub fn add_songs_to_playlist(
     db: State<DbState>,
     playlist_id: i64,
     song_ids: Vec<i64>,
-) -> Result<(), String> {
+) -> Result<crate::models::playlist::AddSongsResult, String> {
     let mut conn = db.0.lock().map_err(|e| e.to_string())?;
-    services::playlist_service::add_songs_to_playlist(&mut conn, playlist_id, &song_ids)
-        .map_err(|e| e.to_string())
+    let result =
+        services::playlist_service::add_songs_to_playlist(&mut conn, playlist_id, &song_ids)
+            .map_err(|e| e.to_string())?;
+    Ok(result)
 }
 
 // remove song from playlist

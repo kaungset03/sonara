@@ -6,6 +6,11 @@ type AddSongsToPlaylistProps = {
   closeDialog: () => void;
 };
 
+type AddedSongsResult = {
+  added: number;
+  skipped: number;
+};
+
 const useAddSongsToPlaylistMutation = ({
   closeDialog,
 }: AddSongsToPlaylistProps) => {
@@ -18,10 +23,22 @@ const useAddSongsToPlaylistMutation = ({
       songIds: number[];
       playlistId: number;
     }) => {
-      await invoke("add_songs_to_playlist", { playlistId, songIds });
+      const result = await invoke<AddedSongsResult>("add_songs_to_playlist", {
+        playlistId,
+        songIds,
+      });
+      return result;
     },
-    onSuccess: (_, variables) => {
-      toast.success("Songs added to playlist");
+    onSuccess: (result, variables) => {
+      if (result.added > 0) {
+        toast.success(
+          `Added ${result.added} songs (${
+            result.skipped
+          } already in playlist)!`,
+        );
+      } else {
+        toast.warning("Selected songs are already in the playlist.");
+      }
       queryClient.invalidateQueries({
         queryKey: ["songs", "playlist", variables.playlistId],
         exact: false,

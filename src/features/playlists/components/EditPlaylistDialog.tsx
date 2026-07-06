@@ -23,6 +23,10 @@ const EditPlaylistDialog = ({ playlist }: EditPlaylistDialogProps) => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(playlist.name);
 
+  const isValidName = (name: string) => {
+    return name.length >= 1 && name.length <= 50;
+  };
+
   const closeDialog = () => {
     setOpen(false);
   };
@@ -36,7 +40,7 @@ const EditPlaylistDialog = ({ playlist }: EditPlaylistDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <form onSubmit={handleSubmit} id="edit-playlist-form">
+      <form onSubmit={handleSubmit} id={`edit-playlist-form-${playlist.id}`}>
         <DialogTrigger asChild>
           <Button variant="secondary">
             <Edit size={16} />
@@ -46,7 +50,10 @@ const EditPlaylistDialog = ({ playlist }: EditPlaylistDialogProps) => {
           <DialogHeader>
             <DialogTitle>Edit Playlist</DialogTitle>
             <DialogDescription>
-              Enter a new name for your playlist.
+              Enter a new name for your playlist.{" "}
+              <span className="text-xs text-muted-foreground">
+                (1-50 characters)
+              </span>
             </DialogDescription>
           </DialogHeader>
           <Label htmlFor="name">Name</Label>
@@ -54,6 +61,9 @@ const EditPlaylistDialog = ({ playlist }: EditPlaylistDialogProps) => {
             id="name"
             name="name"
             placeholder="Classical Music"
+            minLength={1}
+            maxLength={50}
+            required
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -61,7 +71,11 @@ const EditPlaylistDialog = ({ playlist }: EditPlaylistDialogProps) => {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit" form="edit-playlist-form">
+            <Button
+              type="submit"
+              form={`edit-playlist-form-${playlist.id}`}
+              disabled={!isValidName(name)}
+            >
               Save
             </Button>
           </DialogFooter>
