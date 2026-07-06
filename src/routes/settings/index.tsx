@@ -178,7 +178,6 @@ function RouteComponent() {
             <Separator />
             <div className="flex flex-col items-center justify-center gap-4">
               <Button
-                variant={"secondary"}
                 className="text-xs rounded-full"
                 onClick={() => checkForAppUpdates({ showNoUpdate: true })}
               >
