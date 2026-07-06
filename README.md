@@ -57,7 +57,7 @@ Your complete local music collection in one place.
 
 <br/>
 
-<img src="./screenshots/2.png" alt="Home" />
+<img src="./screenshots/2.png" alt="Songs" />
 
 <br/>
 
@@ -69,7 +69,7 @@ Discover songs grouped by artist with rich metadata.
 - Album grouping
 - Clean navigation
 
-<img src="./screenshots/3.png" alt="Home" />
+<img src="./screenshots/3.png" alt="Artists" />
 
 <br/>
 
@@ -81,7 +81,7 @@ Explore music grouped by albums with automatic or custom artwork.
 - Manual cover upload support
 - Cached for fast loading
 
-<img src="./screenshots/4.png" alt="Home" />
+<img src="./screenshots/4.png" alt="Albums" />
   
 <br/>
 
@@ -89,7 +89,7 @@ Explore music grouped by albums with automatic or custom artwork.
 
 - Personal music organization and queue management.
 
-<img src="./screenshots/5.png" alt="Home" />
+<img src="./screenshots/5.png" alt="Playlist" />
 
 <br/>
 
@@ -101,7 +101,7 @@ A focused listening experience with synced lyrics.
 - Smooth playback UI
 - Real-time lyric sync
 
-<img src="./screenshots/6.png" alt="Home" />
+<img src="./screenshots/6.png" alt="PlaybackLyrics" />
 
 <br/>
 
@@ -113,7 +113,7 @@ Edit your music metadata directly inside the app.
 - Stored locally (no file modification)
 - Safe and reversible
 
-<img src="./screenshots/7.png" alt="Home" />
+<img src="./screenshots/7.png" alt="Metadata" />
 
 <br/>
 
