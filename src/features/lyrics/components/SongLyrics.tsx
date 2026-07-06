@@ -13,7 +13,7 @@ const SongLyrics = ({ songId, audioCurrentTime }: SongLyricsProps) => {
     return (
       <div className="h-90 w-full flex justify-center items-center text-center">
         <p className="font-heading font-medium text-muted-foreground mb-4">
-          Loading lyrics...
+          Searching for lyrics...
         </p>
       </div>
     );

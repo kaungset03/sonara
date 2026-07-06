@@ -34,13 +34,13 @@ const useMediaSession = ({
         title: song.title || "Unknown Title",
         artist: song.artist_name || "Unknown Artist",
         album: song.album_name || "Unknown Album",
-        artwork: [
-          {
-            src: artworkPath,
-            sizes: "256x256",
-            type: "image/png",
-          },
-        ],
+        // artwork: [
+        //   {
+        //     src: artworkPath,
+        //     sizes: "256x256",
+        //     type: "image/png",
+        //   },
+        // ],
       });
     }
   }, [song]);

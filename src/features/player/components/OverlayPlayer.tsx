@@ -112,17 +112,15 @@ const OverlayPlayer = ({
                 className="text-lg font-semibold leading-tight font-heading"
               />
 
-              <div className="flex flex-col items-center gap-0.5">
-                <MarqueeText
-                  text={song.artist_name}
-                  className="text-sm text-muted-foreground font-medium"
-                />
+              <MarqueeText
+                text={song.artist_name}
+                className="text-sm text-muted-foreground font-medium"
+              />
 
-                <MarqueeText
-                  text={song.album_name}
-                  className="text-xs text-muted-foreground/70"
-                />
-              </div>
+              <MarqueeText
+                text={song.album_name}
+                className="text-xs text-muted-foreground/70"
+              />
             </div>
             <div className="space-y-6 mt-4">
               {/** Playback Buttons */}
