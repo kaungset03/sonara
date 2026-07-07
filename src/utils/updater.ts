@@ -37,11 +37,10 @@ export async function checkForAppUpdates({
 
   await update
     .downloadAndInstall()
-    .then(() => {
-      console.log("Update downloaded and installed successfully.");
+    .then(async () => {
+      await relaunch();
     })
     .catch((error) => {
       console.error("Error downloading or installing the update:", error);
     });
-  await relaunch();
 }
