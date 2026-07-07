@@ -5,8 +5,8 @@
     "windows": [
       {
         "title": "Sonara",
-        "minWidth": 1100,
-        "minHeight": 618,
+        "minWidth": 1150,
+        "minHeight": 646,
         "width": 1280,
         "height": 720,
         "resizable": true,

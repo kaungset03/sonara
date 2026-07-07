@@ -18,12 +18,10 @@ const SearchResultItem = ({
     >
       <div className="flex items-center gap-x-4">
         {icon}
-        <div className="flex flex-1 flex-col gap-0.5">
-          <span className="text-sm font-medium text-nowrap truncate">
-            {title}
-          </span>
+        <div className="flex flex-1 flex-col gap-0.5 overflow-hidden">
+          <span className="text-sm font-medium truncate">{title}</span>
           {description && (
-            <span className="text-xs text-muted-foreground text-nowrap truncate">
+            <span className="text-xs text-muted-foreground truncate">
               {description}
             </span>
           )}

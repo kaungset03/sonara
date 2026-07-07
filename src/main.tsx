@@ -31,7 +31,7 @@ if (!rootElement.innerHTML) {
         <ThemeProvider
           defaultTheme="dark"
           storageKeyMode="vite-ui-theme"
-          defaultColor="purple"
+          defaultColor="green"
           storageKeyColor="vite-ui-color"
         >
           <RouterProvider router={router} />

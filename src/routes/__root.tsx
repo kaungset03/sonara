@@ -27,6 +27,29 @@ const RootLayout = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Backspace") return;
+
+      const target = e.target as HTMLElement;
+
+      const isEditable =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target.isContentEditable;
+
+      if (!isEditable) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <SidebarProvider>

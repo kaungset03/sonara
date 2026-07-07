@@ -94,7 +94,7 @@ const OverlayPlayer = ({
                 </ActionsDropdown>
               </div>
 
-              <div className="size-65 rounded-xl bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center overflow-hidden">
+              <div className="size-70 rounded-xl bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center overflow-hidden">
                 {song.album_cover_path ? (
                   <img
                     src={convertFileSrc(song.album_cover_path)}

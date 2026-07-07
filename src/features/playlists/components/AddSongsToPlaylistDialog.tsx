@@ -65,7 +65,7 @@ const AddSongsToPlaylistDialog = ({ playlistId }: AddSongsToPlaylistProps) => {
         </Button>
       </DialogTrigger>
       <DialogContent className="w-full max-w-xl" showCloseButton={false}>
-        <DialogHeader className="pb-4 space-y-1">
+        <DialogHeader className="space-y-1">
           <DialogTitle>Add Songs to Playlist</DialogTitle>
           <DialogDescription>
             Select songs to add from your library

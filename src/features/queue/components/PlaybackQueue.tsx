@@ -23,10 +23,7 @@ const PlaybackQueue = () => {
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
-    // 1. Guard clause: Don't do anything if queue is empty or sheet is closed
     if (!currentQueueItem || !open) return;
-
-    // 2. Wait a split second for the Shadcn sheet entry animation to settle
     const timer = setTimeout(() => {
       const el = itemRefs.current[currentQueueItem.id];
 
@@ -45,7 +42,11 @@ const PlaybackQueue = () => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="border border-muted-foreground/30">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="border border-muted-foreground/30"
+        >
           <ListMusic />
         </Button>
       </SheetTrigger>
