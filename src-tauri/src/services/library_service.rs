@@ -207,6 +207,13 @@ fn process_metadata(
     )
     .map_err(|e| e.to_string())?;
 
+    // insert into metadata_jobs table for async processing
+    crate::repositories::metadata_job_repository::create(conn, "album", album_id, "album_cover")
+        .map_err(|e| e.to_string())?;
+
+    // crate::repositories::metadata_job_repository::create(conn, "artist", album_id, "lyrics")
+    //     .map_err(|e| e.to_string())?;
+
     if let Some(id) = song_id {
         crate::repositories::song_repository::update(
             conn,
