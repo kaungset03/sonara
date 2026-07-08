@@ -30,7 +30,7 @@ pub fn save_file_to_app_data(
 }
 
 // download and save file to app data
-fn download_and_save_file(
+pub fn download_and_save_file(
     url: &str,
     file_name: String,
     app_handle: &AppHandle,

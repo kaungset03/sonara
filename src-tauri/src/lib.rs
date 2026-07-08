@@ -5,8 +5,10 @@ mod repositories;
 mod services;
 
 use db::{connection::get_connection, migrations::run_migrations};
-use std::sync::Mutex;
+use std::{sync::Mutex, time::Duration};
 use tauri::Manager;
+
+use crate::services::metadata_job_service::process_pending_jobs;
 
 pub struct DbState(pub Mutex<rusqlite::Connection>);
 
@@ -25,12 +27,31 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_persisted_scope::init())
         .plugin(tauri_plugin_dialog::init())
-        // 2. Use the setup hook to initialize the database
         .setup(|app: &mut tauri::App| {
             let conn = get_connection(app.handle()).expect("Failed to connect to the database");
             run_migrations(&conn).expect("Failed to run database migrations");
 
             app.manage(DbState(Mutex::new(conn)));
+
+            let app_handle = app.handle().clone();
+
+            tauri::async_runtime::spawn_blocking(move || {
+                let bg_conn = match crate::db::connection::get_connection(&app_handle) {
+                    Ok(conn) => conn,
+                    Err(err) => {
+                        eprintln!("Failed to open background database connection: {err}");
+                        return;
+                    }
+                };
+
+                loop {
+                    if let Err(err) = process_pending_jobs(&bg_conn, &app_handle) {
+                        eprintln!("Error processing pending jobs: {err}");
+                    }
+
+                    std::thread::sleep(Duration::from_secs(15));
+                }
+            });
 
             Ok(())
         })
