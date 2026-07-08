@@ -7,6 +7,7 @@ pub struct MetadataJob {
     pub entity_id: i64,
     pub job_type: String,
     pub status: String,
+    pub priority_lvl: i32,
     pub attempt_count: i32,
     pub last_error: Option<String>,
     pub created_at: i64,

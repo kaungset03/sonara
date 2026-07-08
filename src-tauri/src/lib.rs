@@ -45,11 +45,11 @@ pub fn run() {
                 };
 
                 loop {
-                    if let Err(err) = process_pending_jobs(&bg_conn, &app_handle) {
+                    if let Err(err) = process_pending_jobs(&bg_conn, &app_handle, 3) {
                         eprintln!("Error processing pending jobs: {err}");
                     }
 
-                    std::thread::sleep(Duration::from_secs(15));
+                    std::thread::sleep(Duration::from_secs(10));
                 }
             });
 

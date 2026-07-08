@@ -1,7 +1,8 @@
 use std::fs;
 use tauri::{AppHandle, Manager};
 
-use crate::models::{album::Album, artist::Artist, song::SongResponse};
+use crate::models::album::Album;
+use crate::models::{artist::Artist, song::SongResponse};
 use crate::services::api_service;
 
 // save user selected local file to app data
@@ -62,22 +63,11 @@ pub fn download_and_save_file(
     Ok(dest.to_string_lossy().to_string())
 }
 
-// ensure album cover
 pub fn ensure_album_cover(
     conn: &rusqlite::Connection,
     app_handle: &AppHandle,
     album: Album,
 ) -> Result<Option<String>, String> {
-    // if cover_path exists, return it
-    if album.cover_path.is_some() {
-        return Ok(album.cover_path);
-    }
-
-    // already tried to fetch and not found, return None
-    if album.cover_status == "not_found" {
-        return Ok(None);
-    }
-
     match api_service::get_cover_art_from_music_brainz(&album.artist_name, &album.name) {
         Ok(Some(url)) => {
             // Download and save
@@ -111,15 +101,6 @@ pub fn ensure_artist_image(
     app_handle: &AppHandle,
     artist: Artist,
 ) -> Result<Option<String>, String> {
-    if let Some(path) = &artist.image_path {
-        return Ok(Some(path.clone()));
-    }
-
-    // if image_status == "not_found", return None
-    if artist.image_status == "not_found" {
-        return Ok(None);
-    }
-
     match api_service::get_artist_image_from_audio_db(&artist.name) {
         Ok(Some(url)) => {
             // Download and save
@@ -170,23 +151,23 @@ pub fn ensure_song_lyrics(
             let dest = app_data_dir.join(&file_name);
 
             match fs::write(&dest, &lyrics) {
-                Ok(_) => {}
+                Ok(_) => {
+                    let saved_path = dest.to_string_lossy().to_string();
+
+                    crate::repositories::lyrics_repository::update_lyrics_path(
+                        conn,
+                        song.id,
+                        &saved_path,
+                        "found",
+                    )
+                    .map_err(|e| e.to_string())?;
+
+                    return Ok(Some(saved_path));
+                }
                 Err(e) => {
                     return Err(e.to_string());
                 }
             }
-
-            let saved_path = dest.to_string_lossy().to_string();
-
-            crate::repositories::lyrics_repository::update_lyrics_path(
-                conn,
-                song.id,
-                &saved_path,
-                "found",
-            )
-            .map_err(|e| e.to_string())?;
-
-            return Ok(Some(saved_path));
         }
         Ok(None) => {
             crate::repositories::lyrics_repository::update_lyrics_status(

@@ -5,7 +5,7 @@ use crate::{
 };
 
 // insert user selected folder into the database and import its songs
-// This function will scan the folder for audio files, extract their metadata, and insert them into the database
+// scan the folder for audio files, extract their metadata, and insert them into the database
 pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<ImportResult> {
     let mut added = 0;
     let mut failed = 0;
@@ -191,7 +191,7 @@ fn process_metadata(
     folder_id: i64,
     song_id: Option<i64>,
 ) -> Result<(), String> {
-    // insert into artist table and get artist_id (find or create)
+    // insert into artist table (find or create)
     let artist_id = crate::repositories::artist_repository::find_or_create(conn, &metadata.artist)
         .map_err(|e| e.to_string())?;
 
@@ -199,7 +199,7 @@ fn process_metadata(
         crate::repositories::artist_repository::find_or_create(conn, &metadata.album_artist)
             .map_err(|e| e.to_string())?;
 
-    // insert into album table and get album_id (find or create)
+    // insert into album table (find or create)
     let album_id = crate::repositories::album_repository::find_or_create(
         conn,
         &metadata.album,
@@ -207,9 +207,39 @@ fn process_metadata(
     )
     .map_err(|e| e.to_string())?;
 
-    // insert into metadata_jobs table for processing
-    crate::repositories::metadata_job_repository::create(conn, "album", album_id, "album_cover")
+    if metadata.artist != "Unknown Artist" {
+        crate::repositories::metadata_job_repository::create(
+            conn,
+            "artist",
+            album_artist_id,
+            "artist_image",
+            0,
+        )
         .map_err(|e| e.to_string())?;
+    }
+
+    if metadata.album_artist != "Unknown Artist" && album_artist_id != artist_id {
+        crate::repositories::metadata_job_repository::create(
+            conn,
+            "artist",
+            artist_id,
+            "artist_image",
+            0,
+        )
+        .map_err(|e| e.to_string())?;
+    }
+
+    // if album_name is not Unknown Album, create a metadata job to fetch the album cover
+    if metadata.album != "Unknown Album" {
+        crate::repositories::metadata_job_repository::create(
+            conn,
+            "album",
+            album_id,
+            "album_cover",
+            3,
+        )
+        .map_err(|e| e.to_string())?;
+    }
 
     if let Some(id) = song_id {
         crate::repositories::song_repository::update(

@@ -12,11 +12,17 @@ pub fn get_all_albums(
 
 // get album details (info and songs)
 pub fn get_album_details(
-    app: &tauri::AppHandle,
     conn: &rusqlite::Connection,
     album_id: i64,
 ) -> rusqlite::Result<AlbumDetails> {
-    // update the metadata_job of the album by increasing priority and setting status to pending 
+    // update the metadata_job of the album by increasing priority and setting status to pending
+    crate::repositories::metadata_job_repository::increase_job_priority(
+        conn,
+        "album",
+        album_id,
+        "album_cover",
+    )?;
+
     let album =
         album_repository::get(conn, album_id).map_err(|_| rusqlite::Error::QueryReturnedNoRows)?;
 

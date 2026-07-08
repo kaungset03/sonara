@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS
         status TEXT CHECK (
             status IN ('pending', 'processing', 'completed', 'failed')
         ) NOT NULL DEFAULT 'pending',
+        priority_lvl INTEGER NOT NULL DEFAULT 0,
         attempt_count INTEGER NOT NULL DEFAULT 0,
         last_error TEXT DEFAULT NULL,
         created_at INTEGER NOT NULL,
