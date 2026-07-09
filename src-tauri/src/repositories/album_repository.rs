@@ -1,6 +1,6 @@
 use rusqlite::{params, Connection};
 
-use crate::models::album::{Album, AlbumEntity};
+use crate::models::album::Album;
 
 // get all albums
 pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {

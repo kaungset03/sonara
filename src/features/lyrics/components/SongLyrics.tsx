@@ -7,9 +7,9 @@ type SongLyricsProps = {
 };
 
 const SongLyrics = ({ songId, audioCurrentTime }: SongLyricsProps) => {
-  const { data: lyricsPath, isLoading } = useGetSongLyricsQuery({ songId });
+  const { data: lyricsPath, isLoading, isPending } = useGetSongLyricsQuery({ songId });
 
-  if (isLoading) {
+  if (isLoading || isPending) {
     return (
       <div className="h-90 w-full flex justify-center items-center text-center">
         <p className="font-heading font-medium text-muted-foreground mb-4">

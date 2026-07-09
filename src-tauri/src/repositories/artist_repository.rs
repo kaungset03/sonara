@@ -1,6 +1,6 @@
 use rusqlite::{params, Connection};
 
-use crate::models::artist::{Artist, ArtistEntity};
+use crate::models::artist::Artist;
 
 // Get all artists
 pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Artist>> {
