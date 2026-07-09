@@ -8,18 +8,18 @@ use crate::{
 
 #[tauri::command]
 pub fn add_library_folder(db: State<DbState>, path: String) -> Result<ImportResult, String> {
-    let conn = db.0.lock().map_err(|e| e.to_string())?;
+    let mut conn = db.0.lock().map_err(|e| e.to_string())?;
 
     let import_result =
-        services::library_service::add_folder(&conn, &path).map_err(|e| e.to_string())?;
+        services::library_service::add_folder(&mut conn, &path).map_err(|e| e.to_string())?;
     Ok(import_result)
 }
 
 // sync library folders - re-scan the folders and update the songs in the database
 #[tauri::command]
 pub fn sync_library_folders(db: State<DbState>) -> Result<ImportResult, String> {
-    let conn = db.0.lock().map_err(|e| e.to_string())?;
-    services::library_service::resync_library(&conn).map_err(|e| e.to_string())
+    let mut conn = db.0.lock().map_err(|e| e.to_string())?;
+    services::library_service::resync_library(&mut conn).map_err(|e| e.to_string())
 }
 
 // get all imported folders with their song counts

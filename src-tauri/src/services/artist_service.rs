@@ -51,6 +51,8 @@ pub fn update_artist_image(
 
     if let Ok(saved_image_path) = saved_path {
         artist_repository::update_image_path(conn, artist_id, &saved_image_path)?;
+        // delete metadata job for artist image
+        crate::services::metadata_job_service::delete_job_by_entity(conn, "artist", artist_id);
         Ok(())
     } else {
         Err(rusqlite::Error::InvalidQuery)

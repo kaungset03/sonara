@@ -1,6 +1,6 @@
 use rusqlite::{params, Connection};
 
-use crate::models::artist::Artist;
+use crate::models::artist::{Artist, ArtistEntity};
 
 // Get all artists
 pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Artist>> {
@@ -25,37 +25,27 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Artist>> {
     artists
 }
 
-// create a new artist
-// pub fn create(conn: &Connection, name: &str, image_path: Option<&str>) -> rusqlite::Result<i64> {
-//     let created_at = std::time::SystemTime::now()
-//         .duration_since(std::time::UNIX_EPOCH)
-//         .unwrap()
-//         .as_secs() as i64;
-
-//     conn.execute(
-//         "INSERT INTO artists (name, image_path, created_at) VALUES (?1, ?2, ?3)",
-//         params![name, image_path, created_at],
-//     )?;
-//     Ok(conn.last_insert_rowid())
-// }
-
-pub fn find_or_create(conn: &Connection, name: &str) -> rusqlite::Result<i64> {
+pub fn find_or_create(conn: &Connection, name: &str) -> rusqlite::Result<(i64, bool)> {
     let name = name.trim();
     let created_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
         .as_secs() as i64;
 
-    conn.execute(
-        "INSERT OR IGNORE INTO artists (name, created_at) VALUES (?1, ?2)",
+    let inserted = conn.execute(
+        "INSERT INTO artists (name, created_at) VALUES (?1, ?2) ON CONFLICT(name) DO NOTHING",
         params![name, created_at],
     )?;
 
-    conn.query_row(
+    let newly_created = inserted > 0;
+
+    let artist_id = conn.query_row(
         "SELECT id FROM artists WHERE name = ?1",
         params![name],
         |row| row.get(0),
-    )
+    )?;
+
+    Ok((artist_id, newly_created))
 }
 
 // get an artist by id

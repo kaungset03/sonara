@@ -1,5 +1,44 @@
 use crate::models::metadata_job::MetadataJob;
 
+// insert album cover job
+pub fn insert_album_cover_job(conn: &rusqlite::Connection, album_id: i64) {
+    crate::repositories::metadata_job_repository::create(conn, "album", album_id, "album_cover", 5)
+        .unwrap_or_else(|err| {
+            println!(
+                "Failed to insert album cover job for album id {}: {}",
+                album_id, err
+            )
+        });
+}
+
+// insert artist image job
+pub fn insert_artist_image_job(conn: &rusqlite::Connection, artist_id: i64) {
+    crate::repositories::metadata_job_repository::create(
+        conn,
+        "artist",
+        artist_id,
+        "artist_image",
+        4,
+    )
+    .unwrap_or_else(|err| {
+        println!(
+            "Failed to insert artist image job for artist id {}: {}",
+            artist_id, err
+        )
+    });
+}
+
+// delete job by entity type and entity id
+pub fn delete_job_by_entity(conn: &rusqlite::Connection, entity_type: &str, entity_id: i64) {
+    crate::repositories::metadata_job_repository::delete_by_entity(conn, entity_type, entity_id)
+        .unwrap_or_else(|err| {
+            println!(
+                "Failed to delete job for entity type {} and entity id {}: {}",
+                entity_type, entity_id, err
+            )
+        });
+}
+
 pub fn process_pending_jobs(
     conn: &rusqlite::Connection,
     app_handle: &tauri::AppHandle,

@@ -6,7 +6,7 @@ use crate::{
 
 // insert user selected folder into the database and import its songs
 // scan the folder for audio files, extract their metadata, and insert them into the database
-pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<ImportResult> {
+pub fn add_folder(conn: &mut rusqlite::Connection, path: &str) -> rusqlite::Result<ImportResult> {
     let mut added = 0;
     let mut failed = 0;
     // insert the folder into the database
@@ -47,7 +47,7 @@ pub fn add_folder(conn: &rusqlite::Connection, path: &str) -> rusqlite::Result<I
 }
 
 // Re sync all the folders in the library and update their songs
-pub fn resync_library(conn: &rusqlite::Connection) -> rusqlite::Result<ImportResult> {
+pub fn resync_library(conn: &mut rusqlite::Connection) -> rusqlite::Result<ImportResult> {
     let mut added = 0;
     let mut failed = 0;
     let mut removed = 0;
@@ -186,64 +186,49 @@ pub fn cleanup_library(conn: &rusqlite::Connection) -> rusqlite::Result<String> 
 }
 
 fn process_metadata(
-    conn: &rusqlite::Connection,
+    conn: &mut rusqlite::Connection,
     metadata: SongMetadata,
     folder_id: i64,
     song_id: Option<i64>,
 ) -> Result<(), String> {
+    let tx = conn.transaction().map_err(|e| e.to_string())?;
     // insert into artist table (find or create)
-    let artist_id = crate::repositories::artist_repository::find_or_create(conn, &metadata.artist)
-        .map_err(|e| e.to_string())?;
-
-    let album_artist_id =
-        crate::repositories::artist_repository::find_or_create(conn, &metadata.album_artist)
+    let (artist_id, is_new_artist) =
+        crate::repositories::artist_repository::find_or_create(&tx, &metadata.artist)
             .map_err(|e| e.to_string())?;
 
+    // check metadata.artist is not Unknown Artist, and it is newly_created
+    if metadata.artist != "Unknown Artist" && is_new_artist {
+        crate::services::metadata_job_service::insert_artist_image_job(&tx, artist_id);
+    }
+
+    let (album_artist_id, is_new_album_artist) =
+        crate::repositories::artist_repository::find_or_create(&tx, &metadata.album_artist)
+            .map_err(|e| e.to_string())?;
+
+    // check metadata.artist is not Unknown Artist, and it is newly_created and album_artist_id is not the same as artist_id
+    if metadata.album_artist != "Unknown Artist"
+        && is_new_album_artist
+        && album_artist_id != artist_id
+    {
+        crate::services::metadata_job_service::insert_artist_image_job(&tx, album_artist_id);
+    }
+
     // insert into album table (find or create)
-    let album_id = crate::repositories::album_repository::find_or_create(
-        conn,
+    let (album_id, is_new_album) = crate::repositories::album_repository::find_or_create(
+        &tx,
         &metadata.album,
         album_artist_id,
     )
     .map_err(|e| e.to_string())?;
-
-    if metadata.artist != "Unknown Artist" {
-        crate::repositories::metadata_job_repository::create(
-            conn,
-            "artist",
-            album_artist_id,
-            "artist_image",
-            0,
-        )
-        .map_err(|e| e.to_string())?;
-    }
-
-    if metadata.album_artist != "Unknown Artist" && album_artist_id != artist_id {
-        crate::repositories::metadata_job_repository::create(
-            conn,
-            "artist",
-            artist_id,
-            "artist_image",
-            0,
-        )
-        .map_err(|e| e.to_string())?;
-    }
-
     // if album_name is not Unknown Album, create a metadata job to fetch the album cover
-    if metadata.album != "Unknown Album" {
-        crate::repositories::metadata_job_repository::create(
-            conn,
-            "album",
-            album_id,
-            "album_cover",
-            3,
-        )
-        .map_err(|e| e.to_string())?;
+    if metadata.album != "Unknown Album" && is_new_album {
+        crate::services::metadata_job_service::insert_album_cover_job(&tx, album_id);
     }
 
     if let Some(id) = song_id {
         crate::repositories::song_repository::update(
-            conn,
+            &tx,
             id,
             &metadata.title,
             metadata.duration,
@@ -259,7 +244,7 @@ fn process_metadata(
     } else {
         // insert into song table
         crate::repositories::song_repository::create(
-            conn,
+            &tx,
             &metadata.title,
             metadata.duration,
             metadata.path.to_str().unwrap(),
@@ -272,6 +257,8 @@ fn process_metadata(
         )
         .map_err(|e| e.to_string())?;
     }
+
+    tx.commit().map_err(|e| e.to_string())?;
 
     Ok(())
 }

@@ -1,6 +1,6 @@
 use rusqlite::{params, Connection};
 
-use crate::models::album::Album;
+use crate::models::album::{Album, AlbumEntity};
 
 // get all albums
 pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {
@@ -28,23 +28,31 @@ pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {
 }
 
 // find or create an album by name and artist_id
-pub fn find_or_create(conn: &Connection, name: &str, artist_id: i64) -> rusqlite::Result<i64> {
+pub fn find_or_create(
+    conn: &Connection,
+    name: &str,
+    artist_id: i64,
+) -> rusqlite::Result<(i64, bool)> {
     let name = name.trim();
     let created_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
         .as_secs() as i64;
 
-    conn.execute(
-        "INSERT OR IGNORE INTO albums (name, artist_id, created_at) VALUES (?1, ?2, ?3)",
+    let inserted = conn.execute(
+        "INSERT INTO albums (name, artist_id, created_at) VALUES (?1, ?2, ?3) ON CONFLICT(name, artist_id) DO NOTHING",
         params![name, artist_id, created_at],
     )?;
 
-    conn.query_row(
+    let newly_created = inserted > 0;
+
+    let album_id = conn.query_row(
         "SELECT id FROM albums WHERE name = ?1 AND artist_id = ?2",
         params![name, artist_id],
-        |row| row.get(0),
-    )
+        |row| row.get("id"),
+    )?;
+
+    Ok((album_id, newly_created))
 }
 
 // get an album by id

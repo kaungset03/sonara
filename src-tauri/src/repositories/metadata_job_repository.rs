@@ -122,9 +122,21 @@ pub fn increase_job_priority(
     conn.execute(
         "
         UPDATE metadata_jobs 
-        SET priority_lvl = 5, status = 'pending', updated_at = ?1 
+        SET priority_lvl = 5, updated_at = ?1 
         WHERE entity_type = ?2 AND entity_id = ?3 AND job_type = ?4",
         params![time, entity_type, entity_id, job_type],
+    )?;
+    Ok(())
+}
+
+pub fn delete_by_entity(
+    conn: &Connection,
+    entity_type: &str,
+    entity_id: i64,
+) -> rusqlite::Result<()> {
+    conn.execute(
+        "DELETE FROM metadata_jobs WHERE entity_type = ?1 AND entity_id = ?2",
+        params![entity_type, entity_id],
     )?;
     Ok(())
 }

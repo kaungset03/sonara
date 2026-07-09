@@ -36,16 +36,30 @@ pub fn update_song_info(
     let album_name = album_name.trim();
     let album_artist_name = album_artist_name.trim();
 
-    let artist_id = crate::repositories::artist_repository::find_or_create(&tx, artist_name)?;
+    // Find or create the artist
+    let (artist_id, is_new_artist) =
+        crate::repositories::artist_repository::find_or_create(&tx, artist_name)?;
+    if is_new_artist && artist_name != "Unknown Artist" {
+        crate::services::metadata_job_service::insert_artist_image_job(&tx, artist_id);
+    }
 
     let album_artist_id = if album_artist_name == artist_name {
         artist_id
     } else {
-        crate::repositories::artist_repository::find_or_create(&tx, album_artist_name)?
+        let (album_artist_id, is_new_album_artist) =
+            crate::repositories::artist_repository::find_or_create(&tx, album_artist_name)?;
+        if is_new_album_artist && album_artist_name != "Unknown Artist" {
+            crate::services::metadata_job_service::insert_artist_image_job(&tx, album_artist_id);
+        }
+        album_artist_id
     };
 
-    let album_id =
+    let (album_id, is_new_album) =
         crate::repositories::album_repository::find_or_create(&tx, album_name, album_artist_id)?;
+
+    if is_new_album && album_name != "Unknown Album" {
+        crate::services::metadata_job_service::insert_album_cover_job(&tx, album_id);
+    }
 
     crate::repositories::song_repository::update_info(
         &tx,
