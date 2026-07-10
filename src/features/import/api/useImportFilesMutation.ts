@@ -6,20 +6,13 @@ const useImportFilesMutation = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (path: string) => {
-      const result = await invoke<ImportResult>("add_library_folder", {
+      const result = await invoke<string>("add_library_folder", {
         path,
       });
       return result;
     },
-    onSuccess: (r) => {
-      toast.success(
-        "Imported: " +
-          r.added +
-          " files, failed: " +
-          r.failed +
-          ", removed: " +
-          r.removed,
-      );
+    onSuccess: (msg) => {
+      toast.success(msg);
     },
     onError: (error) => {
       toast.error("Failed to import files.");

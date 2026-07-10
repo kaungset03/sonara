@@ -13,12 +13,14 @@ const useUpdateAlbumCoverMutation = () => {
     mutationFn: async ({ albumId, imagePath }: UpdateAlbumCoverPayload) => {
       await invoke("update_album_cover", { albumId, imagePath });
     },
-    onSuccess: (_, { albumId }) => {
+    onSuccess: () => {
       toast.success("Album cover updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["songs", "album", albumId] });
     },
     onError: (error) => {
       console.error("Error updating album cover:", error);
+    },
+    onSettled: (_, __, { albumId }) => {
+      queryClient.invalidateQueries({ queryKey: ["songs", "album", albumId] });
     },
   });
   return mutation;

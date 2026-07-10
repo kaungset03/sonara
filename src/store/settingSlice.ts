@@ -12,7 +12,7 @@ const createSettingSlice: StateCreator<AppStoreState, [], [], SettingState> = (
   set,
 ) => ({
   isShuffleConfig: false,
-  repeatModeConfig: "off",
+  repeatModeConfig: "all",
   setShuffleConfig: (isShuffle) => set({ isShuffleConfig: isShuffle }),
   setRepeatModeConfig: (mode) => set({ repeatModeConfig: mode }),
 });

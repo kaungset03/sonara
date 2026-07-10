@@ -6,18 +6,21 @@ const useSyncLibraryFoldersMutation = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async () => {
-      const res = await invoke<ImportResult>("sync_library_folders");
+      const res = await invoke<string>("sync_library_folders");
       return res;
     },
-    onSuccess: (r) => {
-      toast.success(`Added ${r.added} files,  Removed ${r.removed} files.`);
-      queryClient.invalidateQueries({ queryKey: ["songs"] });
-      queryClient.refetchQueries({ queryKey: ["importedFolders"] });
-      queryClient.refetchQueries({ queryKey: ["homeData"] });
+    onSuccess: (msg) => {
+      toast.success(msg);
     },
     onError: (error) => {
       toast.error("Failed to sync library folders.");
       console.error("Sync error:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["importedFolders", "appStats"],
+        exact: false,
+      });
     },
   });
 

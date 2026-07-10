@@ -3,17 +3,19 @@ use tauri::AppHandle;
 
 use crate::models::{folder::Folder, stats::AppStats};
 
-pub fn insert(conn: &Connection, path: &str) -> rusqlite::Result<i64> {
+pub fn find_or_create(conn: &Connection, path: &str) -> rusqlite::Result<(i64, bool)> {
     let created_at = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
         .as_secs() as i64;
 
-    conn.execute(
-        "INSERT OR IGNORE INTO library_folders (path, created_at)
-         VALUES (?1, ?2)",
+    let inserted = conn.execute(
+        "INSERT INTO library_folders (path, created_at)
+         VALUES (?1, ?2) ON CONFLICT(path) DO NOTHING",
         params![path, created_at],
     )?;
+
+    let newly_created = inserted > 0;
 
     let folder_id: i64 = conn.query_row(
         "SELECT id FROM library_folders WHERE path = ?1",
@@ -21,7 +23,7 @@ pub fn insert(conn: &Connection, path: &str) -> rusqlite::Result<i64> {
         |row| row.get(0),
     )?;
 
-    Ok(folder_id)
+    Ok((folder_id, newly_created))
 }
 
 pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Folder>> {

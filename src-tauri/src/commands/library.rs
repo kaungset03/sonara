@@ -1,13 +1,12 @@
 use tauri::State;
 
 use crate::{
-    models::folder::ImportResult,
     services::{self},
     DbState,
 };
 
 #[tauri::command]
-pub fn add_library_folder(db: State<DbState>, path: String) -> Result<ImportResult, String> {
+pub fn add_library_folder(db: State<DbState>, path: String) -> Result<String, String> {
     let mut conn = db.0.lock().map_err(|e| e.to_string())?;
 
     let import_result =
@@ -17,7 +16,7 @@ pub fn add_library_folder(db: State<DbState>, path: String) -> Result<ImportResu
 
 // sync library folders - re-scan the folders and update the songs in the database
 #[tauri::command]
-pub fn sync_library_folders(db: State<DbState>) -> Result<ImportResult, String> {
+pub fn sync_library_folders(db: State<DbState>) -> Result<String, String> {
     let mut conn = db.0.lock().map_err(|e| e.to_string())?;
     services::library_service::resync_library(&mut conn).map_err(|e| e.to_string())
 }

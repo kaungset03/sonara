@@ -140,3 +140,14 @@ pub fn delete_by_entity(
     )?;
     Ok(())
 }
+
+// delete orphaned jobs (jobs with no corresponding entity in the database)
+pub fn delete_orphaned_jobs(conn: &Connection) -> rusqlite::Result<()> {
+    conn.execute(
+        "DELETE FROM metadata_jobs 
+            WHERE entity_type = 'album' AND entity_id NOT IN (SELECT id FROM albums) 
+            OR entity_type = 'artist' AND entity_id NOT IN (SELECT id FROM artists)",
+        [],
+    )?;
+    Ok(())
+}

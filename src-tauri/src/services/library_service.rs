@@ -1,16 +1,21 @@
 // Library Service
 use crate::{
-    models::{folder::ImportResult, search::SearchResults},
+    models::search::SearchResults,
     services::{metadata_service::SongMetadata, scan_service},
 };
 
 // insert user selected folder into the database and import its songs
 // scan the folder for audio files, extract their metadata, and insert them into the database
-pub fn add_folder(conn: &mut rusqlite::Connection, path: &str) -> rusqlite::Result<ImportResult> {
+pub fn add_folder(conn: &mut rusqlite::Connection, path: &str) -> rusqlite::Result<String> {
     let mut added = 0;
     let mut failed = 0;
     // insert the folder into the database
-    let folder_id = crate::repositories::folder_repository::insert(conn, path)?;
+    let (folder_id, newly_created) =
+        crate::repositories::folder_repository::find_or_create(conn, path)?;
+
+    if !newly_created {
+        return Ok("Folder already exists in the library.".to_string());
+    }
 
     // scan the folder for audio files
     let audio_files = scan_service::scan_for_audio_files(path);
@@ -39,15 +44,11 @@ pub fn add_folder(conn: &mut rusqlite::Connection, path: &str) -> rusqlite::Resu
         }
     }
 
-    Ok(ImportResult {
-        added,
-        failed,
-        removed: 0,
-    })
+    Ok(format!("Added {} songs, Failed {} songs", added, failed))
 }
 
 // Re sync all the folders in the library and update their songs
-pub fn resync_library(conn: &mut rusqlite::Connection) -> rusqlite::Result<ImportResult> {
+pub fn resync_library(conn: &mut rusqlite::Connection) -> rusqlite::Result<String> {
     let mut added = 0;
     let mut failed = 0;
     let mut removed = 0;
@@ -120,11 +121,10 @@ pub fn resync_library(conn: &mut rusqlite::Connection) -> rusqlite::Result<Impor
         }
     }
 
-    Ok(ImportResult {
-        added,
-        failed,
-        removed,
-    })
+    Ok(format!(
+        "Sync complete. Added: {}, Failed: {}, Removed: {}",
+        added, failed, removed
+    ))
 }
 
 // get all folders in the library and their song count
@@ -174,6 +174,7 @@ pub fn preview_search(conn: &rusqlite::Connection, search: &str) -> Result<Searc
 pub fn cleanup_library(conn: &rusqlite::Connection) -> rusqlite::Result<String> {
     let deleted_albums = crate::repositories::album_repository::delete_empty_albums(conn)?;
     let deleted_artists = crate::repositories::artist_repository::delete_empty_artists(conn)?;
+    crate::repositories::metadata_job_repository::delete_orphaned_jobs(conn)?;
     let message = if deleted_albums == 0 && deleted_artists == 0 {
         "Nothing to clean.".to_string()
     } else {

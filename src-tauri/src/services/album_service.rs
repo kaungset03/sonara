@@ -69,7 +69,7 @@ pub fn update_album_cover(
 
     if let Ok(saved_image_path) = saved_path {
         album_repository::update_cover_path(conn, album_id, &saved_image_path, "found")?;
-        crate::services::metadata_job_service::delete_job_by_entity(conn, "album", album_id);
+        crate::services::metadata_job_service::delete_album_cover_job(conn, album_id);
         Ok(())
     } else {
         Err(rusqlite::Error::InvalidQuery)

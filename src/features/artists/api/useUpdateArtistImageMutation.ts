@@ -13,14 +13,16 @@ const useUpdateArtistImageMutation = () => {
     mutationFn: async ({ artistId, imagePath }: UpdateArtistImagePayload) => {
       await invoke("update_artist_image", { artistId, imagePath });
     },
-    onSuccess: (_, { artistId }) => {
+    onSuccess: () => {
       toast.success("Artist image updated successfully!");
-      queryClient.invalidateQueries({
-        queryKey: ["songs", "artist", artistId],
-      });
     },
     onError: (error) => {
       console.error("Error updating artist image:", error);
+    },
+    onSettled: (_, __, { artistId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["songs", "artist", artistId],
+      });
     },
   });
 

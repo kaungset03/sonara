@@ -6,10 +6,3 @@ pub struct Folder {
     pub song_count: i64,
     pub created_at: i64,
 }
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ImportResult {
-    pub added: usize,
-    pub failed: usize,
-    pub removed: usize,
-}

@@ -28,13 +28,24 @@ pub fn insert_artist_image_job(conn: &rusqlite::Connection, artist_id: i64) {
     });
 }
 
-// delete job by entity type and entity id
-pub fn delete_job_by_entity(conn: &rusqlite::Connection, entity_type: &str, entity_id: i64) {
-    crate::repositories::metadata_job_repository::delete_by_entity(conn, entity_type, entity_id)
+// delete album cover job by album id
+pub fn delete_album_cover_job(conn: &rusqlite::Connection, album_id: i64) {
+    crate::repositories::metadata_job_repository::delete_by_entity(conn, "album", album_id)
         .unwrap_or_else(|err| {
             println!(
-                "Failed to delete job for entity type {} and entity id {}: {}",
-                entity_type, entity_id, err
+                "Failed to delete album cover job for album id {}: {}",
+                album_id, err
+            )
+        });
+}
+
+// delete artist image job by artist id
+pub fn delete_artist_image_job(conn: &rusqlite::Connection, artist_id: i64) {
+    crate::repositories::metadata_job_repository::delete_by_entity(conn, "artist", artist_id)
+        .unwrap_or_else(|err| {
+            println!(
+                "Failed to delete artist image job for artist id {}: {}",
+                artist_id, err
             )
         });
 }
