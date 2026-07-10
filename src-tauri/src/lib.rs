@@ -7,6 +7,7 @@ mod services;
 use db::{connection::get_connection, migrations::run_migrations};
 use std::{sync::Mutex, time::Duration};
 use tauri::Manager;
+use tauri_plugin_store::StoreExt;
 
 use crate::services::metadata_job_service::process_pending_jobs;
 
@@ -21,6 +22,7 @@ fn greet(name: &str) -> String {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
@@ -44,9 +46,36 @@ pub fn run() {
                     }
                 };
 
+                let config_store = match app_handle.store("app.config.json") {
+                    Ok(store) => store,
+                    Err(err) => {
+                        eprintln!("Failed to load store: {err}");
+                        return;
+                    }
+                };
+
                 loop {
-                    if let Err(err) = process_pending_jobs(&bg_conn, &app_handle, 3) {
-                        eprintln!("Error processing pending jobs: {err}");
+                    let app_config = match config_store.get("app-config") {
+                        Some(config) => config,
+                        None => {
+                            // First launch, create default config
+                            let default_config = serde_json::json!({
+                                "auto_download_enabled": false
+                            });
+
+                            config_store.set("app-config", default_config.clone());
+
+                            default_config
+                        }
+                    };
+
+                    if app_config["auto_download_enabled"]
+                        .as_bool()
+                        .unwrap_or(false)
+                    {
+                        if let Err(err) = process_pending_jobs(&bg_conn, &app_handle, 3) {
+                            eprintln!("Error processing pending jobs: {err}");
+                        }
                     }
 
                     std::thread::sleep(Duration::from_secs(10));
@@ -66,6 +95,8 @@ pub fn run() {
             commands::library::search_library,
             commands::library::get_home_data,
             commands::library::get_app_stats,
+            commands::library::get_app_config,
+            commands::library::update_app_config,
             commands::song::get_all_songs,
             commands::song::get_song_by_id,
             commands::song::get_songs_by_search,

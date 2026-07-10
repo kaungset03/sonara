@@ -5,14 +5,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import LibraryFolders from "@/features/settings/components/LibraryFolders";
 import SyncLibraryFolders from "@/features/settings/components/SyncLibraryFolders";
 import useCleanUpLibraryMutation from "@/features/settings/api/useCleanUpLibraryMutation";
+import useGetAppConfigQuery from "@/features/settings/api/useGetAppConfigQuery";
+import useUpdateAppConfigMutation from "@/features/settings/api/useUpdateAppConfigMutation";
 
 const LibraryManagement = () => {
+  const autoDownloadEnabled = useGetAppConfigQuery();
+  const { mutate: updateAppConfig } = useUpdateAppConfigMutation();
   const { mutate } = useCleanUpLibraryMutation();
+
+  const handleAutoDownloadChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const isChecked = event.target.checked;
+    updateAppConfig(isChecked);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -41,6 +54,20 @@ const LibraryManagement = () => {
           >
             Clean Up
           </Button>
+        </div>
+        <Separator />
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-muted-foreground">
+            Automatically download missing album covers and artist images from
+            the internet.
+          </p>
+
+          <Input
+            checked={autoDownloadEnabled}
+            type="checkbox"
+            className="size-5"
+            onChange={handleAutoDownloadChange}
+          />
         </div>
       </CardContent>
     </Card>

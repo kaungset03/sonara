@@ -1,4 +1,6 @@
+use serde_json::json;
 use tauri::State;
+use tauri_plugin_store::StoreExt;
 
 use crate::{
     services::{self},
@@ -68,4 +70,34 @@ pub fn search_library(
 pub fn cleanup_library(db: State<DbState>) -> Result<String, String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
     services::library_service::cleanup_library(&conn).map_err(|e| e.to_string())
+}
+
+// read app config from app.config.json
+#[tauri::command]
+pub fn get_app_config(app_handle: tauri::AppHandle) -> Result<serde_json::Value, String> {
+    let config_store = app_handle
+        .store("app.config.json")
+        .map_err(|e| e.to_string())?;
+    let config = config_store
+        .get("app-config")
+        .unwrap_or(serde_json::Value::Object(serde_json::Map::new()));
+
+    Ok(config)
+}
+
+// update app config in app.config.json
+#[tauri::command]
+pub fn update_app_config(
+    app_handle: tauri::AppHandle,
+    auto_download_enabled: bool,
+) -> Result<(), String> {
+    let config_store = app_handle
+        .store("app.config.json")
+        .map_err(|e| e.to_string())?;
+    config_store.set(
+        "app-config",
+        json!({ "auto_download_enabled": auto_download_enabled }),
+    );
+
+    Ok(())
 }
