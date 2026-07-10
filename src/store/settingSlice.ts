@@ -6,6 +6,10 @@ export interface SettingState {
   repeatModeConfig: "off" | "one" | "all";
   setShuffleConfig: (isShuffle: boolean) => void;
   setRepeatModeConfig: (mode: "off" | "one" | "all") => void;
+  albumSortValue: SortValue;
+  artistSortValue: SortValue;
+  setAlbumSortValue: (value: SortValue) => void;
+  setArtistSortValue: (value: SortValue) => void;
 }
 
 const createSettingSlice: StateCreator<AppStoreState, [], [], SettingState> = (
@@ -15,6 +19,10 @@ const createSettingSlice: StateCreator<AppStoreState, [], [], SettingState> = (
   repeatModeConfig: "all",
   setShuffleConfig: (isShuffle) => set({ isShuffleConfig: isShuffle }),
   setRepeatModeConfig: (mode) => set({ repeatModeConfig: mode }),
+  albumSortValue: "name-asc",
+  artistSortValue: "name-asc",
+  setAlbumSortValue: (value) => set({ albumSortValue: value }),
+  setArtistSortValue: (value) => set({ artistSortValue: value }),
 });
 
 export default createSettingSlice;

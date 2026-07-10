@@ -1,15 +1,16 @@
-import { useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import useGetAllArtistsQuery from "@/features/artists/api/useGetAllArtistsQuery";
 import SortBySelect from "@/components/custom/SortBySelect";
+import useAppStore from "@/store/app-store";
 
 export const Route = createFileRoute("/artists/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const [sortValue, setSortValue] = useState<SortValue>("name-asc");
+  const sortValue = useAppStore((state) => state.artistSortValue);
+  const setSortValue = useAppStore((state) => state.setArtistSortValue);
   const { data: artists } = useGetAllArtistsQuery({ value: sortValue });
 
   return (
