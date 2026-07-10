@@ -122,7 +122,7 @@ pub fn increase_job_priority(
     conn.execute(
         "
         UPDATE metadata_jobs 
-        SET priority_lvl = 5, updated_at = ?1 
+        SET priority_lvl = 6, updated_at = ?1 
         WHERE entity_type = ?2 AND entity_id = ?3 AND job_type = ?4",
         params![time, entity_type, entity_id, job_type],
     )?;
