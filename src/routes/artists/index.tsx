@@ -1,17 +1,24 @@
+import { useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import useGetAllArtistsQuery from "@/features/artists/api/useGetAllArtistsQuery";
+import SortBySelect from "@/components/custom/SortBySelect";
 
 export const Route = createFileRoute("/artists/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { data: artists } = useGetAllArtistsQuery();
+  const [sortValue, setSortValue] = useState<SortValue>("name-asc");
+  const { data: artists } = useGetAllArtistsQuery({ value: sortValue });
 
   return (
     <div>
-      <h1 className="text-3xl font-bold font-heading mb-4">Artists</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-3xl font-bold font-heading">Artists</h1>
+        <SortBySelect value={sortValue} onValueChange={setSortValue} />
+      </div>
+
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-6">
         {artists?.map((artist) => {
           const initials = artist.name

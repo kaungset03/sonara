@@ -94,6 +94,10 @@ declare global {
     time: number; // time in seconds when the lyric line should be displayed
     text: string; // the lyric text to display
   };
+
+  type SortField = "name" | "created_at";
+  type SortOrder = "asc" | "desc";
+  type SortValue = `${SortField}-${SortOrder}`;
 }
 
 export {};

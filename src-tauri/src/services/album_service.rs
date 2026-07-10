@@ -6,8 +6,10 @@ use crate::{
 // get all albums
 pub fn get_all_albums(
     conn: &rusqlite::Connection,
+    sort_col: &str,
+    order_direction: &str,
 ) -> rusqlite::Result<Vec<crate::models::album::Album>> {
-    album_repository::index(conn)
+    album_repository::index(conn, sort_col, order_direction)
 }
 
 // get album details (info and songs)
@@ -25,19 +27,6 @@ pub fn get_album_details(
 
     let album =
         album_repository::get(conn, album_id).map_err(|_| rusqlite::Error::QueryReturnedNoRows)?;
-
-    // let album_clone = album.clone();
-    // let app_handle = app.clone();
-
-    // tauri::async_runtime::spawn_blocking(move || {
-    //     if let Ok(bg_conn) = crate::db::connection::get_connection(&app_handle) {
-    //         let _ = crate::services::file_service::ensure_album_cover(
-    //             &bg_conn,
-    //             &app_handle,
-    //             album_clone,
-    //         );
-    //     }
-    // });
 
     let songs = song_repository::get_by_album(conn, album_id)?;
     Ok(AlbumDetails {

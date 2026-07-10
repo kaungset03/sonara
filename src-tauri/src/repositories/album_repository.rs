@@ -3,14 +3,32 @@ use rusqlite::{params, Connection};
 use crate::models::album::Album;
 
 // get all albums
-pub fn index(conn: &Connection) -> rusqlite::Result<Vec<Album>> {
-    let mut stmt = conn.prepare(
+pub fn index(
+    conn: &Connection,
+    sort_col: &str,
+    order_direction: &str,
+) -> rusqlite::Result<Vec<Album>> {
+    let sort_column = match sort_col {
+        "name" => "alb.name",
+        "created_at" => "alb.created_at",
+        _ => return Err(rusqlite::Error::InvalidQuery),
+    };
+
+    let order_direction = match order_direction {
+        "asc" => "ASC",
+        "desc" => "DESC",
+        _ => return Err(rusqlite::Error::InvalidQuery),
+    };
+
+    let query = format!(
         "
         SELECT alb.*, art.name AS artist_name FROM albums alb
         JOIN artists art ON alb.artist_id = art.id
-        ORDER BY alb.created_at DESC;
-        ",
-    )?;
+        ORDER BY {sort_column} {order_direction}
+        "
+    );
+
+    let mut stmt = conn.prepare(&query)?;
     let album_iter = stmt.query_map([], |row| {
         Ok(crate::models::album::Album {
             id: row.get("id")?,

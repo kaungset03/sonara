@@ -1,13 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
 
-const useGetAllAlbumsQuery = () => {
+type GetAllAlbumsQueryProps = {
+  value: SortValue; // the value of the selected sort option, e.g., "name-asc", "created_at-desc"
+};
+
+const useGetAllAlbumsQuery = ({ value }: GetAllAlbumsQueryProps) => {
+  const [sortCol, orderDirection] = value.split("-") as [SortField, SortOrder];
   const { data } = useQuery({
-    queryKey: ["albums"],
+    queryKey: ["albums", value],
     queryFn: async () => {
-      const res = await invoke<Album[]>("get_all_albums");
+      const res = await invoke<Album[]>("get_all_albums", {
+        sortCol,
+        orderDirection,
+      });
       return res;
-      // later, there will be more info like album art, etc.
     },
   });
 

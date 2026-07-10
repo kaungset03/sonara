@@ -7,9 +7,17 @@ use crate::{
 
 // get all albums
 #[tauri::command]
-pub fn get_all_albums(db: State<DbState>) -> Result<Vec<crate::models::album::Album>, String> {
+pub fn get_all_albums(
+    db: State<DbState>,
+    sort_col: Option<String>,
+    order_direction: Option<String>,
+) -> Result<Vec<crate::models::album::Album>, String> {
     let conn = db.0.lock().map_err(|e| e.to_string())?;
-    services::album_service::get_all_albums(&conn).map_err(|e| e.to_string())
+    let sort_col = sort_col.as_deref().unwrap_or("name");
+    let order_direction = order_direction.as_deref().unwrap_or("asc");
+
+    services::album_service::get_all_albums(&conn, sort_col, order_direction)
+        .map_err(|e| e.to_string())
 }
 
 // get album details (info + songs)

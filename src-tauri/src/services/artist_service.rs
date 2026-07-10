@@ -6,8 +6,10 @@ use crate::{
 // get all artists
 pub fn get_all_artists(
     conn: &rusqlite::Connection,
+    sort_col: &str,
+    order_direction: &str,
 ) -> rusqlite::Result<Vec<crate::models::artist::Artist>> {
-    artist_repository::index(conn)
+    artist_repository::index(conn, sort_col, order_direction)
 }
 
 // get artist details (info and songs)
