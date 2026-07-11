@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import useUpdateSongLyricsPathMutation from "@/features/lyrics/api/useUpdateSongLyricsPathMutation";
+import { openUrl } from "@tauri-apps/plugin-opener";
 import { type SubmitEvent, useEffect, useState } from "react";
 
 type UpdateSongLyricsProps = {
@@ -44,6 +45,10 @@ const UpdateSongLyrics = ({
     mutation.mutate({ songId: song_id, lyricsContent });
   };
 
+  const goToLRCILIB = async () => {
+    await openUrl("https://lrclib.net");
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -55,23 +60,31 @@ const UpdateSongLyrics = ({
           Update Lyrics
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-full max-w-xl" showCloseButton={false}>
+      <DialogContent className="min-w-xl" showCloseButton={false}>
         <DialogHeader className="space-y-1">
           <DialogTitle>{description}</DialogTitle>
-          <DialogDescription>
-            Update the lyrics for this song in lrc synced format.
+          <DialogDescription className="flex items-center justify-between">
+            <span>Lyrics must be in LRC synced format.</span>
+            <span
+              onClick={goToLRCILIB}
+              role="button"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              Search lyrics on LRCLIB ↗
+            </span>
           </DialogDescription>
         </DialogHeader>
 
         <form
           onSubmit={handleUpdateLyrics}
-          className="max-h-[50vh]"
+          className="max-h-[60vh] min-w-full"
           id={`update-lyrics-form-${song_id}`}
         >
           <textarea
             value={lyricsContent}
             onChange={(e) => setLyricsContent(e.target.value)}
-            className="w-full min-h-[40vh] p-2 rounded-xl border border-muted-foreground/30 focus:border-muted-foreground outline-none scrollbar-none tracking-wide"
+            className="w-full min-h-[55vh] p-2 rounded-xl border border-muted-foreground/30 focus:border-muted-foreground outline-none scrollbar-none tracking-wide"
             placeholder="Enter the lyrics for this song..."
           />
         </form>
