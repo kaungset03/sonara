@@ -71,7 +71,7 @@ pub fn update_song_info(
     )?;
 
     // update the song lyrics status to "not_checked"
-    crate::repositories::lyrics_repository::update_lyrics_path(&tx, id, "", "not_checked")?;
+    crate::repositories::lyrics_repository::update_lyrics_status(&tx, id, "not_checked")?;
 
     tx.commit()?;
 

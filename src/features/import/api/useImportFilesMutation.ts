@@ -12,6 +12,9 @@ const useImportFilesMutation = () => {
       return result;
     },
     onSuccess: (msg) => {
+      queryClient.refetchQueries({ queryKey: ["importedFolders"] });
+      queryClient.refetchQueries({ queryKey: ["homeData"] });
+
       toast.success(msg);
     },
     onError: (error) => {
@@ -21,9 +24,8 @@ const useImportFilesMutation = () => {
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["songs", "albums", "artists"],
+        exact: false,
       });
-      queryClient.refetchQueries({ queryKey: ["importedFolders"] });
-      queryClient.refetchQueries({ queryKey: ["homeData"] });
     },
   });
   return mutation;

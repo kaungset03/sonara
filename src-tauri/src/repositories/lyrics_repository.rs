@@ -4,14 +4,14 @@ use crate::models::lyrics::Lyrics;
 
 // get lyrics path by song id
 pub fn get_lyrics_by_song_id(conn: &Connection, song_id: i64) -> rusqlite::Result<Option<Lyrics>> {
-    let mut stmt = conn.prepare("SELECT * FROM lyrics WHERE song_id = ?1")?;
+    let mut stmt = conn.prepare("SELECT * FROM song_lyrics WHERE song_id = ?1 LIMIT 1")?;
     let mut rows = stmt.query(rusqlite::params![song_id])?;
-
     if let Some(row) = rows.next()? {
         let lyrics = Lyrics {
             id: row.get("id")?,
             song_id: row.get("song_id")?,
-            path: row.get("path")?,
+            content: row.get("content")?,
+            source: row.get("source")?,
             status: row.get("status")?,
         };
         Ok(Some(lyrics))
@@ -20,18 +20,18 @@ pub fn get_lyrics_by_song_id(conn: &Connection, song_id: i64) -> rusqlite::Resul
     }
 }
 
-// create or update lyrics path for a song
-pub fn update_lyrics_path(
+// create or update lyrics content for a song
+pub fn update_lyrics_content(
     conn: &Connection,
     song_id: i64,
-    path: &str,
+    content: &str,
     status: &str,
+    source: &str,
 ) -> rusqlite::Result<()> {
-    let path = if path.trim() == "" { None } else { Some(path) };
     conn.execute(
-        "INSERT INTO lyrics (song_id, path, status) VALUES (?1, ?2, ?3)
-         ON CONFLICT(song_id) DO UPDATE SET path=excluded.path, status=excluded.status",
-        rusqlite::params![song_id, path, status],
+        "INSERT INTO song_lyrics (song_id, content, status, source) VALUES (?1, ?2, ?3, ?4)
+         ON CONFLICT(song_id) DO UPDATE SET content=excluded.content, status=excluded.status, source=excluded.source",
+        rusqlite::params![song_id, content, status, source],
     )?;
     Ok(())
 }
@@ -39,7 +39,7 @@ pub fn update_lyrics_path(
 // create or update lyrics status for a song
 pub fn update_lyrics_status(conn: &Connection, song_id: i64, status: &str) -> rusqlite::Result<()> {
     conn.execute(
-        "INSERT INTO lyrics (song_id, status) VALUES (?1, ?2)
+        "INSERT INTO song_lyrics (song_id, status) VALUES (?1, ?2)
          ON CONFLICT(song_id) DO UPDATE SET status=excluded.status",
         rusqlite::params![song_id, status],
     )?;

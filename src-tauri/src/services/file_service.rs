@@ -130,44 +130,17 @@ pub fn ensure_artist_image(
 }
 
 pub fn ensure_song_lyrics(
-    app_handle: &AppHandle,
     conn: &rusqlite::Connection,
     song: &SongResponse,
 ) -> Result<Option<String>, String> {
     match api_service::get_song_lyrics_from_lrclib(&song) {
         Ok(Some(lyrics)) => {
-            let file_name = format!("song_{}_lyrics.lrc", song.id);
-
-            let app_data_dir = app_handle
-                .path()
-                .app_data_dir()
-                .map_err(|e| format!("Failed to get AppData directory: {}", e))?;
-
-            if !app_data_dir.exists() {
-                fs::create_dir_all(&app_data_dir)
-                    .map_err(|e| format!("Failed to create AppData directory: {}", e))?;
-            }
-
-            let dest = app_data_dir.join(&file_name);
-
-            match fs::write(&dest, &lyrics) {
-                Ok(_) => {
-                    let saved_path = dest.to_string_lossy().to_string();
-
-                    crate::repositories::lyrics_repository::update_lyrics_path(
-                        conn,
-                        song.id,
-                        &saved_path,
-                        "found",
-                    )
-                    .map_err(|e| e.to_string())?;
-
-                    return Ok(Some(saved_path));
-                }
-                Err(e) => {
-                    return Err(e.to_string());
-                }
-            }
+            // save lyrics content to database
+            crate::repositories::lyrics_repository::update_lyrics_content(
+                conn, song.id, &lyrics, "found", "lrclib",
+            )
+            .map_err(|e| e.to_string())?;
+            return Ok(Some(lyrics));
         }
         Ok(None) => {
             crate::repositories::lyrics_repository::update_lyrics_status(

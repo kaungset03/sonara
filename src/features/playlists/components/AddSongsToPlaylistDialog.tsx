@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Check, PlusCircle } from "lucide-react";
-import { SubmitEvent, useState } from "react";
+import { type SubmitEvent, useState } from "react";
 import { Input } from "@/components/ui/input";
 import useGetAllSongsQuery from "@/features/songs/api/useGetAllSongsQuery";
 import useAddSongsToPlaylistMutation from "@/features/playlists/api/useAddSongsToPlaylistMutation";

@@ -17,13 +17,12 @@ import {
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { getFormattedDuration } from "@/lib/helpers";
-import SongLyrics from "@/features/lyrics/components/SongLyrics";
 import useAppStore from "@/store/app-store";
-import UpdateSongLyricsButton from "@/features/lyrics/components/UpdateSongLyricsButton";
 import PlaybackQueue from "@/features/queue/components/PlaybackQueue";
-import MarqueeText from "../../../components/custom/MarqueText";
-import ActionsDropdown from "../../songs/components/ActionsDropdown";
-import AddToPlaylistDialog from "../../playlists/components/AddToPlaylistDialog";
+import MarqueeText from "@/components/custom/MarqueText";
+import ActionsDropdown from "@/features/songs/components/ActionsDropdown";
+import AddToPlaylistDialog from "@/features/playlists/components/AddToPlaylistDialog";
+import LyricsSection from "@/features/lyrics/components/LyricsSection";
 
 type OverlayPlayerProps = {
   isExpanded: boolean;
@@ -206,10 +205,7 @@ const OverlayPlayer = ({
               </div>
             </div>
           </div>
-          <div className="w-full h-full p-4 flex flex-col justify-center items-center gap-y-8">
-            <SongLyrics songId={song.id} audioCurrentTime={position} />
-            <UpdateSongLyricsButton songId={song.id} />
-          </div>
+          <LyricsSection song={song} position={position} />
         </div>
       </div>
     </section>

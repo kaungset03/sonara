@@ -24,10 +24,9 @@ const useAppStore = create<AppStoreState>()(
 
 const unsubHydrate = useAppStore.persist.onFinishHydration(() => {
   useAppStore.getState().initPlaybackFromSettings();
-  unsubHydrate(); // Self-destruct listener after one-time init
+  unsubHydrate(); 
 });
 
-// Guard condition if hydration happens instantly
 if (useAppStore.persist.hasHydrated()) {
   useAppStore.getState().initPlaybackFromSettings();
 }

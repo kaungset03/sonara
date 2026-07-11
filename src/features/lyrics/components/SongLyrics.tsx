@@ -1,15 +1,17 @@
-import useGetSongLyricsQuery from "@/features/lyrics/api/useGetSongLyricsQuery";
 import RenderLyricsView from "@/features/lyrics/components/RenderLyricsView";
 
 type SongLyricsProps = {
-  songId: number;
+  isFetching: boolean;
   audioCurrentTime: number;
+  lyricsContent: string | undefined;
 };
 
-const SongLyrics = ({ songId, audioCurrentTime }: SongLyricsProps) => {
-  const { data: lyricsPath, isLoading, isPending } = useGetSongLyricsQuery({ songId });
-
-  if (isLoading || isPending) {
+const SongLyrics = ({
+  isFetching,
+  audioCurrentTime,
+  lyricsContent,
+}: SongLyricsProps) => {
+  if (isFetching) {
     return (
       <div className="h-90 w-full flex justify-center items-center text-center">
         <p className="font-heading font-medium text-muted-foreground mb-4">
@@ -19,9 +21,12 @@ const SongLyrics = ({ songId, audioCurrentTime }: SongLyricsProps) => {
     );
   }
 
-  if (lyricsPath) {
+  if (lyricsContent) {
     return (
-      <RenderLyricsView path={lyricsPath} audioCurrentTime={audioCurrentTime} />
+      <RenderLyricsView
+        content={lyricsContent}
+        audioCurrentTime={audioCurrentTime}
+      />
     );
   }
 

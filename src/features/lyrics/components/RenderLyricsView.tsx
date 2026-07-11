@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import useReadFile from "@/features/lyrics/hooks/useLyrics";
+import { parseLRC } from "@/lib/helpers";
 
 type RenderLyricsViewProps = {
-  path: string;
+  content: string;
   audioCurrentTime: number;
 };
 
 const RenderLyricsView = ({
-  path,
+  content,
   audioCurrentTime,
 }: RenderLyricsViewProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const { lyricsLines } = useReadFile({ filePath: path });
+  const lyricsLines = parseLRC(content);
 
   const lastIndexRef = useRef(-1);
 

@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct Lyrics {
     pub id: i64,
     pub song_id: i64,
-    pub path: Option<String>,
+    pub content: Option<String>,
+    pub source: Option<String>,
     pub status: String,
 }
