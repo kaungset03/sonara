@@ -3,6 +3,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import useGetAllAlbumsQuery from "@/features/albums/api/useGetAllAlbumsQuery";
 import SortBySelect from "@/components/custom/SortBySelect";
 import useAppStore from "@/store/app-store";
+import EmptySongAlert from "../../components/custom/EmptySongAlert";
+import Loading from "../../components/custom/Loading";
 
 export const Route = createFileRoute("/albums/")({
   component: RouteComponent,
@@ -11,7 +13,18 @@ export const Route = createFileRoute("/albums/")({
 function RouteComponent() {
   const sortValue = useAppStore((state) => state.albumSortValue);
   const setSortValue = useAppStore((state) => state.setAlbumSortValue);
-  const { data: albums } = useGetAllAlbumsQuery({ value: sortValue });
+  const { data: albums, isFetching } = useGetAllAlbumsQuery({
+    value: sortValue,
+  });
+
+  if (isFetching) {
+    return <Loading />;
+  }
+
+  if (albums && albums.length === 0) {
+    return <EmptySongAlert />;
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-4">

@@ -16,7 +16,7 @@ const EmptySongAlert = () => {
         <EmptyMedia variant="icon">
           <Music size={48} className="text-muted-foreground" />
         </EmptyMedia>
-        <EmptyTitle>No Songs Yet</EmptyTitle>
+        <EmptyTitle>No Songs Available</EmptyTitle>
         <EmptyDescription>
           You haven&apos;t added any songs yet. Get started by importing some
           music.

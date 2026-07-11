@@ -7,7 +7,7 @@ type Response = {
 };
 
 const useGetSongsByAlbumQuery = (albumId: number) => {
-  const { data } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["songs", "album", albumId],
     queryFn: async () => {
       const res = await invoke<Response>("get_album_details", { albumId });
@@ -15,6 +15,6 @@ const useGetSongsByAlbumQuery = (albumId: number) => {
     },
   });
 
-  return { data };
+  return { data, isFetching };
 };
 export default useGetSongsByAlbumQuery;

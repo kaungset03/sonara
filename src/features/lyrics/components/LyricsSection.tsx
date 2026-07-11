@@ -10,16 +10,22 @@ type LyricsSectionProps = {
 const LyricsSection = ({ song, position }: LyricsSectionProps) => {
   const {
     data: lyricsContent,
-    isLoading,
-    isPending,
+    refetch,
+    isFetching,
+    isRefetching,
   } = useGetSongLyricsQuery({ songId: song.id });
+
+  const handleRefetchLyrics = () => {
+    refetch();
+  };
 
   return (
     <div className="w-full h-full p-4 flex flex-col justify-center items-center gap-y-8">
       <SongLyrics
-        isFetching={isLoading || isPending}
+        isFetching={isFetching || isRefetching}
         audioCurrentTime={position}
         lyricsContent={lyricsContent}
+        handleRefetchLyrics={handleRefetchLyrics}
       />
 
       <UpdateSongLyrics

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
 
 const useGetFavoriteSongsQuery = () => {
-  const { data } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["songs", "favorites"],
     queryFn: async () => {
       const res = await invoke("get_favorite_songs");
@@ -10,6 +10,6 @@ const useGetFavoriteSongsQuery = () => {
     },
   });
 
-  return { data };
+  return { data, isFetching };
 };
 export default useGetFavoriteSongsQuery;

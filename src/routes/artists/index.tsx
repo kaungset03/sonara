@@ -3,6 +3,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import useGetAllArtistsQuery from "@/features/artists/api/useGetAllArtistsQuery";
 import SortBySelect from "@/components/custom/SortBySelect";
 import useAppStore from "@/store/app-store";
+import Loading from "@/components/custom/Loading";
+import EmptySongAlert from "@/components/custom/EmptySongAlert";
 
 export const Route = createFileRoute("/artists/")({
   component: RouteComponent,
@@ -11,7 +13,17 @@ export const Route = createFileRoute("/artists/")({
 function RouteComponent() {
   const sortValue = useAppStore((state) => state.artistSortValue);
   const setSortValue = useAppStore((state) => state.setArtistSortValue);
-  const { data: artists } = useGetAllArtistsQuery({ value: sortValue });
+  const { data: artists, isFetching } = useGetAllArtistsQuery({
+    value: sortValue,
+  });
+
+  if (isFetching) {
+    return <Loading />;
+  }
+
+  if (artists && artists.length === 0) {
+    return <EmptySongAlert />;
+  }
 
   return (
     <div>

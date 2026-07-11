@@ -14,18 +14,23 @@ import SongCard from "@/features/home/components/SongCard";
 import StatsCard from "@/features/home/components/StatsCard";
 import useGetHomeDataQuery from "@/features/home/api/useGetHomeDataQuery";
 import useAppStore from "@/store/app-store";
+import Loading from "@/components/custom/Loading";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
-  const { data } = useGetHomeDataQuery();
+  const { data, isFetching } = useGetHomeDataQuery();
   const playSong = useAppStore((state) => state.playSong);
 
   const handlePlaySong = (song: Song, songs: Song[]) => {
     playSong(song, songs);
   };
+
+  if (isFetching) {
+    return <Loading />;
+  }
 
   if (data && data.recently_added_songs.length > 0) {
     return (

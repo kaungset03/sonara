@@ -7,7 +7,7 @@ type GetAllAlbumsQueryProps = {
 
 const useGetAllAlbumsQuery = ({ value }: GetAllAlbumsQueryProps) => {
   const [sortCol, orderDirection] = value.split("-") as [SortField, SortOrder];
-  const { data } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["albums", value],
     queryFn: async () => {
       const res = await invoke<Album[]>("get_all_albums", {
@@ -18,6 +18,6 @@ const useGetAllAlbumsQuery = ({ value }: GetAllAlbumsQueryProps) => {
     },
   });
 
-  return { data };
+  return { data, isFetching };
 };
 export default useGetAllAlbumsQuery;
