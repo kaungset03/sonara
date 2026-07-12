@@ -14,7 +14,7 @@ export const Route = createFileRoute("/artists/$id")({
 
 function RouteComponent() {
   const { id } = Route.useParams();
-  const { data, isFetching } = useGetSongsByArtistQuery(parseInt(id));
+  const { data } = useGetSongsByArtistQuery(parseInt(id));
 
   const playSong = useAppStore((state) => state.playSong);
   const isShuffle = useAppStore((state) => state.isShuffle);
@@ -39,7 +39,7 @@ function RouteComponent() {
     setIsShuffle(!isShuffle);
   };
 
-  if (isFetching) {
+  if (!data) {
     return <Loading />;
   }
 

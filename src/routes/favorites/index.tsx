@@ -20,7 +20,7 @@ export const Route = createFileRoute("/favorites/")({
 
 function RouteComponent() {
   const navigate = useNavigate();
-  const { data, isFetching } = useGetFavoriteSongsQuery();
+  const { data } = useGetFavoriteSongsQuery();
   const playSong = useAppStore((state) => state.playSong);
 
   const handleSongSelect = (song: Song) => {
@@ -29,7 +29,7 @@ function RouteComponent() {
     }
   };
 
-  if (isFetching) {
+  if (!data) {
     return <Loading />;
   }
 

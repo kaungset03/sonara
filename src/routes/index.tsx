@@ -21,14 +21,14 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { data, isFetching } = useGetHomeDataQuery();
+  const { data } = useGetHomeDataQuery();
   const playSong = useAppStore((state) => state.playSong);
 
   const handlePlaySong = (song: Song, songs: Song[]) => {
     playSong(song, songs);
   };
 
-  if (isFetching) {
+  if (!data) {
     return <Loading />;
   }
 

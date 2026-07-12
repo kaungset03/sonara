@@ -4,6 +4,7 @@ import useGetAllAlbumsQuery from "@/features/albums/api/useGetAllAlbumsQuery";
 import SortBySelect from "@/components/custom/SortBySelect";
 import useAppStore from "@/store/app-store";
 import EmptySongAlert from "@/components/custom/EmptySongAlert";
+import Loading from "@/components/custom/Loading";
 
 export const Route = createFileRoute("/albums/")({
   component: RouteComponent,
@@ -16,7 +17,11 @@ function RouteComponent() {
     value: sortValue,
   });
 
-  if (albums && albums.length === 0) {
+  if (!albums) {
+    return <Loading />;
+  }
+
+  if (albums.length <= 0) {
     return <EmptySongAlert />;
   }
 

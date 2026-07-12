@@ -17,7 +17,7 @@ export const Route = createFileRoute("/playlists/$id")({
 
 function RouteComponent() {
   const { id } = Route.useParams();
-  const { data, isFetching } = useGetSongsByPlaylistQuery(Number(id));
+  const { data } = useGetSongsByPlaylistQuery(Number(id));
   const songs = data?.songs;
 
   const { mutate } = useRemoveSongFromPlaylistMutation();
@@ -47,7 +47,7 @@ function RouteComponent() {
     mutate({ songIds: [songId], playlistId: Number(id) });
   };
 
-  if (isFetching) {
+  if (!data) {
     return <Loading />;
   }
 

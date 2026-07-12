@@ -4,6 +4,7 @@ import useGetAllArtistsQuery from "@/features/artists/api/useGetAllArtistsQuery"
 import SortBySelect from "@/components/custom/SortBySelect";
 import useAppStore from "@/store/app-store";
 import EmptySongAlert from "@/components/custom/EmptySongAlert";
+import Loading from "@/components/custom/Loading";
 
 export const Route = createFileRoute("/artists/")({
   component: RouteComponent,
@@ -16,10 +17,13 @@ function RouteComponent() {
     value: sortValue,
   });
 
-  if (artists && artists.length === 0) {
-    return <EmptySongAlert />;
+  if (!artists) {
+    return <Loading />;
   }
 
+  if (artists.length <= 0) {
+    return <EmptySongAlert />;
+  }
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
