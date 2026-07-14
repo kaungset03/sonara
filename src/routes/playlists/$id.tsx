@@ -6,7 +6,6 @@ import useAppStore from "@/store/app-store";
 import EditPlaylistDialog from "@/features/playlists/components/EditPlaylistDialog";
 import DeletePlaylistAlert from "@/features/playlists/components/DeletePlaylistAlert";
 import SongsTable from "@/features/songs/components/SongsTable";
-import Loading from "@/components/custom/Loading";
 import AddSongsToPlaylistDialog from "@/features/playlists/components/AddSongsToPlaylistDialog";
 import useGetSongsByPlaylistQuery from "@/features/playlists/api/useGetSongsByPlaylistQuery";
 import useRemoveSongFromPlaylistMutation from "@/features/playlists/api/useRemoveSongFromPlaylistMutation";
@@ -46,10 +45,6 @@ function RouteComponent() {
   const handleRemoveFromPlaylist = (songId: number) => {
     mutate({ songIds: [songId], playlistId: Number(id) });
   };
-
-  if (!data) {
-    return <Loading />;
-  }
 
   if (songs) {
     return (

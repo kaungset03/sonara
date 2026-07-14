@@ -30,15 +30,9 @@ const useAddSongsToPlaylistMutation = ({
       return result;
     },
     onSuccess: (result, variables) => {
-      if (result.added > 0) {
-        toast.success(
-          `Added ${result.added} songs (${
-            result.skipped
-          } already in playlist)!`,
-        );
-      } else {
-        toast.warning("Selected songs are already in the playlist.");
-      }
+      toast.info(
+        `Added ${result.added} songs. Skipped ${result.skipped} songs.`,
+      );
       queryClient.invalidateQueries({
         queryKey: ["songs", "playlist", variables.playlistId],
         exact: false,

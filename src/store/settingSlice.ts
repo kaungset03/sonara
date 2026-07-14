@@ -20,7 +20,7 @@ const createSettingSlice: StateCreator<AppStoreState, [], [], SettingState> = (
   setShuffleConfig: (isShuffle) => set({ isShuffleConfig: isShuffle }),
   setRepeatModeConfig: (mode) => set({ repeatModeConfig: mode }),
   albumSortValue: "created_at-desc",
-  artistSortValue: "name-asc",
+  artistSortValue: "created_at-desc",
   setAlbumSortValue: (value) => set({ albumSortValue: value }),
   setArtistSortValue: (value) => set({ artistSortValue: value }),
 });

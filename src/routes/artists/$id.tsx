@@ -6,7 +6,6 @@ import useAppStore from "@/store/app-store";
 import useGetSongsByArtistQuery from "@/features/artists/api/useGetSongsByArtistQuery";
 import SongsTable from "@/features/songs/components/SongsTable";
 import UpdateArtistImageButton from "@/features/artists/components/UpdateArtistImageButton";
-import Loading from "@/components/custom/Loading";
 
 export const Route = createFileRoute("/artists/$id")({
   component: RouteComponent,
@@ -38,10 +37,6 @@ function RouteComponent() {
   const handleShuffle = () => {
     setIsShuffle(!isShuffle);
   };
-
-  if (!data) {
-    return <Loading />;
-  }
 
   if (songs) {
     return (

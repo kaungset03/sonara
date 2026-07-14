@@ -7,7 +7,7 @@ type Response = {
 };
 
 const useGetSongsByArtistQuery = (artistId: number) => {
-  const { data, isFetching } = useQuery({
+  const query = useQuery({
     queryKey: ["songs", "artist", artistId],
     queryFn: async () => {
       const res = await invoke<Response>("get_artist_details", { artistId });
@@ -15,6 +15,6 @@ const useGetSongsByArtistQuery = (artistId: number) => {
     },
   });
 
-  return { data, isFetching };
+  return query;
 };
 export default useGetSongsByArtistQuery;

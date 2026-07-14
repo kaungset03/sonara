@@ -31,7 +31,7 @@ if (!rootElement.innerHTML) {
         <ThemeProvider
           defaultTheme="dark"
           storageKeyMode="vite-ui-theme"
-          defaultColor="green"
+          defaultColor="blue"
           storageKeyColor="vite-ui-color"
         >
           <RouterProvider router={router} />
@@ -39,7 +39,7 @@ if (!rootElement.innerHTML) {
             position="top-right"
             richColors
             toastOptions={{
-              duration: 2000,
+              duration: 1500,
             }}
           />
         </ThemeProvider>

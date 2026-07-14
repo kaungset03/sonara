@@ -6,8 +6,6 @@ import useAppStore from "@/store/app-store";
 import useGetSongsByAlbumQuery from "@/features/albums/api/useGetSongsByAlbumQuery";
 import UpdateAlbumCoverButton from "@/features/albums/components/UpdateAlbumCoverButton";
 import SongsTable from "@/features/songs/components/SongsTable";
-import Loading from "../../components/custom/Loading";
-
 export const Route = createFileRoute("/albums/$id")({
   component: RouteComponent,
 });
@@ -39,10 +37,6 @@ function RouteComponent() {
   const handleShuffle = () => {
     setIsShuffle(!isShuffle);
   };
-
-  if (!data) {
-    return <Loading />;
-  }
 
   if (songs) {
     return (

@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import useGetFavoriteSongsQuery from "@/features/songs/api/useGetFavoriteSongsQuery";
 import SongsTable from "@/features/songs/components/SongsTable";
 import useAppStore from "@/store/app-store";
-import Loading from "@/components/custom/Loading";
 
 export const Route = createFileRoute("/favorites/")({
   component: RouteComponent,
@@ -28,10 +27,6 @@ function RouteComponent() {
       playSong(song, data);
     }
   };
-
-  if (!data) {
-    return <Loading />;
-  }
 
   if (data && data.length > 0) {
     return <SongsTable songs={data} handleSongClick={handleSongSelect} />;

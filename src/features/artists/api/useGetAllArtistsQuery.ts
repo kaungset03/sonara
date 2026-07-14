@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
 
 type GetAllArtistsQueryProps = {
-  value: SortValue; // the value of the selected sort option, e.g., "name-asc", "created_at-desc"
+  value: SortValue; 
 };
 
 const useGetAllArtistsQuery = ({ value }: GetAllArtistsQueryProps) => {
