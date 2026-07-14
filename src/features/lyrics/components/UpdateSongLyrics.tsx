@@ -60,7 +60,7 @@ const UpdateSongLyrics = ({
           Update Lyrics
         </Button>
       </DialogTrigger>
-      <DialogContent className="min-w-xl" showCloseButton={false}>
+      <DialogContent className="min-w-lg" showCloseButton={false}>
         <DialogHeader className="space-y-1">
           <DialogTitle>{description}</DialogTitle>
           <DialogDescription className="flex items-center justify-between">

@@ -4,6 +4,7 @@ import SortBySelect from "@/components/custom/SortBySelect";
 import useAppStore from "@/store/app-store";
 import EmptySongAlert from "@/components/custom/EmptySongAlert";
 import AlbumsGridView from "@/features/albums/components/AlbumsGridView";
+import Loading from "@/components/custom/Loading";
 
 export const Route = createFileRoute("/albums/")({
   component: RouteComponent,
@@ -12,11 +13,15 @@ export const Route = createFileRoute("/albums/")({
 function RouteComponent() {
   const sortValue = useAppStore((state) => state.albumSortValue);
   const setSortValue = useAppStore((state) => state.setAlbumSortValue);
-  const { data: albums } = useGetAllAlbumsQuery({
+  const { data: albums, isLoading } = useGetAllAlbumsQuery({
     value: sortValue,
   });
 
-  if (albums && albums.length > 0) {
+  if (!albums || isLoading) {
+    return <Loading />;
+  }
+
+  if (albums.length > 0) {
     return (
       <div>
         <div className="flex items-center justify-between mb-4">

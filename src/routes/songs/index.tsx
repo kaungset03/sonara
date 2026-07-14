@@ -3,6 +3,7 @@ import useGetAllSongsQuery from "@/features/songs/api/useGetAllSongsQuery";
 import useAppStore from "@/store/app-store";
 import SongsTable from "@/features/songs/components/SongsTable";
 import EmptySongAlert from "@/components/custom/EmptySongAlert";
+import Loading from "@/components/custom/Loading";
 
 export const Route = createFileRoute("/songs/")({
   component: RouteComponent,
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/songs/")({
 // get all songs from db
 
 function RouteComponent() {
-  const { data } = useGetAllSongsQuery();
+  const { data, isLoading } = useGetAllSongsQuery();
   const playSong = useAppStore((state) => state.playSong);
 
   const handleSongSelect = (song: Song) => {
@@ -19,15 +20,17 @@ function RouteComponent() {
     playSong(song, data);
   };
 
-  if (data) {
-    return (
-      <div>
-        {data.length === 0 ? (
-          <EmptySongAlert />
-        ) : (
-          <SongsTable songs={data} handleSongClick={handleSongSelect} />
-        )}
-      </div>
-    );
+  if (!data || isLoading) {
+    return <Loading />;
   }
+
+  return (
+    <div>
+      {data.length === 0 ? (
+        <EmptySongAlert />
+      ) : (
+        <SongsTable songs={data} handleSongClick={handleSongSelect} />
+      )}
+    </div>
+  );
 }

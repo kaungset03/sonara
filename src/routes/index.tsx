@@ -32,7 +32,7 @@ function Index() {
     return <Loading />;
   }
 
-  if (data && data.recently_added_songs.length > 0) {
+  if (data.recently_added_songs.length > 0) {
     return (
       <div className="space-y-10">
         {data.recently_played_songs.length > 0 && (

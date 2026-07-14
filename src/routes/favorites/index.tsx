@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import useGetFavoriteSongsQuery from "@/features/songs/api/useGetFavoriteSongsQuery";
 import SongsTable from "@/features/songs/components/SongsTable";
 import useAppStore from "@/store/app-store";
+import Loading from "@/components/custom/Loading";
 
 export const Route = createFileRoute("/favorites/")({
   component: RouteComponent,
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/favorites/")({
 
 function RouteComponent() {
   const navigate = useNavigate();
-  const { data } = useGetFavoriteSongsQuery();
+  const { data, isLoading } = useGetFavoriteSongsQuery();
   const playSong = useAppStore((state) => state.playSong);
 
   const handleSongSelect = (song: Song) => {
@@ -28,7 +29,11 @@ function RouteComponent() {
     }
   };
 
-  if (data && data.length > 0) {
+  if (!data || isLoading) {
+    return <Loading />;
+  }
+
+  if (data.length > 0) {
     return <SongsTable songs={data} handleSongClick={handleSongSelect} />;
   }
 
