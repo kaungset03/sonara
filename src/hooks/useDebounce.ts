@@ -15,7 +15,7 @@ const useDebounce = ({ value, timeout = 500 }: DebounceProps) => {
     return () => {
       clearTimeout(handler);
     };
-  }, [value]);
+  }, [timeout, value]);
 
   return debouncedValue;
 };

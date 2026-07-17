@@ -17,7 +17,7 @@ const AppHeader = () => {
     if (canGoBack) {
       router.history.back();
     } else {
-      router.navigate({ to: "/" }); 
+      router.navigate({ to: "/" });
     }
   };
 
@@ -28,9 +28,11 @@ const AppHeader = () => {
     e.preventDefault();
     e.stopPropagation();
     if (e.buttons === 1) {
-      e.detail === 2
-        ? await appWindow.toggleMaximize()
-        : await appWindow.startDragging();
+      if (e.detail === 2) {
+        await appWindow.toggleMaximize();
+      } else {
+        await appWindow.startDragging();
+      }
     }
   };
 

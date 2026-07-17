@@ -20,12 +20,12 @@ const PlaybackQueue = () => {
   const playbackQueue = useAppStore((state) => state.playbackQueue);
   const currentQueueItem = useAppStore((state) => state.currentQueueItem);
 
-  const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const itemsRef = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     if (!currentQueueItem || !open) return;
     const timer = setTimeout(() => {
-      const el = itemRefs.current[currentQueueItem.id];
+      const el = itemsRef.current[currentQueueItem.id];
 
       if (el) {
         el.scrollIntoView({
@@ -37,7 +37,7 @@ const PlaybackQueue = () => {
     }, 150);
 
     return () => clearTimeout(timer);
-  }, [currentQueueItem?.id, open]);
+  }, [currentQueueItem, open]);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -62,7 +62,7 @@ const PlaybackQueue = () => {
             <div
               key={queueItem.id}
               ref={(el) => {
-                itemRefs.current[queueItem.id] = el;
+                itemsRef.current[queueItem.id] = el;
               }}
             >
               <QueueItem

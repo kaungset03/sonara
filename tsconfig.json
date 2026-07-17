@@ -9,6 +9,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "types": ["node"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -17,6 +18,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "strictNullChecks": true,
 
     /* Linting */
     "strict": true,

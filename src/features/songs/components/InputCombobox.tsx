@@ -40,7 +40,7 @@ const InputCombobox = ({
       </div>
       {showDropdown && suggestions && suggestions.length > 0 && (
         <div className="absolute z-50 w-full bg-background rounded-xl scrollbar-none max-h-48 overflow-auto">
-          {suggestions.map((suggestion: any) => (
+          {suggestions.map((suggestion: { id: number; name: string }) => (
             <div
               key={suggestion.id}
               className="p-3 text-xs cursor-pointer hover:bg-muted"

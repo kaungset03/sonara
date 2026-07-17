@@ -33,8 +33,8 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
 
   const playerRef = useRef<HTMLAudioElement | null>(null);
 
-  const hasCountedPlay = useRef(false);
-  const lastSongId = useRef<number | null>(null);
+  const hasCountedPlayRef = useRef(false);
+  const lastSongIdRef = useRef<number | null>(null);
 
   const next = useAppStore((state) => state.next);
   const previous = useAppStore((state) => state.previous);
@@ -101,18 +101,18 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
     if (playerRef.current) {
       setCurrentTime(playerRef.current.currentTime);
     }
-    if (lastSongId.current !== currentSong.id) {
-      lastSongId.current = currentSong.id;
+    if (lastSongIdRef.current !== currentSong.id) {
+      lastSongIdRef.current = currentSong.id;
       return;
     }
 
     if (currentTime < 1) return;
 
-    if (!hasCountedPlay.current && duration > 0) {
+    if (!hasCountedPlayRef.current && duration > 0) {
       const playThreshold = Math.min(30, duration * 0.5);
 
       if (currentTime >= playThreshold) {
-        hasCountedPlay.current = true;
+        hasCountedPlayRef.current = true;
 
         invoke("record_song_play", { songId: currentSong.id })
           .then(() => console.log("Recorded song play:", currentSong.id))
@@ -168,9 +168,8 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   }, [isExpanded]);
 
   useEffect(() => {
-    hasCountedPlay.current = false;
+    hasCountedPlayRef.current = false;
   }, [currentSong.id]);
-
 
   // Song switching
   useEffect(() => {
@@ -187,7 +186,7 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
         });
       }
     }
-  }, [currentSong.id, playerRef]);
+  }, [currentSong.id, currentSong.path, playerRef]);
 
   return (
     <>

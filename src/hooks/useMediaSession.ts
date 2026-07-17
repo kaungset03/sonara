@@ -43,7 +43,7 @@ const useMediaSession = ({
         ],
       });
     }
-  }, [song]);
+  }, [song, artworkPath]);
 
   useEffect(() => {
     if ("mediaSession" in navigator) {
@@ -51,7 +51,6 @@ const useMediaSession = ({
     }
   }, [isPlaying]);
 
-  // Sync OS Progress Bar (Position and Duration)
   useEffect(() => {
     if ("mediaSession" in navigator && duration > 0) {
       try {
@@ -64,6 +63,7 @@ const useMediaSession = ({
         console.warn("Could not set OS position state:", e);
       }
     }
+  // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [duration, isPlaying]);
 
   useEffect(() => {

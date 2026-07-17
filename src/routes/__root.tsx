@@ -13,7 +13,12 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
-      retry: false,
+      retry: 2,
+      networkMode: "always",
+    },
+    mutations: {
+      retry: 2,
+      networkMode: "always",
     },
   },
 });
