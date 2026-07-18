@@ -63,12 +63,10 @@ const useMediaSession = ({
         console.warn("Could not set OS position state:", e);
       }
     }
-  // eslint-disable-next-line @eslint-react/exhaustive-deps
-  }, [duration, isPlaying]);
+  }, [duration, isPlaying, position]);
 
   useEffect(() => {
     if ("mediaSession" in navigator) {
-      // Safely assign handlers only if the callback is provided
       if (onPlay) navigator.mediaSession.setActionHandler("play", onPlay);
       if (onPause) navigator.mediaSession.setActionHandler("pause", onPause);
       if (onNext) navigator.mediaSession.setActionHandler("nexttrack", onNext);

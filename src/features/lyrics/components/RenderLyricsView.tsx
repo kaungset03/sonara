@@ -55,7 +55,7 @@ const RenderLyricsView = ({
       >
         {lyricsLines.map((line, index) => (
           <p
-            key={`${line.time}-${index}`}
+            key={`${line.time}-${line.text}`}
             className={`text-xl font-medium font-heading transition-all duration-300 ${
               index === activeIndex
                 ? "text-primary scale-105 font-bold opacity-100"

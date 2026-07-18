@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import useUpdateSongLyricsPathMutation from "@/features/lyrics/api/useUpdateSongLyricsPathMutation";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import { type SubmitEvent, useEffect, useState } from "react";
+import { type SubmitEvent, useState } from "react";
 
 type UpdateSongLyricsProps = {
   song_id: number;
@@ -27,9 +27,9 @@ const UpdateSongLyrics = ({
   const [open, setOpen] = useState(false);
   const [lyricsContent, setLyricsContent] = useState<string>(initialContent);
 
-  useEffect(() => {
-    setLyricsContent(initialContent);
-  }, [initialContent]);
+  // useEffect(() => {
+  //   setLyricsContent(initialContent);
+  // }, [initialContent]);
 
   const handleDialog = () => {
     setLyricsContent("");
@@ -82,6 +82,7 @@ const UpdateSongLyrics = ({
           id={`update-lyrics-form-${song_id}`}
         >
           <textarea
+            id={song_id.toString()}
             value={lyricsContent}
             onChange={(e) => setLyricsContent(e.target.value)}
             className="w-full min-h-[55vh] p-2 rounded-xl border border-muted-foreground/30 focus:border-muted-foreground outline-none scrollbar-none tracking-wide"

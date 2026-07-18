@@ -3,28 +3,16 @@ import { Button } from "../../../components/ui/button";
 import { RotateCw } from "lucide-react";
 
 type SongLyricsProps = {
-  isFetching: boolean;
   audioCurrentTime: number;
   lyricsContent: string | undefined;
   handleRefetchLyrics: () => void;
 };
 
 const SongLyrics = ({
-  isFetching,
   audioCurrentTime,
   lyricsContent,
   handleRefetchLyrics,
 }: SongLyricsProps) => {
-  if (isFetching) {
-    return (
-      <div className="h-90 w-full flex justify-center items-center text-center">
-        <p className="font-heading font-medium text-muted-foreground mb-4">
-          Searching for lyrics...
-        </p>
-      </div>
-    );
-  }
-
   if (lyricsContent) {
     return (
       <RenderLyricsView

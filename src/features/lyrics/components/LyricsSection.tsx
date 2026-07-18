@@ -15,14 +15,24 @@ const LyricsSection = ({ song, position }: LyricsSectionProps) => {
     isRefetching,
   } = useGetSongLyricsQuery({ songId: song.id });
 
+  const isLoading = isFetching || isRefetching;
   const handleRefetchLyrics = () => {
     refetch();
   };
 
+  if (isLoading) {
+    return (
+      <div className="h-full w-full flex justify-center items-center text-center">
+        <p className="font-heading font-medium text-muted-foreground mb-4">
+          Searching for lyrics...
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-full p-4 flex flex-col justify-center items-center gap-y-8">
       <SongLyrics
-        isFetching={isFetching || isRefetching}
         audioCurrentTime={position}
         lyricsContent={lyricsContent}
         handleRefetchLyrics={handleRefetchLyrics}
