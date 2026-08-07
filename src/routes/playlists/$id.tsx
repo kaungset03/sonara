@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Play, Shuffle } from "lucide-react";
+import { getFormattedDuration } from "@/lib/helpers";
 import useAppStore from "@/store/app-store";
 import EditPlaylistDialog from "@/features/playlists/components/EditPlaylistDialog";
 import DeletePlaylistAlert from "@/features/playlists/components/DeletePlaylistAlert";
@@ -17,6 +18,8 @@ export const Route = createFileRoute("/playlists/$id")({
 function RouteComponent() {
   const { id } = Route.useParams();
   const { data } = useGetSongsByPlaylistQuery(Number(id));
+  const totalDuration =
+    data?.songs.reduce((total, song) => total + song.duration, 0) ?? 0;
   const songs = data?.songs;
 
   const { mutate } = useRemoveSongFromPlaylistMutation();
@@ -60,7 +63,8 @@ function RouteComponent() {
             </div>
 
             <p className="text-muted-foreground mt-1">
-              {songs.length} {songs.length === 1 ? "Song" : "Songs"}
+              {songs.length} {songs.length === 1 ? "Song" : "Songs"} -{" "}
+              {getFormattedDuration(totalDuration)}
             </p>
           </div>
 

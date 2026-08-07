@@ -61,6 +61,14 @@ const OverlayPlayer = ({
   const muted = useAppStore((state) => state.muted);
   const setMuted = useAppStore((state) => state.setMuted);
 
+  const volume = useAppStore((state) => state.volume);
+  const setVolume = useAppStore((state) => state.setVolume);
+
+  const handleVolumeChange = (value: number) => {
+    setVolume(value);
+    setMuted(value === 0);
+  };
+
   const currentPlatform = platform();
   const isMacOS = currentPlatform === "macos";
 
@@ -116,7 +124,7 @@ const OverlayPlayer = ({
                 className="text-sm text-muted-foreground font-medium"
               />
             </div>
-            <div className="space-y-6 min-w-xs">
+            <div className="space-y-4 min-w-xs">
               {/** Playback Buttons */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -128,6 +136,13 @@ const OverlayPlayer = ({
                   >
                     {muted ? <VolumeOff /> : <Volume2 />}
                   </Button>
+                  <Slider
+                    defaultValue={[0]}
+                    max={100}
+                    value={[volume]}
+                    onValueChange={(value) => handleVolumeChange(value[0])}
+                    className={`w-full flex-1 shrink-0 ${muted ? "opacity-50" : ""}`}
+                  />
                   <Button
                     variant="ghost"
                     size="icon"

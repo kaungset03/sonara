@@ -22,17 +22,11 @@ export interface PlaybackState {
   // select current song
   setCurrentQueueItem: (item: QueueItem | null) => void;
 
-  // set queue with new songs
-  // setQueue: (songs: Song[]) => void;
-
   // add to queue
   addToQueue: (song: Song) => void;
 
   // remove from queue
   removeFromQueue: (id: string) => void;
-
-  // set playback queue
-  // setPlaybackQueue: (queue: QueueItem[]) => void;
 
   setIsPlaying: (isPlaying: boolean) => void;
   setIsShuffle: (isShuffle: boolean) => void;
@@ -41,6 +35,9 @@ export interface PlaybackState {
 
   next: () => void;
   previous: () => void;
+
+  volume: number;
+  setVolume: (v: number) => void;
 
   isPlaybackInitialized: boolean;
 
@@ -164,6 +161,9 @@ const createPlaybackSlice: StateCreator<
         state.playbackQueue.length;
       return { currentQueueItem: state.playbackQueue[previousIndex] };
     }),
+
+  volume: 50,
+  setVolume: (v) => set({ volume: v }),
 
   isPlaybackInitialized: false,
 

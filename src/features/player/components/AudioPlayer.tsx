@@ -47,6 +47,7 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
 
   const muted = useAppStore((state) => state.muted);
   const setMuted = useAppStore((state) => state.setMuted);
+  const volume = useAppStore((state) => state.volume);
 
   const repeatMode = useAppStore((state) => state.repeatMode);
   const toggleRepeatMode = useAppStore((state) => state.toggleRepeatMode);
@@ -136,11 +137,17 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   };
 
   const handleMuteToggle = () => {
-    if (playerRef.current) {
-      playerRef.current.muted = !playerRef.current.muted;
-      setMuted(playerRef.current.muted);
-    }
+    setMuted(!muted);
   };
+
+  useEffect(() => {
+    const player = playerRef.current;
+
+    if (!player) return;
+
+    player.volume = volume / 100;
+    player.muted = muted;
+  }, [muted, volume, currentSong.id]);
 
   useMediaSession({
     song: currentSong!,
@@ -155,7 +162,6 @@ const AudioPlayer = ({ currentSong }: AudioPlayerProps) => {
   });
 
   useEffect(() => {
-    // disable scroll when overlay is expanded
     if (isExpanded) {
       document.body.style.overflow = "hidden";
     } else {

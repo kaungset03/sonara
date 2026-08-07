@@ -51,7 +51,7 @@ const RenderLyricsView = ({
     return (
       <div
         ref={containerRef}
-        className="h-90 w-full overflow-y-auto space-y-4 p-4 text-center scrollbar-none mask-fade-y"
+        className="min-h-100 max-h-[50vh] w-full overflow-y-auto space-y-4 p-4 text-center scrollbar-none mask-fade-y"
       >
         {lyricsLines.map((line, index) => (
           <p
