@@ -6,6 +6,7 @@ import useAppStore from "@/store/app-store";
 import useGetSongsByArtistQuery from "@/features/artists/api/useGetSongsByArtistQuery";
 import SongsTable from "@/features/songs/components/SongsTable";
 import UpdateArtistImageButton from "@/features/artists/components/UpdateArtistImageButton";
+import { getFormattedDuration } from "@/lib/helpers";
 
 export const Route = createFileRoute("/artists/$id")({
   component: RouteComponent,
@@ -18,6 +19,9 @@ function RouteComponent() {
   const playSong = useAppStore((state) => state.playSong);
   const isShuffle = useAppStore((state) => state.isShuffle);
   const setIsShuffle = useAppStore((state) => state.setIsShuffle);
+
+  const totalDuration =
+    data?.songs.reduce((total, song) => total + song.duration, 0) ?? 0;
 
   const songs = data?.songs;
 
@@ -63,7 +67,8 @@ function RouteComponent() {
               {data.artist.name}
             </h1>
             <p className="text-muted-foreground">
-              {songs.length} {songs.length === 1 ? "Song" : "Songs"}
+              {songs.length} {songs.length === 1 ? "Song" : "Songs"} -{" "}
+              {getFormattedDuration(totalDuration)}
             </p>
 
             <div className="flex items-center gap-4 mt-4">

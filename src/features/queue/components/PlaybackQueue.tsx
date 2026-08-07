@@ -1,3 +1,5 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -10,17 +12,28 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ListMusic } from "lucide-react";
+import { getFormattedDuration } from "@/lib/helpers";
 import useAppStore from "@/store/app-store";
 import QueueItem from "@/features/queue/components/QueueItem";
-import { useEffect, useRef, useState } from "react";
 
 const PlaybackQueue = () => {
   const [open, setOpen] = useState(false);
 
+  const queryClient = useQueryClient();
   const playbackQueue = useAppStore((state) => state.playbackQueue);
   const currentQueueItem = useAppStore((state) => state.currentQueueItem);
 
   const itemsRef = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const totalQueueDuration = useMemo(() => {
+    const songs = queryClient.getQueryData<Song[]>(["songs"]) ?? [];
+
+    return playbackQueue.reduce((totalDuration, queueItem) => {
+      const song = songs.find((item) => item.id === queueItem.songId);
+
+      return totalDuration + (song?.duration ?? 0);
+    }, 0);
+  }, [playbackQueue, queryClient]);
 
   useEffect(() => {
     if (!currentQueueItem || !open) return;
@@ -32,7 +45,6 @@ const PlaybackQueue = () => {
           behavior: "smooth",
           block: "center",
         });
-        console.log("Scrolling to current queue item:", currentQueueItem.id);
       }
     }, 150);
 
@@ -50,14 +62,14 @@ const PlaybackQueue = () => {
           <ListMusic />
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent showCloseButton={false}>
         <SheetHeader className="h-25">
-          <SheetTitle>Playback Queue</SheetTitle>
+          <SheetTitle>Playback Queue ({playbackQueue.length} Songs)</SheetTitle>
           <SheetDescription>
-            View and manage your playback queue.
+            Duration: {getFormattedDuration(totalQueueDuration)}
           </SheetDescription>
         </SheetHeader>
-        <div className="flex flex-col p-2 max-h-[calc(100vh-180px)] overflow-y-auto no-scrollbar">
+        <div className="flex flex-col px-2 max-h-[calc(100vh-180px)] overflow-y-auto no-scrollbar">
           {playbackQueue.map((queueItem) => (
             <div
               key={queueItem.id}

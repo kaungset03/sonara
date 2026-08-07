@@ -15,13 +15,15 @@ import { type SubmitEvent, useState } from "react";
 
 type UpdateSongLyricsProps = {
   song_id: number;
-  description: string;
+  song_title: string;
+  song_artist: string;
   initialContent: string;
 };
 
 const UpdateSongLyrics = ({
   song_id,
-  description,
+  song_title,
+  song_artist,
   initialContent,
 }: UpdateSongLyricsProps) => {
   const [open, setOpen] = useState(false);
@@ -46,7 +48,9 @@ const UpdateSongLyrics = ({
   };
 
   const goToLRCILIB = async () => {
-    await openUrl("https://lrclib.net");
+    await openUrl(
+      `https://lrclib.net/search/${encodeURIComponent(song_title)}+${encodeURIComponent(song_artist)}`,
+    );
   };
 
   return (
@@ -62,7 +66,9 @@ const UpdateSongLyrics = ({
       </DialogTrigger>
       <DialogContent className="min-w-lg" showCloseButton={false}>
         <DialogHeader className="space-y-1">
-          <DialogTitle>{description}</DialogTitle>
+          <DialogTitle>
+            {song_title} - {song_artist}
+          </DialogTitle>
           <DialogDescription className="flex items-center justify-between">
             <span>Lyrics must be in LRC synced format.</span>
             <span

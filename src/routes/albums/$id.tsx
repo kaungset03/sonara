@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { Button } from "@/components/ui/button";
 import { Music, Play, Shuffle } from "lucide-react";
@@ -6,6 +6,8 @@ import useAppStore from "@/store/app-store";
 import useGetSongsByAlbumQuery from "@/features/albums/api/useGetSongsByAlbumQuery";
 import UpdateAlbumCoverButton from "@/features/albums/components/UpdateAlbumCoverButton";
 import SongsTable from "@/features/songs/components/SongsTable";
+import { getFormattedDuration } from "@/lib/helpers";
+
 export const Route = createFileRoute("/albums/$id")({
   component: RouteComponent,
 });
@@ -17,6 +19,9 @@ function RouteComponent() {
   const playSong = useAppStore((state) => state.playSong);
   const isShuffle = useAppStore((state) => state.isShuffle);
   const setIsShuffle = useAppStore((state) => state.setIsShuffle);
+
+  const totalDuration =
+    data?.songs.reduce((total, song) => total + song.duration, 0) ?? 0;
 
   // order by track number, then by name
   const songs = data?.songs;
@@ -62,9 +67,20 @@ function RouteComponent() {
             <h1 className="text-3xl font-bold font-heading tracking-tight">
               {data.album.name}
             </h1>
-            <p className="text-muted-foreground">by {data.album.artist_name}</p>
             <p className="text-muted-foreground">
-              {songs.length} {songs.length === 1 ? "Song" : "Songs"}
+              by{" "}
+              <Link
+                to={"/artists/$id"}
+                params={{ id: data.album.artist_id.toString() }}
+                className="font-semibold hover:text-primary transition-colors"
+              >
+                {data.album.artist_name}
+              </Link>
+            </p>
+
+            <p className="text-muted-foreground">
+              {songs.length} {songs.length === 1 ? "Song" : "Songs"} -{" "}
+              {getFormattedDuration(totalDuration)}
             </p>
 
             <div className="flex items-center gap-4 mt-4">

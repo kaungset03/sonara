@@ -40,7 +40,8 @@ const LyricsSection = ({ song, position }: LyricsSectionProps) => {
 
       <UpdateSongLyrics
         song_id={song.id}
-        description={`${song.title} - ${song.artist_name}`}
+        song_title={song.title}
+        song_artist={song.artist_name} 
         initialContent={lyricsContent || ""}
       />
     </div>

@@ -112,81 +112,78 @@ const OverlayPlayer = ({
               />
 
               <MarqueeText
-                text={song.artist_name}
+                text={`${song.artist_name} - ${song.album_name}`}
                 className="text-sm text-muted-foreground font-medium"
               />
-
-              <MarqueeText
-                text={song.album_name}
-                className="text-xs text-muted-foreground/70"
-              />
             </div>
-            <div className="space-y-6 mt-4">
+            <div className="space-y-6 min-w-xs">
               {/** Playback Buttons */}
-              <div className="flex items-center justify-center gap-x-4">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full"
-                  onClick={toggleFavorite}
-                >
-                  {song.is_favorite ? (
-                    <Heart className="text-primary" fill="currentColor" />
-                  ) : (
-                    <Heart />
-                  )}
-                </Button>
-
-                <Button
-                  variant={isShuffle ? "default" : "ghost"}
-                  size="icon"
-                  className="rounded-full"
-                  onClick={() => setIsShuffle(!isShuffle)}
-                >
-                  <Shuffle />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full"
-                  onClick={onPrevious}
-                >
-                  <SkipBack />
-                </Button>
-                <Button
-                  size="icon-lg"
-                  className="rounded-full"
-                  onClick={isPlaying ? onPause : onPlay}
-                >
-                  {isPlaying ? <Pause /> : <Play />}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full"
-                  onClick={onNext}
-                >
-                  <SkipForward />
-                </Button>
-                <Button
-                  variant={repeatMode !== "off" ? "default" : "ghost"}
-                  size="icon"
-                  className="rounded-full"
-                  onClick={toggleRepeatMode}
-                >
-                  {repeatMode === "off" && <Repeat />}
-                  {repeatMode === "one" && <Repeat1 />}
-                  {repeatMode === "all" && <Repeat />}
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full"
-                  onClick={() => setMuted(!muted)}
-                >
-                  {muted ? <VolumeOff /> : <Volume2 />}
-                </Button>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full"
+                    onClick={() => setMuted(!muted)}
+                  >
+                    {muted ? <VolumeOff /> : <Volume2 />}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full"
+                    onClick={toggleFavorite}
+                  >
+                    {song.is_favorite ? (
+                      <Heart className="text-primary" fill="currentColor" />
+                    ) : (
+                      <Heart />
+                    )}
+                  </Button>
+                </div>
+                <div className="flex items-center justify-between gap-x-4">
+                  <Button
+                    variant={isShuffle ? "default" : "ghost"}
+                    size="icon"
+                    className="rounded-full"
+                    onClick={() => setIsShuffle(!isShuffle)}
+                  >
+                    <Shuffle />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full"
+                    onClick={onPrevious}
+                  >
+                    <SkipBack />
+                  </Button>
+                  <Button
+                    size="icon-lg"
+                    className="rounded-full"
+                    onClick={isPlaying ? onPause : onPlay}
+                  >
+                    {isPlaying ? <Pause /> : <Play />}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full"
+                    onClick={onNext}
+                  >
+                    <SkipForward />
+                  </Button>
+                  <Button
+                    variant={repeatMode !== "off" ? "default" : "ghost"}
+                    size="icon"
+                    className="rounded-full"
+                    onClick={toggleRepeatMode}
+                  >
+                    {repeatMode === "off" && <Repeat />}
+                    {repeatMode === "one" && <Repeat1 />}
+                    {repeatMode === "all" && <Repeat />}
+                  </Button>
+                </div>
               </div>
               <div className="w-full space-y-2">
                 <Slider

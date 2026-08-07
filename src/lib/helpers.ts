@@ -1,4 +1,12 @@
 const getFormattedDuration = (duration: number) => {
+  const hours = Math.floor(duration / 3600);
+  if (hours > 0) {
+    const minutes = Math.floor((duration % 3600) / 60);
+    const seconds = Math.floor(duration % 60);
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  }
   const minutes = Math.floor(duration / 60);
   const seconds = Math.floor(duration % 60);
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
@@ -17,7 +25,6 @@ const parseLRC = (lrcText: string): LyricLine[] => {
   const lines = lrcText.split("\n");
   const lyrics: LyricLine[] = [];
 
-  // Regex to match the [mm:ss.xx] or [mm:ss.xxx] format
   const timeRegex = /^\[(\d{2}):(\d{2})\.(\d{2,3})\]/;
 
   lines.forEach((line) => {
