@@ -38,7 +38,7 @@ function RouteComponent() {
   };
 
   return (
-    <div className="space-y-8">
+    <main className="space-y-8 p-2 pt-18 pb-25 w-full h-screen overflow-y-auto custom-scrollbar">
       <h1 className="text-3xl font-bold font-heading flex items-center gap-3 mb-2">
         <Settings size={24} />
         Settings
@@ -198,6 +198,6 @@ function RouteComponent() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </main>
   );
 }

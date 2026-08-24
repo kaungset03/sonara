@@ -51,15 +51,15 @@ const RenderLyricsView = ({
     return (
       <div
         ref={containerRef}
-        className="min-h-100 max-h-[50vh] w-full overflow-y-auto space-y-4 p-4 text-center scrollbar-none mask-fade-y"
+        className="min-h-100 max-h-[50vh] w-full overflow-y-auto space-y-8 text-center px-4 py-8 scrollbar-none mask-fade-y"
       >
         {lyricsLines.map((line, index) => (
           <p
             key={`${line.time}-${line.text}`}
             className={`text-xl font-medium font-heading transition-all duration-300 ${
               index === activeIndex
-                ? "text-primary scale-105 font-bold opacity-100"
-                : "text-muted-foreground opacity-40"
+                ? "text-primary scale-110 font-bold opacity-100"
+                : "text-muted-foreground opacity-30"
             }`}
           >
             {line.text || ". . ."}

@@ -51,7 +51,7 @@ function RouteComponent() {
 
   if (songs) {
     return (
-      <div className="h-full overflow-y-auto">
+      <main className="p-2 pt-18 pb-25 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar">
         <div className="flex flex-col gap-6 mb-8 border-b border-muted-foreground/30 pb-8">
           <div className="flex flex-col gap-4">
             <h1 className="text-4xl font-bold font-heading tracking-tight">
@@ -111,7 +111,7 @@ function RouteComponent() {
             />
           )}
         </div>
-      </div>
+      </main>
     );
   }
 }

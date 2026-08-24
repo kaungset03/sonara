@@ -34,7 +34,7 @@ function Index() {
 
   if (data.recently_added_songs.length > 0) {
     return (
-      <div className="space-y-10">
+      <main className="p-2 pt-18 pb-25 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar">
         {data.recently_played_songs.length > 0 && (
           <section className="space-y-4">
             <div className="flex items-center justify-between">
@@ -149,7 +149,7 @@ function Index() {
             ))}
           </div>
         </section>
-      </div>
+      </main>
     );
   }
 

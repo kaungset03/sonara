@@ -29,21 +29,20 @@ const SongsTable = ({
   const { mutate } = useToggleFavoriteMutation();
 
   const toggleFavorite = (song: Song) => {
-    console.log("Toggling favorite for song:", song);
     mutate({ songId: song.id, isFavorite: !song.is_favorite });
   };
 
   return (
-    <Table>
+    <Table className="table-fixed">
       <TableHeader>
         <TableRow className="hover:bg-transparent">
-          <TableHead className="w-10 text-center">#</TableHead>
-          <TableHead>Title</TableHead>
-          <TableHead>Artist</TableHead>
-          <TableHead>Album</TableHead>
-          <TableHead className="text-center">Duration</TableHead>
-          <TableHead className="text-center"> </TableHead>
-          <TableHead className="text-center">Actions</TableHead>
+          <TableHead className="w-[5%] xl:w-[3%] text-center">#</TableHead>
+          <TableHead className="w-[30%] xl:w-[32%]">Title</TableHead>
+          <TableHead className="w-[15%]">Artist</TableHead>
+          <TableHead className="w-[20%]">Album</TableHead>
+          <TableHead className="w-[10%] text-center">Duration</TableHead>
+          <TableHead className="w-[10%] text-center"> </TableHead>
+          <TableHead className="w-[10%] text-center">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="text-xs">
@@ -73,14 +72,12 @@ const SongsTable = ({
               </TableCell>
               <TableCell
                 onClick={() => handleSongClick(song)}
-                className="min-w-45 max-w-50 overflow-hidden truncate cursor-pointer"
+                className="truncate cursor-pointer"
               >
                 {song.title}
               </TableCell>
-              <TableCell>{song.artist_name}</TableCell>
-              <TableCell className="min-w-30 max-w-40 overflow-hidden truncate">
-                {song.album_name}
-              </TableCell>
+              <TableCell className="truncate">{song.artist_name}</TableCell>
+              <TableCell className="truncate">{song.album_name}</TableCell>
               <TableCell className="text-center">
                 {getFormattedDuration(song.duration)}
               </TableCell>

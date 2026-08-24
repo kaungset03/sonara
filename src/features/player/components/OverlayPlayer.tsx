@@ -124,14 +124,14 @@ const OverlayPlayer = ({
                 className="text-sm text-muted-foreground font-medium"
               />
             </div>
-            <div className="space-y-4 min-w-xs">
+            <div className="space-y-4 min-w-sm">
               {/** Playback Buttons */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full"
+                   // className="rounded-full"
                     onClick={() => setMuted(!muted)}
                   >
                     {muted ? <VolumeOff /> : <Volume2 />}
@@ -146,7 +146,7 @@ const OverlayPlayer = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full"
+                   // className="rounded-full"
                     onClick={toggleFavorite}
                   >
                     {song.is_favorite ? (

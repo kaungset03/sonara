@@ -11,7 +11,7 @@ import ImportButton from "@/features/import/components/ImportButton";
 
 const EmptySongAlert = () => {
   return (
-    <Empty className="mt-20">
+    <Empty className="mt-45">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <Music size={48} className="text-muted-foreground" />

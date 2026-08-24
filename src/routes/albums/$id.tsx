@@ -45,7 +45,7 @@ function RouteComponent() {
 
   if (songs) {
     return (
-      <div className="h-full overflow-y-auto">
+      <main className="p-2 pt-18 pb-25 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar">
         <div className="flex items-center gap-x-6 border-b border-muted-foreground/30 pb-8 mb-4">
           <div className="relative group">
             <div className="size-50 rounded-lg overflow-hidden bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center">
@@ -103,7 +103,7 @@ function RouteComponent() {
         <div>
           <SongsTable songs={songs} handleSongClick={handleSongClick} />
         </div>
-      </div>
+      </main>
     );
   }
 }

@@ -35,7 +35,6 @@ const CreatePlaylistDialog = () => {
     if (isValidName(name)) {
       mutate(name);
     } else {
-      // Handle invalid name case, e.g., show an error message
       console.error(
         "Invalid playlist name. Must be between 1 and 50 characters.",
       );
@@ -44,47 +43,52 @@ const CreatePlaylistDialog = () => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <form onSubmit={handleSubmit} id="create-playlist-form">
-        <DialogTrigger asChild>
-          <Button size="icon" variant="ghost" className="ml-auto">
-            <PlusCircle size={14} />
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-sm" showCloseButton={false}>
+      <DialogTrigger asChild>
+        <Button size="icon" variant="ghost" className="ml-auto">
+          <PlusCircle size={14} />
+        </Button>
+      </DialogTrigger>
+
+      <DialogContent className="sm:max-w-sm" showCloseButton={false}>
+        <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Create a new playlist</DialogTitle>
             <DialogDescription>
-              Enter a name for your new playlist.{" "}
+              Enter a name for your new playlist.
               <span className="text-xs text-muted-foreground">
+                {" "}
                 (1-50 characters)
               </span>
             </DialogDescription>
           </DialogHeader>
-          <Label htmlFor="name">Name</Label>
-          <Input
-            id="name"
-            name="name"
-            placeholder="Classical Music"
-            minLength={1}
-            maxLength={50}
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <DialogFooter>
+
+          <div className="mt-4 space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              name="name"
+              placeholder="Classical Music"
+              minLength={1}
+              maxLength={50}
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+
+          <DialogFooter className="mt-4">
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button type="button" variant="outline">
+                Cancel
+              </Button>
             </DialogClose>
-            <Button
-              type="submit"
-              form="create-playlist-form"
-              disabled={!isValidName(name)}
-            >
+
+            <Button type="submit" disabled={!isValidName(name)}>
               Create
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 };

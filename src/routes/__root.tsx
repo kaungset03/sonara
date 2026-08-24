@@ -60,11 +60,9 @@ const RootLayout = () => {
       <SidebarProvider>
         <AppSideBar />
         <SidebarInset>
-          <div className="w-full h-screen overflow-auto custom-scrollbar">
+          <div className="w-full h-screen">
             <AppHeader />
-            <main className="p-2 mt-18 pb-25 w-full">
-              <Outlet />
-            </main>
+            <Outlet />
           </div>
         </SidebarInset>
         <AppFooter />
