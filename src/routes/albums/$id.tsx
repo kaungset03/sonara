@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { convertFileSrc } from "@tauri-apps/api/core";
+import { useRef } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { Button } from "@/components/ui/button";
 import { Music, Play, Shuffle } from "lucide-react";
+import { getFormattedDuration } from "@/lib/helpers";
 import useAppStore from "@/store/app-store";
 import useGetSongsByAlbumQuery from "@/features/albums/api/useGetSongsByAlbumQuery";
 import UpdateAlbumCoverButton from "@/features/albums/components/UpdateAlbumCoverButton";
 import SongsTable from "@/features/songs/components/SongsTable";
-import { getFormattedDuration } from "@/lib/helpers";
 
 export const Route = createFileRoute("/albums/$id")({
   component: RouteComponent,
@@ -20,11 +22,19 @@ function RouteComponent() {
   const isShuffle = useAppStore((state) => state.isShuffle);
   const setIsShuffle = useAppStore((state) => state.setIsShuffle);
 
-  const totalDuration =
-    data?.songs.reduce((total, song) => total + song.duration, 0) ?? 0;
-
-  // order by track number, then by name
   const songs = data?.songs;
+
+  const totalDuration =
+    songs?.reduce((total, song) => total + song.duration, 0) ?? 0;
+
+  const parentRef = useRef<HTMLDivElement>(null);
+  const rowVirtualizer = useVirtualizer({
+    count: songs?.length ?? 0,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 45,
+    overscan: 8,
+    getItemKey: (index) => songs?.[index].id ?? index,
+  });
 
   const handleSongClick = (song: Song) => {
     if (songs) {
@@ -34,7 +44,6 @@ function RouteComponent() {
 
   const handlePlayAll = () => {
     if (songs) {
-      // play the first song, which will set the entire playlist as the queue
       playSong(songs[0], songs);
     }
   };
@@ -44,8 +53,14 @@ function RouteComponent() {
   };
 
   if (songs) {
+    const virtualRows = rowVirtualizer.getVirtualItems();
+    const visibleSongs = virtualRows.map((row) => songs[row.index]);
+
     return (
-      <main className="p-2 pt-18 pb-25 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar">
+      <main
+        ref={parentRef}
+        className="p-2 pt-18 pb-25 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar"
+      >
         <div className="flex items-center gap-x-6 border-b border-muted-foreground/30 pb-8 mb-4">
           <div className="relative group">
             <div className="size-50 rounded-lg overflow-hidden bg-linear-to-br from-primary/30 to-primary/10 flex items-center justify-center">
@@ -100,8 +115,24 @@ function RouteComponent() {
           </div>
         </div>
 
-        <div>
-          <SongsTable songs={songs} handleSongClick={handleSongClick} />
+        <div
+          style={{
+            height: rowVirtualizer.getTotalSize(),
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              width: "100%",
+              transform: `translateY(${virtualRows[0]?.start ?? 0}px)`,
+            }}
+          >
+            <SongsTable
+              songs={visibleSongs}
+              handleSongClick={handleSongClick}
+            />
+          </div>
         </div>
       </main>
     );

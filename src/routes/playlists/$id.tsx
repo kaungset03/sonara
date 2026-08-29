@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useRef } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Play, Shuffle } from "lucide-react";
@@ -18,9 +20,18 @@ export const Route = createFileRoute("/playlists/$id")({
 function RouteComponent() {
   const { id } = Route.useParams();
   const { data } = useGetSongsByPlaylistQuery(Number(id));
-  const totalDuration =
-    data?.songs.reduce((total, song) => total + song.duration, 0) ?? 0;
   const songs = data?.songs;
+  const totalDuration =
+    songs?.reduce((total, song) => total + song.duration, 0) ?? 0;
+
+  const parentRef = useRef<HTMLDivElement>(null);
+  const rowVirtualizer = useVirtualizer({
+    count: songs?.length ?? 0,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 45,
+    overscan: 8,
+    getItemKey: (index) => songs?.[index].id ?? index,
+  });
 
   const { mutate } = useRemoveSongFromPlaylistMutation();
 
@@ -36,7 +47,6 @@ function RouteComponent() {
 
   const handlePlayAll = () => {
     if (songs) {
-      // play the first song, which will set the entire playlist as the queue
       playSong(songs[0], songs);
     }
   };
@@ -50,8 +60,13 @@ function RouteComponent() {
   };
 
   if (songs) {
+    const virtualRows = rowVirtualizer.getVirtualItems();
+    const visibleSongs = virtualRows.map((row) => songs[row.index]);
     return (
-      <main className="p-2 pt-18 pb-25 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar">
+      <main
+        ref={parentRef}
+        className="p-2 pt-18 pb-25 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar"
+      >
         <div className="flex flex-col gap-6 mb-8 border-b border-muted-foreground/30 pb-8">
           <div className="flex flex-col gap-4">
             <h1 className="text-4xl font-bold font-heading tracking-tight">
@@ -85,8 +100,13 @@ function RouteComponent() {
           </div>
         </div>
 
-        <div>
-          {songs.length === 0 ? (
+        <div
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            position: "relative",
+          }}
+        >
+          {visibleSongs.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-4 h-full">
               <p className="text-muted-foreground text-sm">
                 No songs in this playlist yet.
@@ -94,21 +114,29 @@ function RouteComponent() {
               <AddSongsToPlaylistDialog playlistId={Number(id)} />
             </div>
           ) : (
-            <SongsTable
-              songs={songs}
-              handleSongClick={handleSongClick}
-              renderActions={(song) => (
-                <DropdownMenuItem
-                  className="text-xs"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemoveFromPlaylist(song.id);
-                  }}
-                >
-                  Remove from Playlist
-                </DropdownMenuItem>
-              )}
-            />
+            <div
+              style={{
+                position: "absolute",
+                width: "100%",
+                transform: `translateY(${virtualRows[0]?.start ?? 0}px)`,
+              }}
+            >
+              <SongsTable
+                songs={visibleSongs}
+                handleSongClick={handleSongClick}
+                renderActions={(song) => (
+                  <DropdownMenuItem
+                    className="text-xs"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveFromPlaylist(song.id);
+                    }}
+                  >
+                    Remove from Playlist
+                  </DropdownMenuItem>
+                )}
+              />
+            </div>
           )}
         </div>
       </main>
