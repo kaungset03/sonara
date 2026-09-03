@@ -107,7 +107,7 @@ function RouteComponent() {
           }}
         >
           {visibleSongs.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-4 h-full">
+            <div className="absolute inset-0 top-8 flex flex-col items-center justify-center gap-4 h-full">
               <p className="text-muted-foreground text-sm">
                 No songs in this playlist yet.
               </p>
