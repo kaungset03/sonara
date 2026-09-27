@@ -3,8 +3,8 @@ import useGetAllAlbumsQuery from "@/features/albums/api/useGetAllAlbumsQuery";
 import SortBySelect from "@/components/custom/SortBySelect";
 import useAppStore from "@/store/app-store";
 import EmptySongAlert from "@/components/custom/EmptySongAlert";
-import AlbumsGridView from "@/features/albums/components/AlbumsGridView";
 import Loading from "@/components/custom/Loading";
+import AlbumsGridView from "@/features/albums/components/AlbumsGridView";
 
 export const Route = createFileRoute("/albums/")({
   component: RouteComponent,
@@ -13,6 +13,7 @@ export const Route = createFileRoute("/albums/")({
 function RouteComponent() {
   const sortValue = useAppStore((state) => state.albumSortValue);
   const setSortValue = useAppStore((state) => state.setAlbumSortValue);
+
   const { data: albums, isLoading } = useGetAllAlbumsQuery({
     value: sortValue,
   });
@@ -21,17 +22,18 @@ function RouteComponent() {
     return <Loading />;
   }
 
-  if (albums.length > 0) {
-    return (
-      <main className="p-2 pt-18 pb-25 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-3xl font-bold font-heading">Albums</h1>
-          <SortBySelect value={sortValue} onValueChange={setSortValue} />
-        </div>
-        <AlbumsGridView albums={albums} />
-      </main>
-    );
+  if (albums.length === 0) {
+    return <EmptySongAlert />;
   }
 
-  return <EmptySongAlert />;
+  return (
+    <main className="p-2 pt-18 pb-25 w-full h-screen overflow-y-auto custom-scrollbar">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-3xl font-bold font-heading">Albums</h1>
+
+        <SortBySelect value={sortValue} onValueChange={setSortValue} />
+      </div>
+      <AlbumsGridView albums={albums} />
+    </main>
+  );
 }

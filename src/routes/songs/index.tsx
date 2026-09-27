@@ -1,4 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useElementScrollRestoration,
+} from "@tanstack/react-router";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useRef } from "react";
 import useGetAllSongsQuery from "@/features/songs/api/useGetAllSongsQuery";
@@ -11,43 +14,49 @@ export const Route = createFileRoute("/songs/")({
   component: RouteComponent,
 });
 
-// get all songs from db
-
 function RouteComponent() {
-  const { data, isLoading } = useGetAllSongsQuery();
-  const playSong = useAppStore((state) => state.playSong);
+  const { data: songs, isLoading } = useGetAllSongsQuery();
 
-  const parentRef = useRef<HTMLDivElement>(null);
-
-  const rowVirtualizer = useVirtualizer({
-    count: data?.length ?? 0,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 45,
-    overscan: 8,
-    getItemKey: (index) => data?.[index].id ?? index,
-  });
-
-  const handleSongSelect = (song: Song) => {
-    if (!data) return;
-    playSong(song, data);
-  };
-
-  if (!data || isLoading) {
+  if (isLoading) {
     return <Loading />;
   }
 
-  if (data.length === 0) {
+  if (!songs || songs.length === 0) {
     return <EmptySongAlert />;
   }
 
-  const virtualRows = rowVirtualizer.getVirtualItems();
+  return <SongsList songs={songs} />;
+}
 
-  const visibleSongs = virtualRows.map((row) => data?.[row.index]);
+const SongsList = ({ songs }: { songs: Song[] }) => {
+  const playSong = useAppStore((state) => state.playSong);
+  const parentRef = useRef<HTMLDivElement>(null);
+  const scrollRestorationId = "SongsList";
+
+  const scrollEntry = useElementScrollRestoration({
+    id: scrollRestorationId,
+  });
+
+  const rowVirtualizer = useVirtualizer({
+    count: songs.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 45,
+    overscan: 8,
+    getItemKey: (index) => songs[index]?.id ?? index,
+    initialOffset: scrollEntry?.scrollY,
+  });
+
+  const handleSongSelect = (song: Song) => {
+    playSong(song, songs);
+  };
+
+  const virtualRows = rowVirtualizer.getVirtualItems();
 
   return (
     <main
-      className="p-2 pt-18 pb-25 w-full h-screen overflow-y-auto custom-scrollbar"
       ref={parentRef}
+      className="p-2 pt-18 pb-30 w-full h-screen overflow-y-auto custom-scrollbar"
+      data-scroll-restoration-id={scrollRestorationId}
     >
       <div
         style={{
@@ -62,9 +71,13 @@ function RouteComponent() {
             transform: `translateY(${virtualRows[0]?.start ?? 0}px)`,
           }}
         >
-          <SongsTable songs={visibleSongs} handleSongClick={handleSongSelect} />
+          <SongsTable
+            songs={virtualRows.map((row) => songs[row.index])}
+            handleSongClick={handleSongSelect}
+            startIndex={virtualRows[0]?.index ?? 0}
+          />
         </div>
       </div>
     </main>
   );
-}
+};

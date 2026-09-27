@@ -1,4 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  useElementScrollRestoration,
+} from "@tanstack/react-router";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -27,6 +31,11 @@ function RouteComponent() {
   const totalDuration =
     songs?.reduce((total, song) => total + song.duration, 0) ?? 0;
 
+  const scrollRestorationId = "AlbumSongsList";
+  const scrollEntry = useElementScrollRestoration({
+    id: scrollRestorationId,
+  });
+
   const parentRef = useRef<HTMLDivElement>(null);
   const rowVirtualizer = useVirtualizer({
     count: songs?.length ?? 0,
@@ -34,6 +43,7 @@ function RouteComponent() {
     estimateSize: () => 45,
     overscan: 8,
     getItemKey: (index) => songs?.[index].id ?? index,
+    initialOffset: scrollEntry?.scrollY,
   });
 
   const handleSongClick = (song: Song) => {
@@ -59,7 +69,8 @@ function RouteComponent() {
     return (
       <main
         ref={parentRef}
-        className="p-2 pt-18 pb-25 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar"
+        data-scroll-restoration-id={scrollRestorationId}
+        className="p-2 pt-18 pb-32 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar"
       >
         <div className="flex items-center gap-x-6 border-b border-muted-foreground/30 pb-8 mb-4">
           <div className="relative group">

@@ -16,12 +16,14 @@ import AddToPlaylistDialog from "@/features/playlists/components/AddToPlaylistDi
 
 type SongsTableProps = {
   songs: Song[];
+  startIndex?: number;
   handleSongClick: (song: Song) => void;
   renderActions?: (song: Song) => React.ReactNode;
 };
 
 const SongsTable = ({
   songs,
+  startIndex = 0,
   handleSongClick,
   renderActions,
 }: SongsTableProps) => {
@@ -63,7 +65,7 @@ const SongsTable = ({
                     <Music2 size={14} />
                   ) : (
                     <>
-                      <span className="group-hover:hidden">{index + 1}</span>
+                      <span className="group-hover:hidden">{startIndex + index + 1}</span>
 
                       <Play size={14} className="hidden group-hover:block" />
                     </>

@@ -6,7 +6,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useElementScrollRestoration, useNavigate } from "@tanstack/react-router";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useRef } from "react";
 import { Music } from "lucide-react";
@@ -27,12 +27,19 @@ function RouteComponent() {
 
   const parentRef = useRef<HTMLDivElement>(null);
 
+  const scrollRestorationId = "FavoritesList";
+
+  const scrollEntry = useElementScrollRestoration({
+    id: scrollRestorationId,
+  });
+
   const rowVirtualizer = useVirtualizer({
     count: data?.length ?? 0,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 45,
     overscan: 8,
     getItemKey: (index) => data?.[index].id ?? index,
+    initialOffset: scrollEntry?.scrollY,
   });
 
   const handleSongSelect = (song: Song) => {
@@ -75,8 +82,9 @@ function RouteComponent() {
 
   return (
     <main
-      className="p-2 pt-18 pb-25 w-full h-screen overflow-y-auto custom-scrollbar"
+      className="p-2 pt-18 pb-32 w-full h-screen overflow-y-auto custom-scrollbar"
       ref={parentRef}
+      data-scroll-restoration-id={scrollRestorationId}
     >
       <div
         style={{
