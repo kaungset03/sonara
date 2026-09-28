@@ -55,7 +55,7 @@ const SongsList = ({ songs }: { songs: Song[] }) => {
   return (
     <main
       ref={parentRef}
-      className="p-2 pt-18 pb-30 w-full h-screen overflow-y-auto custom-scrollbar"
+      className="p-2 pt-18 pb-32 w-full h-screen overflow-y-auto custom-scrollbar"
       data-scroll-restoration-id={scrollRestorationId}
     >
       <div

@@ -23,7 +23,7 @@ function RouteComponent() {
 
   if (artists.length > 0) {
     return (
-      <main className="p-2 pt-18 pb-32 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar">
+      <main className="p-2 pt-18 pb-25 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-3xl font-bold font-heading">Artists</h1>
           <SortBySelect value={sortValue} onValueChange={setSortValue} />

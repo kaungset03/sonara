@@ -45,7 +45,7 @@ const PlaybackQueue = () => {
   });
 
   useEffect(() => {
-    if (!currentQueueItem || !open) return;
+    if (!open || !currentQueueItem) return;
 
     const index = playbackQueue.findIndex(
       (queueItem) => queueItem.id === currentQueueItem.id,
@@ -53,14 +53,22 @@ const PlaybackQueue = () => {
 
     if (index === -1) return;
 
-    const timer = setTimeout(() => {
+    const frame = requestAnimationFrame(() => {
+      rowVirtualizer.measure();
       rowVirtualizer.scrollToIndex(index, {
         align: "center",
-        behavior: "smooth",
+        behavior: "auto",
       });
-    }, 150);
 
-    return () => clearTimeout(timer);
+      requestAnimationFrame(() => {
+        rowVirtualizer.scrollToIndex(index, {
+          align: "center",
+          behavior: "auto",
+        });
+      });
+    });
+
+    return () => cancelAnimationFrame(frame);
   }, [currentQueueItem, open, playbackQueue, rowVirtualizer]);
 
   const virtualItems = rowVirtualizer.getVirtualItems();
@@ -88,7 +96,7 @@ const PlaybackQueue = () => {
 
         <div
           ref={scrollContainerRef}
-          className="flex flex-col px-2 max-h-[calc(100vh-180px)] overflow-y-auto no-scrollbar"
+          className="flex flex-col px-2 h-[calc(100vh-180px)] overflow-y-auto no-scrollbar"
         >
           <div
             style={{
@@ -104,7 +112,6 @@ const PlaybackQueue = () => {
                 <div
                   key={queueItem.id}
                   data-index={virtualItem.index}
-                  ref={rowVirtualizer.measureElement}
                   className="absolute left-0 top-0 w-full"
                   style={{
                     transform: `translateY(${virtualItem.start}px)`,
