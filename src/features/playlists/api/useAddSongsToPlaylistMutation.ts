@@ -30,7 +30,7 @@ const useAddSongsToPlaylistMutation = ({
       return result;
     },
     onSuccess: (result, variables) => {
-      toast.info(
+      toast.success(
         `Added ${result.added} songs. Skipped ${result.skipped} songs.`,
       );
       queryClient.invalidateQueries({

@@ -6,7 +6,11 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { createFileRoute, useElementScrollRestoration, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useElementScrollRestoration,
+  useNavigate,
+} from "@tanstack/react-router";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useRef } from "react";
 import { Music } from "lucide-react";
@@ -82,8 +86,8 @@ function RouteComponent() {
 
   return (
     <main
-      className="p-2 pt-18 pb-32 w-full h-screen overflow-y-auto custom-scrollbar"
       ref={parentRef}
+      className="p-2 pt-18 pb-33 w-full h-screen overflow-y-auto custom-scrollbar"
       data-scroll-restoration-id={scrollRestorationId}
     >
       <div
@@ -99,7 +103,11 @@ function RouteComponent() {
             transform: `translateY(${virtualRows[0]?.start ?? 0}px)`,
           }}
         >
-          <SongsTable songs={visibleSongs} handleSongClick={handleSongSelect} />
+          <SongsTable
+            songs={visibleSongs}
+            handleSongClick={handleSongSelect}
+            startIndex={virtualRows[0]?.index ?? 0}
+          />
         </div>
       </div>
     </main>

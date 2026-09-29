@@ -70,7 +70,7 @@ function RouteComponent() {
       <main
         ref={parentRef}
         data-scroll-restoration-id={scrollRestorationId}
-        className="p-2 pt-18 pb-32 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar"
+        className="p-2 pt-18 pb-33 w-full h-screen space-y-6 overflow-y-auto custom-scrollbar"
       >
         <div className="flex items-center gap-x-6 border-b border-muted-foreground/30 pb-8 mb-4">
           <div className="relative group">

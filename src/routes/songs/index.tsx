@@ -51,11 +51,11 @@ const SongsList = ({ songs }: { songs: Song[] }) => {
   };
 
   const virtualRows = rowVirtualizer.getVirtualItems();
-
+  const visibleSongs = virtualRows.map((row) => songs[row.index]);
   return (
     <main
       ref={parentRef}
-      className="p-2 pt-18 pb-32 w-full h-screen overflow-y-auto custom-scrollbar"
+      className="p-2 pt-18 pb-33 w-full h-screen overflow-y-auto custom-scrollbar"
       data-scroll-restoration-id={scrollRestorationId}
     >
       <div
@@ -72,7 +72,7 @@ const SongsList = ({ songs }: { songs: Song[] }) => {
           }}
         >
           <SongsTable
-            songs={virtualRows.map((row) => songs[row.index])}
+            songs={visibleSongs}
             handleSongClick={handleSongSelect}
             startIndex={virtualRows[0]?.index ?? 0}
           />
